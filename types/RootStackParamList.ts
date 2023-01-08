@@ -7,7 +7,6 @@ export type RootStackParamList = {
     Album: undefined;
     MusicPlayer: {
         song: Song;
-        onPlayPause: () => void;
     };
 };
 

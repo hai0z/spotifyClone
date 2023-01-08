@@ -7,7 +7,7 @@ import {
     ActivityIndicator,
     Dimensions,
 } from "react-native";
-import axios, { AxiosResponse } from "axios";
+import axios, { AxiosError, AxiosResponse } from "axios";
 import React, { useState, useLayoutEffect } from "react";
 import PlayListCard from "../components/PlayListCard";
 import Header from "../components/Header";
@@ -17,7 +17,7 @@ const options = {
     method: "GET",
     url: "https://shazam-core.p.rapidapi.com/v1/charts/world",
     headers: {
-        "X-RapidAPI-Key": "25afd00c31msh690f22c6a3516c0p1799adjsn0eade0e56e0b",
+        "X-RapidAPI-Key": "fcfe5a00eemshcaa5ba933a8931dp18407cjsn06329a84995b",
         "X-RapidAPI-Host": "shazam-core.p.rapidapi.com",
     },
 };
@@ -48,16 +48,16 @@ export default function App({
                 setPlayList(response.data.slice(0, 10));
                 setLoading(false);
             })
-            .catch(function (error: any) {
+            .catch(function (error: AxiosError) {
                 console.error(error);
             });
         axios
             .request(options2)
-            .then(function (response: any) {
+            .then(function (response: AxiosResponse) {
                 setTrack(response.data.slice(0, 10));
                 setLoading(false);
             })
-            .catch(function (error: any) {
+            .catch(function (error: AxiosError) {
                 console.error(error);
             });
     }, []);

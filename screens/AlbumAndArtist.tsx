@@ -1,16 +1,16 @@
 import { View, Text, Image, TouchableOpacity } from "react-native";
 import React from "react";
 import { Animated } from "react-native";
-import axios, { AxiosResponse } from "axios";
+import axios, { AxiosError, AxiosResponse } from "axios";
 import { useSongContext } from "../context/SongProvider";
 import { LinearGradient } from "expo-linear-gradient";
 
 const options = {
     method: "GET",
     url: "https://shazam-core.p.rapidapi.com/v1/artists/details",
-    params: { artist_id: "1257455015" },
+    params: { artist_id: "560664277" },
     headers: {
-        "X-RapidAPI-Key": "25afd00c31msh690f22c6a3516c0p1799adjsn0eade0e56e0b",
+        "X-RapidAPI-Key": "fcfe5a00eemshcaa5ba933a8931dp18407cjsn06329a84995b",
         "X-RapidAPI-Host": "shazam-core.p.rapidapi.com",
     },
 };
@@ -36,12 +36,13 @@ const AlbumAndArtist = () => {
             .request(options)
             .then(function (response: AxiosResponse) {
                 setData(response.data);
+                console.log(response.data);
             })
-            .catch(function (error: any) {
-                console.error(error);
+            .catch(function (error: AxiosError) {
+                console.error(error.message);
             });
     }, []);
-    const scrollY = React.useRef<Animated.Value>(new Animated.Value(0)).current;
+    const scrollY = React.useRef(new Animated.Value(0)).current;
     const songAnimated = React.useRef(new Animated.Value(1)).current;
     const { setCurrentSong } = useSongContext();
 

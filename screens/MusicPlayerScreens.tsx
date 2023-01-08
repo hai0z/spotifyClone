@@ -12,7 +12,7 @@ import React, { useState } from "react";
 import { route } from "../types/RootStackParamList";
 import { LinearGradient } from "expo-linear-gradient";
 import Slider from "@react-native-community/slider";
-import axios from "axios";
+import axios, { AxiosError, AxiosResponse } from "axios";
 import { RootState } from "../redux/store";
 import { useSelector } from "react-redux";
 
@@ -25,27 +25,29 @@ interface ISongDetail {
     sections: any;
 }
 const MusicPlayerScreens = ({ route }: IMusciPayerProp) => {
-    const { song, onPlayPause } = route.params;
+    const { song } = route.params;
 
-    const [songDetail, setSongDetail] = useState<ISongDetail>({} as any);
+    const [songDetail, setSongDetail] = useState<ISongDetail>(
+        {} as ISongDetail
+    );
     const options = {
         method: "GET",
         url: "https://shazam-core.p.rapidapi.com/v1/tracks/details",
         params: { track_id: song.key },
         headers: {
             "X-RapidAPI-Key":
-                "25afd00c31msh690f22c6a3516c0p1799adjsn0eade0e56e0b",
+                "fcfe5a00eemshcaa5ba933a8931dp18407cjsn06329a84995b",
             "X-RapidAPI-Host": "shazam-core.p.rapidapi.com",
         },
     };
     React.useEffect(() => {
         axios
             .request(options)
-            .then(function (response) {
+            .then(function (response: AxiosResponse) {
                 setSongDetail(response.data);
             })
-            .catch(function (error) {
-                console.error(error);
+            .catch(function (error: AxiosError) {
+                console.error(error.message);
             });
     }, []);
     const musicState = useSelector((state: RootState) => state.song.musicState);
@@ -157,7 +159,6 @@ const MusicPlayerScreens = ({ route }: IMusciPayerProp) => {
                     </View>
                     <View>
                         <TouchableOpacity
-                            onPress={onPlayPause}
                             style={{
                                 width: 80,
                                 height: 80,

@@ -19,7 +19,13 @@ const songSlice = createSlice({
                 duration: action.payload.duration,
             };
         },
+        setPlaying: (state) => {
+            state.musicState = {
+                ...state.musicState,
+                isPlaying: true,
+            };
+        },
     },
 });
-export const { updateSongState } = songSlice.actions;
+export const { updateSongState, setPlaying } = songSlice.actions;
 export default songSlice.reducer;
