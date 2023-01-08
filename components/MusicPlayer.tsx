@@ -67,6 +67,7 @@ const MusicPlayer: React.FC<IMusciPayerProp> = ({ navigation }) => {
                 },
                 {
                     shouldPlay: musicState.isPlaying,
+                    isLooping: true,
                 },
                 onPlaybackStatusUpdate
             );
@@ -106,20 +107,17 @@ const MusicPlayer: React.FC<IMusciPayerProp> = ({ navigation }) => {
             onPress={() => {
                 navigation.navigate("MusicPlayer", {
                     song: currentSong,
-                    onPlayPause,
                 });
             }}
             style={{
                 position: "absolute",
-                width: "97%",
+                width: "100%",
                 height: 60,
                 bottom: 50,
                 backgroundColor: `#${joeColor}`,
-                left: 8,
                 flexDirection: "column",
                 borderRadius: 10,
                 justifyContent: "center",
-                overflow: "hidden",
             }}
         >
             <View
@@ -190,13 +188,25 @@ const MusicPlayer: React.FC<IMusciPayerProp> = ({ navigation }) => {
                 style={{
                     height: 2,
                     marginTop: 2,
-                    backgroundColor: "#fff",
+                    backgroundColor: "rgba(255,255,255,0.5)",
                     marginHorizontal: 4,
-                    maxWidth: "98%",
+                    maxWidth: "100%",
                     borderRadius: 2,
-                    width: `${getProgress()}%`,
+                    position: "relative",
                 }}
-            />
+            >
+                <View
+                    style={{
+                        height: 2,
+
+                        backgroundColor: "#fff",
+                        maxWidth: "100%",
+                        borderRadius: 2,
+                        position: "absolute",
+                        width: `${getProgress()}%`,
+                    }}
+                />
+            </View>
         </TouchableOpacity>
     );
 };
