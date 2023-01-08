@@ -11,6 +11,7 @@ import { navigation, RootStackParamList } from "../types/RootStackParamList";
 import MusicPlayerScreens from "../screens/MusicPlayerScreens";
 import AlbumAndArtist from "../screens/AlbumAndArtist";
 import MusicPlayer from "../components/MusicPlayer";
+import Search from "../screens/Search";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -84,7 +85,7 @@ const HomeTab = () => {
             />
             <Tab.Screen
                 name="Search"
-                component={SettingsScreen}
+                component={Search}
                 options={{
                     title: "Tìm kiếm",
                 }}
@@ -105,7 +106,7 @@ const HomeTabWrapper = ({
     navigation: navigation<"HomeTab">;
 }) => {
     return (
-        <View style={{ flex: 1, width: "100%" }}>
+        <View style={{ flex: 1 }}>
             <HomeTab />
             <MusicPlayer navigation={navigation} />
         </View>
