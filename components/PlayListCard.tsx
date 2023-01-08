@@ -3,7 +3,8 @@ import React from "react";
 import { useSongContext } from "../context/SongProvider";
 import { navigation } from "../types/RootStackParamList";
 import { Song } from "../types/song";
-
+import { useDispatch } from "react-redux";
+import { setPlaying } from "../redux/songSlice";
 type PlayList = {
     title: string;
     images: {
@@ -26,12 +27,16 @@ const PlayListCard: React.FC<IPlayListProp> = ({
     navigation,
 }) => {
     const { setCurrentSong } = useSongContext();
+    const dispatch = useDispatch();
     return (
         <TouchableOpacity
             onPress={() => {
-                type == "artist"
-                    ? navigation?.navigate("Album")
-                    : setCurrentSong(playList);
+                if (type === "artist") {
+                    navigation?.navigate("Album");
+                } else {
+                    dispatch(setPlaying());
+                    setCurrentSong(playList);
+                }
             }}
             activeOpacity={0.7}
             style={{
