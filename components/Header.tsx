@@ -3,6 +3,13 @@ import React from "react";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
 const Header = () => {
+    const timeNow = new Date().getHours();
+    const greeting =
+        timeNow >= 5 && timeNow < 12
+            ? "Chào buổi sáng"
+            : timeNow >= 12 && timeNow < 18
+            ? "Chào buổi chiều"
+            : "Chào buổi tối";
     return (
         <View
             style={{
@@ -19,7 +26,7 @@ const Header = () => {
                     marginLeft: 15,
                 }}
             >
-                Chào buổi sáng
+                {greeting}
             </Text>
             <View
                 style={{
