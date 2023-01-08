@@ -16,9 +16,11 @@ const SongProvider: FC<ISongProviderProp> = ({ children }) => {
     const [currentSong, setCurrentSong] = useState<Song>({} as Song);
 
     const storeData = async () => {
-        await AsyncStorage.setItem("song", JSON.stringify(currentSong)).catch(
-            (err) => console.log(err)
-        );
+        try {
+            await AsyncStorage.setItem("song", JSON.stringify(currentSong));
+        } catch (err) {
+            console.log(err);
+        }
     };
 
     const findLatestSong = async () => {
