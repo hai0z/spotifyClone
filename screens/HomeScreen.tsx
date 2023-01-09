@@ -17,7 +17,7 @@ const options = {
     method: "GET",
     url: "https://shazam-core.p.rapidapi.com/v1/charts/world",
     headers: {
-        "X-RapidAPI-Key": "03f4da860cmsh5cc6a4954effb73p1fd037jsn17325c8bac09",
+        "X-RapidAPI-Key": "25afd00c31msh690f22c6a3516c0p1799adjsn0eade0e56e0b",
         "X-RapidAPI-Host": "shazam-core.p.rapidapi.com",
     },
 };
@@ -27,7 +27,7 @@ const options2 = {
     url: "https://shazam-core.p.rapidapi.com/v1/tracks/related",
     params: { track_id: "554591360" },
     headers: {
-        "X-RapidAPI-Key": "03f4da860cmsh5cc6a4954effb73p1fd037jsn17325c8bac09",
+        "X-RapidAPI-Key": "25afd00c31msh690f22c6a3516c0p1799adjsn0eade0e56e0b",
         "X-RapidAPI-Host": "shazam-core.p.rapidapi.com",
     },
 };
@@ -41,27 +41,27 @@ export default function App({
     const [track, setTrack] = useState([] as any);
     const [loading, setLoading] = useState<boolean>(true);
 
-    useLayoutEffect(() => {
-        setLoading(true);
-        axios
-            .request(options)
-            .then(function (response: AxiosResponse) {
-                setPlayList(response.data.slice(0, 10));
-                setLoading(false);
-            })
-            .catch(function (error: AxiosError) {
-                console.error(error);
-            });
-        axios
-            .request(options2)
-            .then(function (response: AxiosResponse) {
-                setTrack(response.data.slice(0, 10));
-                setLoading(false);
-            })
-            .catch(function (error: AxiosError) {
-                console.error(error);
-            });
-    }, []);
+    // // useLayoutEffect(() => {
+    // //     setLoading(true);
+    // //     axios
+    // //         .request(options)
+    // //         .then(function (response: AxiosResponse) {
+    // //             setPlayList(response.data.slice(0, 10));
+    // //             setLoading(false);
+    // //         })
+    // //         .catch(function (error: AxiosError) {
+    // //             console.error(error);
+    // //         });
+    // //     axios
+    // //         .request(options2)
+    // //         .then(function (response: AxiosResponse) {
+    // //             setTrack(response.data.slice(0, 10));
+    // //             setLoading(false);
+    // //         })
+    // //         .catch(function (error: AxiosError) {
+    // //             console.error(error);
+    // //         });
+    // }, []);
 
     return (
         <View style={styles.container}>

@@ -35,7 +35,7 @@ const MusicPlayerScreens = () => {
         isLooping,
         setIsLooping,
     } = useSongContext();
-    console.log(isLooping);
+
     const [songDetail, setSongDetail] = useState<ISongDetail>(
         {} as ISongDetail
     );
@@ -45,7 +45,7 @@ const MusicPlayerScreens = () => {
         params: { track_id: song.key },
         headers: {
             "X-RapidAPI-Key":
-                "03f4da860cmsh5cc6a4954effb73p1fd037jsn17325c8bac09",
+                "25afd00c31msh690f22c6a3516c0p1799adjsn0eade0e56e0b",
             "X-RapidAPI-Host": "shazam-core.p.rapidapi.com",
         },
     };
@@ -97,7 +97,7 @@ const MusicPlayerScreens = () => {
                     showsHorizontalScrollIndicator={false}
                     pagingEnabled
                     contentContainerStyle={{
-                        paddingTop: 80,
+                        paddingTop: 125,
                     }}
                 >
                     {[song, nextSong].map((src, index) => (
@@ -107,7 +107,7 @@ const MusicPlayerScreens = () => {
                             style={{
                                 width: SCREEN_WITH,
                                 height: SCREEN_WITH,
-                                transform: [{ scale: 0.8 }],
+                                transform: [{ scale: 0.85 }],
                             }}
                         />
                     ))}
@@ -127,10 +127,6 @@ const MusicPlayerScreens = () => {
                                 fontSize: 20,
                                 fontWeight: "bold",
                                 color: "#fff",
-                                textShadowColor: "#000",
-                                textShadowOffset: { width: 0, height: 2 },
-                                textShadowRadius: 1,
-                                shadowOpacity: 0.2,
                             }}
                         >
                             {song?.title}
@@ -138,18 +134,19 @@ const MusicPlayerScreens = () => {
                         <Text
                             style={{
                                 fontSize: 13,
-                                fontWeight: "bold",
+                                fontWeight: "500",
                                 color: "#fff",
-                                textShadowColor: "#000",
-                                textShadowOffset: { width: 0, height: 2 },
-                                textShadowRadius: 1,
-                                shadowOpacity: 0.2,
                             }}
                         >
                             {song?.subtitle}
                         </Text>
                     </View>
-                    <Text>abc</Text>
+                    <AntDesign
+                        name="hearto"
+                        size={24}
+                        color="#fff"
+                        style={{ marginRight: 15 }}
+                    />
                 </View>
                 <View style={{ alignItems: "center", marginTop: 15 }}>
                     <Slider
@@ -159,7 +156,8 @@ const MusicPlayerScreens = () => {
                         }}
                         minimumValue={0}
                         value={
-                            (musicState.position / musicState.duration) * 100
+                            (musicState.position / musicState.duration) * 100 ||
+                            0
                         }
                         maximumValue={100}
                         thumbTintColor="#ffffff"
@@ -241,7 +239,7 @@ const MusicPlayerScreens = () => {
                             <SimpleLineIcons
                                 name="loop"
                                 size={24}
-                                color={isLooping == true ? "#13d670" : "white"}
+                                color={isLooping ? "#13d670" : "white"}
                             />
                         </TouchableOpacity>
                     </View>

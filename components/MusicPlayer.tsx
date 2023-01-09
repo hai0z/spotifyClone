@@ -126,7 +126,7 @@ const MusicPlayer: React.FC<IMusciPayerProp> = ({ navigation }) => {
                     height: 2,
                     marginTop: 2,
                     backgroundColor: "rgba(255,255,255,0.5)",
-                    marginHorizontal: 4,
+                    marginHorizontal: 8,
                     maxWidth: "100%",
                     position: "relative",
                 }}

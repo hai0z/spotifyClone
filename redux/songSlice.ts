@@ -9,7 +9,11 @@ export interface ISongSlice {
 const songSlice = createSlice({
     name: "song",
     initialState: {
-        musicState: {} as ISongSlice,
+        musicState: {
+            isPlaying: false,
+            position: 0,
+            duration: 0,
+        } as ISongSlice,
     },
     reducers: {
         updateSongState: (state, action) => {

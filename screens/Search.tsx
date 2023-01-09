@@ -68,7 +68,7 @@ const SearchResult = ({
 const Search = () => {
     const [search, setSearch] = useState<string>("");
 
-    const searchDebounce = useDebounce(search, 150);
+    const searchDebounce = useDebounce(search, 3000);
 
     const [searchData, setSearchData] = useState([] as any);
 
@@ -79,11 +79,12 @@ const Search = () => {
         params: { query: `${search}`, search_type: "SONGS" },
         headers: {
             "X-RapidAPI-Key":
-                "03f4da860cmsh5cc6a4954effb73p1fd037jsn17325c8bac09",
+                "25afd00c31msh690f22c6a3516c0p1799adjsn0eade0e56e0b",
             "X-RapidAPI-Host": "shazam-core.p.rapidapi.com",
         },
     };
     const { setCurrentSong } = useSongContext();
+
     const onPress = useCallback((song: Song) => {
         setCurrentSong(song);
         dispatch(setPlaying(true));
@@ -91,6 +92,7 @@ const Search = () => {
 
     useEffect(() => {
         const fethSearch = async () => {
+            console.log(`searching...`);
             try {
                 const { data }: AxiosResponse = await axios.request(options);
                 console.log(data);

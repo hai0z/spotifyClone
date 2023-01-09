@@ -45,13 +45,14 @@ const SongProvider: FC<ISongProviderProp> = ({ children }) => {
         }
     };
     const getRelatedTrack = async () => {
+        console.log(`get releated`);
         const options = {
             method: "GET",
             url: "https://shazam-core.p.rapidapi.com/v1/tracks/related",
             params: { track_id: `${currentSong.key}` },
             headers: {
                 "X-RapidAPI-Key":
-                    "03f4da860cmsh5cc6a4954effb73p1fd037jsn17325c8bac09",
+                    "25afd00c31msh690f22c6a3516c0p1799adjsn0eade0e56e0b",
                 "X-RapidAPI-Host": "shazam-core.p.rapidapi.com",
             },
         };
@@ -65,7 +66,7 @@ const SongProvider: FC<ISongProviderProp> = ({ children }) => {
                 params: { track_id: `${relatedId}` },
                 headers: {
                     "X-RapidAPI-Key":
-                        "03f4da860cmsh5cc6a4954effb73p1fd037jsn17325c8bac09",
+                        "25afd00c31msh690f22c6a3516c0p1799adjsn0eade0e56e0b",
                     "X-RapidAPI-Host": "shazam-core.p.rapidapi.com",
                 },
             };
@@ -84,6 +85,7 @@ const SongProvider: FC<ISongProviderProp> = ({ children }) => {
         storeData();
         getRelatedTrack();
     }, [currentSong]);
+
     React.useEffect(() => {
         async function storeLooping() {
             try {
