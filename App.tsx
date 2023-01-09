@@ -3,11 +3,14 @@ import AppNavigator from "./navigation/index";
 import SongProvider from "./context/SongProvider";
 import store from "./redux/store";
 import { Provider } from "react-redux";
+import PlayerProvider from "./context/PlayerProvider";
 const App = () => {
     return (
         <Provider store={store}>
             <SongProvider>
-                <AppNavigator />
+                <PlayerProvider>
+                    <AppNavigator />
+                </PlayerProvider>
             </SongProvider>
         </Provider>
     );
