@@ -19,10 +19,10 @@ const songSlice = createSlice({
                 duration: action.payload.duration,
             };
         },
-        setPlaying: (state) => {
+        setPlaying: (state, action) => {
             state.musicState = {
                 ...state.musicState,
-                isPlaying: true,
+                isPlaying: action.payload,
             };
         },
     },
