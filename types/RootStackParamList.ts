@@ -5,9 +5,7 @@ import { Song } from "./song";
 export type RootStackParamList = {
     HomeTab: undefined;
     Album: undefined;
-    MusicPlayer: {
-        song: Song;
-    };
+    MusicPlayer: undefined;
 };
 
 export type RootStackProps<T extends keyof RootStackParamList> = {

@@ -27,7 +27,6 @@ const SearchResult = ({
             style={{
                 height: 50,
                 marginTop: 20,
-                display: "flex",
                 flexDirection: "row",
             }}
         >
@@ -80,20 +79,21 @@ const Search = () => {
         params: { query: `${search}`, search_type: "SONGS" },
         headers: {
             "X-RapidAPI-Key":
-                "fcfe5a00eemshcaa5ba933a8931dp18407cjsn06329a84995b",
+                "03f4da860cmsh5cc6a4954effb73p1fd037jsn17325c8bac09",
             "X-RapidAPI-Host": "shazam-core.p.rapidapi.com",
         },
     };
     const { setCurrentSong } = useSongContext();
-    const onPress = useCallback((song: Song & any) => {
+    const onPress = useCallback((song: Song) => {
         setCurrentSong(song);
-        dispatch(setPlaying());
+        dispatch(setPlaying(true));
     }, []);
 
     useEffect(() => {
         const fethSearch = async () => {
             try {
                 const { data }: AxiosResponse = await axios.request(options);
+                console.log(data);
                 setSearchData(
                     data.tracks.hits.map((d: any) => ({
                         title: d.track.title,
@@ -116,34 +116,36 @@ const Search = () => {
     }, [searchDebounce]);
     return (
         <View
-            style={{ flex: 1, paddingBottom: 120, backgroundColor: "#121212" }}
+            style={{
+                flex: 1,
+                backgroundColor: "#121212",
+                marginTop: 30,
+            }}
         >
+            <View style={{ backgroundColor: "#535353", position: "relative" }}>
+                <TextInput
+                    value={search}
+                    style={{
+                        color: "#fff",
+                        padding: 10,
+                    }}
+                    placeholder="Nhập bài hát cần tìm"
+                    placeholderTextColor="#ffffff"
+                    onChangeText={(e) => setSearch(e)}
+                />
+                <TouchableOpacity
+                    onPress={() => setSearch("")}
+                    style={{ position: "absolute", right: 20, top: 10 }}
+                >
+                    <Text style={{ color: "#fff", fontSize: 18 }}>X</Text>
+                </TouchableOpacity>
+            </View>
             <ScrollView
-                style={{
-                    backgroundColor: "#121212",
-                    marginTop: 30,
+                contentContainerStyle={{
+                    paddingBottom: 150,
+                    paddingHorizontal: 15,
                 }}
             >
-                <View
-                    style={{ backgroundColor: "#535353", position: "relative" }}
-                >
-                    <TextInput
-                        value={search}
-                        style={{
-                            color: "#fff",
-                            padding: 10,
-                        }}
-                        placeholder="Nhập bài hát cần tìm"
-                        placeholderTextColor="#ffffff"
-                        onChangeText={(e) => setSearch(e)}
-                    />
-                    <TouchableOpacity
-                        onPress={() => setSearch("")}
-                        style={{ position: "absolute", right: 20, top: 10 }}
-                    >
-                        <Text style={{ color: "#fff", fontSize: 18 }}>X</Text>
-                    </TouchableOpacity>
-                </View>
                 {searchData.map((song: any, index: number) => (
                     <SearchResult
                         data={song}

@@ -1,22 +1,20 @@
 import { Text, View, Image, TouchableOpacity } from "react-native";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { Entypo } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
-import { Audio } from "expo-av";
-import { Sound } from "expo-av/build/Audio";
 import { useSongContext } from "../context/SongProvider";
 import { navigation } from "../types/RootStackParamList";
-import { useSelector, useDispatch } from "react-redux";
-import { AppDispatch } from "../redux/store";
-import { updateSongState } from "../redux/songSlice";
+import { useSelector } from "react-redux";
+
 import { RootState } from "../redux/store";
+import useSound from "../hooks/useSound";
 
 interface IMusciPayerProp {
     navigation: navigation<"HomeTab">;
 }
 
 const MusicPlayer: React.FC<IMusciPayerProp> = ({ navigation }) => {
-    const [sound, setSound] = React.useState<Sound | null>(null);
+    const progress = useRef<number>(0);
 
     const musicState = useSelector((state: RootState) => state.song.musicState);
 
@@ -24,27 +22,7 @@ const MusicPlayer: React.FC<IMusciPayerProp> = ({ navigation }) => {
 
     const [joeColor, setJoeColor] = useState("ccc");
 
-    const dispatch = useDispatch<AppDispatch>();
-
-    const onPlaybackStatusUpdate = (status: any) => {
-        if (status.isPlaying == null) {
-            dispatch(
-                updateSongState({
-                    isPlaying: false,
-                    position: null,
-                    duration: null,
-                })
-            );
-        } else {
-            dispatch(
-                updateSongState({
-                    isPlaying: status.isPlaying,
-                    duration: status.durationMillis,
-                    position: status.positionMillis,
-                })
-            );
-        }
-    };
+    const { sound, onPlayPause, playSound } = useSound();
 
     const getProgress = () => {
         if (
@@ -54,60 +32,19 @@ const MusicPlayer: React.FC<IMusciPayerProp> = ({ navigation }) => {
         ) {
             return 0;
         }
-        return (musicState.position / musicState.duration) * 100;
+        progress.current = (musicState.position / musicState.duration) * 100;
+        return progress.current;
     };
-    async function playSound() {
-        if (sound) {
-            sound.unloadAsync();
-        }
-        try {
-            const { sound: newSound } = await Audio.Sound.createAsync(
-                {
-                    uri: currentSong?.hub?.actions?.[1].uri,
-                },
-                {
-                    shouldPlay: musicState.isPlaying,
-                    isLooping: true,
-                },
-                onPlaybackStatusUpdate
-            );
-            setSound(newSound);
-        } catch (err) {
-            console.log(err);
-        }
-    }
-
-    async function onPlayPause() {
-        if (!sound) return;
-        if (musicState.isPlaying) {
-            await sound.pauseAsync().catch((err) => console.log(err));
-        } else {
-            await sound
-                .playFromPositionAsync(musicState.position ?? 0)
-                .catch((err) => console.log(err));
-        }
-    }
 
     React.useEffect(() => {
-        playSound();
         setJoeColor(currentSong?.images?.joecolor?.split(":")?.[5]);
     }, [currentSong]);
-
-    React.useEffect(() => {
-        return sound
-            ? () => {
-                  sound.unloadAsync();
-              }
-            : undefined;
-    }, [sound]);
 
     return (
         <TouchableOpacity
             activeOpacity={1}
             onPress={() => {
-                navigation.navigate("MusicPlayer", {
-                    song: currentSong,
-                });
+                navigation.navigate("MusicPlayer");
             }}
             style={{
                 position: "absolute",
@@ -191,17 +128,14 @@ const MusicPlayer: React.FC<IMusciPayerProp> = ({ navigation }) => {
                     backgroundColor: "rgba(255,255,255,0.5)",
                     marginHorizontal: 4,
                     maxWidth: "100%",
-                    borderRadius: 2,
                     position: "relative",
                 }}
             >
                 <View
                     style={{
                         height: 2,
-
                         backgroundColor: "#fff",
                         maxWidth: "100%",
-                        borderRadius: 2,
                         position: "absolute",
                         width: `${getProgress()}%`,
                     }}

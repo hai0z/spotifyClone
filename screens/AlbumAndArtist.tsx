@@ -10,7 +10,7 @@ const options = {
     url: "https://shazam-core.p.rapidapi.com/v1/artists/details",
     params: { artist_id: "560664277" },
     headers: {
-        "X-RapidAPI-Key": "fcfe5a00eemshcaa5ba933a8931dp18407cjsn06329a84995b",
+        "X-RapidAPI-Key": "03f4da860cmsh5cc6a4954effb73p1fd037jsn17325c8bac09",
         "X-RapidAPI-Host": "shazam-core.p.rapidapi.com",
     },
 };

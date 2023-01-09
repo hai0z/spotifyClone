@@ -5,28 +5,37 @@ import {
     Dimensions,
     ScrollView,
     TouchableOpacity,
+    NativeSyntheticEvent,
+    NativeScrollEvent,
+    StyleSheet,
 } from "react-native";
-import { Entypo } from "@expo/vector-icons";
-
-import React, { useState } from "react";
-import { route } from "../types/RootStackParamList";
+import { Entypo, AntDesign } from "@expo/vector-icons";
+import { SimpleLineIcons } from "@expo/vector-icons";
+import React, { useEffect, useState } from "react";
 import { LinearGradient } from "expo-linear-gradient";
+import { FontAwesome } from "@expo/vector-icons";
 import Slider from "@react-native-community/slider";
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { RootState } from "../redux/store";
 import { useSelector } from "react-redux";
+import { useSongContext } from "../context/SongProvider";
+
+import useSound from "../hooks/useSound";
 
 const { width: SCREEN_WITH } = Dimensions.get("screen");
 
-interface IMusciPayerProp {
-    route: route<"MusicPlayer">;
-}
 interface ISongDetail {
     sections: any;
 }
-const MusicPlayerScreens = ({ route }: IMusciPayerProp) => {
-    const { song } = route.params;
-
+const MusicPlayerScreens = () => {
+    const {
+        currentSong: song,
+        setCurrentSong,
+        nextSong,
+        isLooping,
+        setIsLooping,
+    } = useSongContext();
+    console.log(isLooping);
     const [songDetail, setSongDetail] = useState<ISongDetail>(
         {} as ISongDetail
     );
@@ -36,21 +45,22 @@ const MusicPlayerScreens = ({ route }: IMusciPayerProp) => {
         params: { track_id: song.key },
         headers: {
             "X-RapidAPI-Key":
-                "fcfe5a00eemshcaa5ba933a8931dp18407cjsn06329a84995b",
+                "03f4da860cmsh5cc6a4954effb73p1fd037jsn17325c8bac09",
             "X-RapidAPI-Host": "shazam-core.p.rapidapi.com",
         },
     };
     React.useEffect(() => {
-        axios
-            .request(options)
-            .then(function (response: AxiosResponse) {
-                setSongDetail(response.data);
-            })
-            .catch(function (error: AxiosError) {
-                console.error(error.message);
-            });
-    }, []);
+        // axios
+        //     .request(options)
+        //     .then(function (response: AxiosResponse) {
+        //         setSongDetail(response.data);
+        //     })
+        //     .catch(function (error: AxiosError) {
+        //         console.error(error.message);
+        //     });
+    }, [song]);
     const musicState = useSelector((state: RootState) => state.song.musicState);
+    const { onPlayPause, playFromPosition } = useSound();
 
     let second: string | number = Math.floor((musicState.position / 1000) % 60);
     if (second < 10) {
@@ -61,29 +71,47 @@ const MusicPlayerScreens = ({ route }: IMusciPayerProp) => {
     const totalTime = `${Math.floor(
         (musicState.duration / 1000 / 60) % 60
     )}:${Math.floor((musicState.duration / 1000) % 60)}`;
+
+    const handlePageChange = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
+        const offset = e.nativeEvent.contentOffset;
+        if (offset) {
+            const page = Math.round(offset.x / SCREEN_WITH) + 1;
+            console.log(page);
+            if (page) {
+                // setCurrentSong(nextSong);
+            }
+        }
+    };
+
     return (
         <LinearGradient
             style={{ minWidth: "100%", minHeight: "100%", flex: 1 }}
-            start={{ x: 0.4, y: 0.2 }}
-            end={{ x: 0.6, y: 0.75 }}
-            colors={[`#${song?.images.joecolor?.split(":")[5]}CE`, "gray"]}
+            colors={[`#${song?.images.joecolor?.split(":")[5]}CE`, "#000000ce"]}
+            start={{ x: 0.5, y: 0 }}
+            end={{ x: 0.5, y: 1 }}
         >
             <ScrollView>
-                <View
-                    style={{
-                        justifyContent: "center",
-                        alignItems: "center",
-                        paddingTop: 120,
+                <ScrollView
+                    onMomentumScrollEnd={handlePageChange}
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    pagingEnabled
+                    contentContainerStyle={{
+                        paddingTop: 80,
                     }}
                 >
-                    <Image
-                        source={{ uri: song?.images?.coverart }}
-                        style={{
-                            width: SCREEN_WITH - 80,
-                            height: SCREEN_WITH - 80,
-                        }}
-                    />
-                </View>
+                    {[song, nextSong].map((src, index) => (
+                        <Image
+                            key={index}
+                            source={{ uri: src?.images?.coverart }}
+                            style={{
+                                width: SCREEN_WITH,
+                                height: SCREEN_WITH,
+                                transform: [{ scale: 0.8 }],
+                            }}
+                        />
+                    ))}
+                </ScrollView>
                 <View
                     style={{
                         flexDirection: "row",
@@ -135,8 +163,11 @@ const MusicPlayerScreens = ({ route }: IMusciPayerProp) => {
                         }
                         maximumValue={100}
                         thumbTintColor="#ffffff"
-                        minimumTrackTintColor="#FFd369"
-                        maximumTrackTintColor="#000000"
+                        minimumTrackTintColor="#ffffff"
+                        maximumTrackTintColor="rgba(255,255,255,0.5)"
+                        onSlidingComplete={(e) => {
+                            playFromPosition((musicState.duration * e) / 100);
+                        }}
                     />
                     <View
                         style={{
@@ -157,16 +188,31 @@ const MusicPlayerScreens = ({ route }: IMusciPayerProp) => {
                             {totalTime}
                         </Text>
                     </View>
-                    <View>
+                    <View
+                        style={{
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                            width: SCREEN_WITH - 40,
+                            alignItems: "center",
+                        }}
+                    >
+                        <TouchableOpacity style={styles.trackBtn}>
+                            <FontAwesome
+                                name="random"
+                                size={24}
+                                color="white"
+                            />
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.trackBtn}>
+                            <AntDesign
+                                name="stepbackward"
+                                size={32}
+                                color="white"
+                            />
+                        </TouchableOpacity>
                         <TouchableOpacity
-                            style={{
-                                width: 80,
-                                height: 80,
-                                borderRadius: 40,
-                                backgroundColor: "#fff",
-                                justifyContent: "center",
-                                alignItems: "center",
-                            }}
+                            onPress={() => onPlayPause()}
+                            style={styles.playBtn}
                         >
                             <Entypo
                                 name={
@@ -174,8 +220,28 @@ const MusicPlayerScreens = ({ route }: IMusciPayerProp) => {
                                         ? "controller-play"
                                         : "controller-paus"
                                 }
-                                size={40}
+                                size={36}
                                 color="#000"
+                            />
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={() => setCurrentSong(nextSong)}
+                            style={styles.trackBtn}
+                        >
+                            <AntDesign
+                                name="stepforward"
+                                size={32}
+                                color="white"
+                            />
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            style={styles.trackBtn}
+                            onPress={() => setIsLooping(!isLooping)}
+                        >
+                            <SimpleLineIcons
+                                name="loop"
+                                size={24}
+                                color={isLooping == true ? "#13d670" : "white"}
                             />
                         </TouchableOpacity>
                     </View>
@@ -184,15 +250,15 @@ const MusicPlayerScreens = ({ route }: IMusciPayerProp) => {
                         contentContainerStyle={{
                             backgroundColor: `#${
                                 song?.images.joecolor?.split(":")[5]
-                            }CE`,
+                            }`,
                             marginHorizontal: 20,
                             borderRadius: 10,
                             marginTop: 40,
-                            zIndex: 1111,
+                            zIndex: 99,
                             padding: 10,
                         }}
                     >
-                        {songDetail.sections?.[1].text?.map(
+                        {song.sections?.[1].text?.map(
                             (l: string, i: number) => (
                                 <Text
                                     style={{
@@ -214,3 +280,19 @@ const MusicPlayerScreens = ({ route }: IMusciPayerProp) => {
 };
 
 export default MusicPlayerScreens;
+const styles = StyleSheet.create({
+    trackBtn: {
+        width: 60,
+        height: 60,
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    playBtn: {
+        width: 60,
+        height: 60,
+        borderRadius: 30,
+        backgroundColor: "#fff",
+        justifyContent: "center",
+        alignItems: "center",
+    },
+});

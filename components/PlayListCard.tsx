@@ -34,7 +34,7 @@ const PlayListCard: React.FC<IPlayListProp> = ({
                 if (type === "artist") {
                     navigation?.navigate("Album");
                 } else {
-                    dispatch(setPlaying());
+                    dispatch(setPlaying(true));
                     setCurrentSong(playList);
                 }
             }}

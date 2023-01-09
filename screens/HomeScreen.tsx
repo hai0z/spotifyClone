@@ -17,16 +17,17 @@ const options = {
     method: "GET",
     url: "https://shazam-core.p.rapidapi.com/v1/charts/world",
     headers: {
-        "X-RapidAPI-Key": "fcfe5a00eemshcaa5ba933a8931dp18407cjsn06329a84995b",
+        "X-RapidAPI-Key": "03f4da860cmsh5cc6a4954effb73p1fd037jsn17325c8bac09",
         "X-RapidAPI-Host": "shazam-core.p.rapidapi.com",
     },
 };
+
 const options2 = {
     method: "GET",
     url: "https://shazam-core.p.rapidapi.com/v1/tracks/related",
     params: { track_id: "554591360" },
     headers: {
-        "X-RapidAPI-Key": "25afd00c31msh690f22c6a3516c0p1799adjsn0eade0e56e0b",
+        "X-RapidAPI-Key": "03f4da860cmsh5cc6a4954effb73p1fd037jsn17325c8bac09",
         "X-RapidAPI-Host": "shazam-core.p.rapidapi.com",
     },
 };
@@ -64,8 +65,12 @@ export default function App({
 
     return (
         <View style={styles.container}>
-            <ScrollView>
-                <StatusBar style="light" backgroundColor="#0000005d" />
+            <ScrollView
+                contentContainerStyle={{
+                    paddingBottom: 100,
+                }}
+            >
+                <StatusBar style="light" backgroundColor="#121212" />
                 <Header />
                 {loading ? (
                     <View
@@ -215,8 +220,8 @@ export default function App({
 }
 const styles = StyleSheet.create({
     container: {
-        paddingTop: 50,
         backgroundColor: "#121212",
         flex: 1,
+        marginTop: 30,
     },
 });
