@@ -6,6 +6,8 @@ export type RootStackParamList = {
     HomeTab: undefined;
     Album: undefined;
     MusicPlayer: undefined;
+    ListFavourite: undefined;
+    Lib: undefined;
 };
 
 export type RootStackProps<T extends keyof RootStackParamList> = {

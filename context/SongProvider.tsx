@@ -3,7 +3,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Song } from "../types/song";
 import axios from "axios";
 export const SongContext = React.createContext({} as ISongContext);
-
+import { db } from "../firebase";
 interface ISongProviderProp {
     children: React.ReactNode;
 }
@@ -15,11 +15,17 @@ interface ISongContext {
     setNextSong: any;
     isLooping: any;
     setIsLooping: any;
+    ListFavourite: any;
+    setListFavourite: any;
 }
 const SongProvider: FC<ISongProviderProp> = ({ children }) => {
     const [currentSong, setCurrentSong] = useState<Song>({} as Song);
+
     const [nextSong, setNextSong] = useState<Song>({} as Song);
-    const [loading, setLoading] = useState(true);
+
+    const [loading, setLoading] = useState(false);
+
+    const [ListFavourite, setListFavourite] = useState<Song[]>([]);
     const [isLooping, setIsLooping] = useState<boolean | any>(async () => {
         const rs = await AsyncStorage.getItem("isLooping");
         if (rs != null) {
@@ -28,6 +34,7 @@ const SongProvider: FC<ISongProviderProp> = ({ children }) => {
             setIsLooping(false);
         }
     });
+
     const storeData = async () => {
         try {
             await AsyncStorage.setItem("song", JSON.stringify(currentSong));
@@ -75,15 +82,24 @@ const SongProvider: FC<ISongProviderProp> = ({ children }) => {
             setLoading(false);
         } catch (err: any) {
             console.error(err);
+            setLoading(false);
         }
     };
     React.useEffect(() => {
+        const q = db.query(db.collection(db.getFirestore(), "likedList"));
+        const unsub = db.onSnapshot(q, (querySnapshot) => {
+            const data = querySnapshot.docs.map((doc) => {
+                return doc.data();
+            });
+            setListFavourite(data as any);
+        });
         findLatestSong();
+        return () => unsub();
     }, []);
 
     React.useEffect(() => {
         storeData();
-        getRelatedTrack();
+        // getRelatedTrack();
     }, [currentSong]);
 
     React.useEffect(() => {
@@ -111,6 +127,8 @@ const SongProvider: FC<ISongProviderProp> = ({ children }) => {
                 setNextSong,
                 isLooping,
                 setIsLooping,
+                setListFavourite,
+                ListFavourite,
             }}
         >
             {children}
@@ -126,6 +144,8 @@ export const useSongContext = (): ISongContext => {
         setNextSong,
         isLooping,
         setIsLooping,
+        setListFavourite,
+        ListFavourite,
     } = useContext(SongContext);
     return {
         currentSong,
@@ -134,6 +154,8 @@ export const useSongContext = (): ISongContext => {
         setNextSong,
         isLooping,
         setIsLooping,
+        setListFavourite,
+        ListFavourite,
     };
 };
 export default SongProvider;

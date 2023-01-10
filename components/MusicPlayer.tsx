@@ -8,6 +8,8 @@ import { useSelector } from "react-redux";
 
 import { RootState } from "../redux/store";
 import useSound from "../hooks/useSound";
+import { Song } from "../types/song";
+import { db } from "../firebase";
 
 interface IMusciPayerProp {
     navigation: navigation<"HomeTab">;
@@ -18,11 +20,34 @@ const MusicPlayer: React.FC<IMusciPayerProp> = ({ navigation }) => {
 
     const musicState = useSelector((state: RootState) => state.song.musicState);
 
-    const { currentSong } = useSongContext();
+    const { currentSong, ListFavourite } = useSongContext();
 
     const [joeColor, setJoeColor] = useState("ccc");
 
-    const { sound, onPlayPause, playSound } = useSound();
+    const { sound, onPlayPause } = useSound();
+
+    const [isLiked, setIsLiked] = useState(
+        ListFavourite.some((s: any) => s.key == currentSong.key)
+    );
+
+    const addToLikedList = async (likedSong: Song) => {
+        setIsLiked(!isLiked);
+        try {
+            const docRef = db.doc(
+                db.getFirestore(),
+                "likedList",
+                currentSong.key
+            );
+            const docSnap = await db.getDoc(docRef);
+            if (docSnap.exists()) {
+                await db.deleteDoc(docRef);
+            } else {
+                await db.setDoc(docRef, likedSong);
+            }
+        } catch (err: any) {
+            console.log(err.message);
+        }
+    };
 
     const getProgress = () => {
         if (
@@ -39,6 +64,10 @@ const MusicPlayer: React.FC<IMusciPayerProp> = ({ navigation }) => {
     React.useEffect(() => {
         setJoeColor(currentSong?.images?.joecolor?.split(":")?.[5]);
     }, [currentSong]);
+
+    React.useEffect(() => {
+        setIsLiked(ListFavourite.some((s: any) => s.key == currentSong.key));
+    }, [currentSong, ListFavourite]);
 
     return (
         <TouchableOpacity
@@ -101,12 +130,15 @@ const MusicPlayer: React.FC<IMusciPayerProp> = ({ navigation }) => {
                         justifyContent: "space-between",
                     }}
                 >
-                    <AntDesign
-                        name="hearto"
-                        size={24}
-                        color="#fff"
-                        style={{ marginRight: 15 }}
-                    />
+                    <TouchableOpacity>
+                        <AntDesign
+                            onPress={() => addToLikedList(currentSong)}
+                            name={isLiked ? "heart" : "hearto"}
+                            size={24}
+                            color={isLiked ? "#13d670" : "#fff"}
+                            style={{ marginRight: 15 }}
+                        />
+                    </TouchableOpacity>
                     <TouchableOpacity onPress={() => onPlayPause()}>
                         <Entypo
                             name={

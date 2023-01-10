@@ -19,8 +19,9 @@ import axios, { AxiosError, AxiosResponse } from "axios";
 import { RootState } from "../redux/store";
 import { useSelector } from "react-redux";
 import { useSongContext } from "../context/SongProvider";
-
+import { firebaseAuth, db } from "../firebase/index";
 import useSound from "../hooks/useSound";
+import { Song } from "../types/song";
 
 const { width: SCREEN_WITH } = Dimensions.get("screen");
 
@@ -34,7 +35,12 @@ const MusicPlayerScreens = () => {
         nextSong,
         isLooping,
         setIsLooping,
+        ListFavourite,
     } = useSongContext();
+
+    const [isLiked, setIsLiked] = useState(
+        ListFavourite.some((s: any) => s.key == song.key)
+    );
 
     const [songDetail, setSongDetail] = useState<ISongDetail>(
         {} as ISongDetail
@@ -49,6 +55,7 @@ const MusicPlayerScreens = () => {
             "X-RapidAPI-Host": "shazam-core.p.rapidapi.com",
         },
     };
+
     React.useEffect(() => {
         // axios
         //     .request(options)
@@ -82,11 +89,27 @@ const MusicPlayerScreens = () => {
             }
         }
     };
-
+    const addToLikedList = async (likedSong: Song) => {
+        setIsLiked(!isLiked);
+        try {
+            const docRef = db.doc(db.getFirestore(), "likedList", song.key);
+            const docSnap = await db.getDoc(docRef);
+            if (docSnap.exists()) {
+                await db.deleteDoc(docRef);
+            } else {
+                await db.setDoc(docRef, likedSong);
+            }
+        } catch (err: any) {
+            console.log(err.message);
+        }
+    };
     return (
         <LinearGradient
-            style={{ minWidth: "100%", minHeight: "100%", flex: 1 }}
-            colors={[`#${song?.images.joecolor?.split(":")[5]}CE`, "#000000ce"]}
+            style={{ flex: 1 }}
+            colors={[
+                `#${song?.images?.joecolor?.split(":")[5]}CE`,
+                "#000000ce",
+            ]}
             start={{ x: 0.5, y: 0 }}
             end={{ x: 0.5, y: 1 }}
         >
@@ -115,10 +138,10 @@ const MusicPlayerScreens = () => {
                 <View
                     style={{
                         flexDirection: "row",
-                        paddingTop: 80,
+                        paddingTop: 70,
                         justifyContent: "space-between",
-                        marginHorizontal: 40,
                         alignItems: "center",
+                        marginHorizontal: 30,
                     }}
                 >
                     <View>
@@ -141,23 +164,26 @@ const MusicPlayerScreens = () => {
                             {song?.subtitle}
                         </Text>
                     </View>
-                    <AntDesign
-                        name="hearto"
-                        size={24}
-                        color="#fff"
-                        style={{ marginRight: 15 }}
-                    />
+                    <TouchableOpacity onPress={() => addToLikedList(song)}>
+                        <AntDesign
+                            name={isLiked ? "heart" : "hearto"}
+                            size={24}
+                            color={isLiked ? "#13d670" : "#fff"}
+                            style={{ marginRight: 5 }}
+                        />
+                    </TouchableOpacity>
                 </View>
                 <View style={{ alignItems: "center", marginTop: 15 }}>
                     <Slider
                         style={{
                             width: SCREEN_WITH - 40,
-                            height: 40,
                         }}
                         minimumValue={0}
                         value={
-                            (musicState.position / musicState.duration) * 100 ||
-                            0
+                            Math.floor(
+                                (musicState.position / musicState.duration) *
+                                    100
+                            ) || 0
                         }
                         maximumValue={100}
                         thumbTintColor="#ffffff"
@@ -171,18 +197,25 @@ const MusicPlayerScreens = () => {
                         style={{
                             flexDirection: "row",
                             justifyContent: "space-between",
-                            width: SCREEN_WITH - 60,
+                            width: SCREEN_WITH - 70,
                         }}
                     >
                         <Text
                             style={{
                                 color: "rgba(255,255,255,0.5)",
                                 fontWeight: "500",
+                                fontSize: 12,
                             }}
                         >
                             {min}:{second}
                         </Text>
-                        <Text style={{ color: "#fff", fontWeight: "500" }}>
+                        <Text
+                            style={{
+                                color: "#fff",
+                                fontWeight: "500",
+                                fontSize: 12,
+                            }}
+                        >
                             {totalTime}
                         </Text>
                     </View>
@@ -192,6 +225,7 @@ const MusicPlayerScreens = () => {
                             justifyContent: "space-between",
                             width: SCREEN_WITH - 40,
                             alignItems: "center",
+                            marginTop: 5,
                         }}
                     >
                         <TouchableOpacity style={styles.trackBtn}>
@@ -247,7 +281,7 @@ const MusicPlayerScreens = () => {
                         nestedScrollEnabled
                         contentContainerStyle={{
                             backgroundColor: `#${
-                                song?.images.joecolor?.split(":")[5]
+                                song?.images?.joecolor?.split(":")[5]
                             }`,
                             marginHorizontal: 20,
                             borderRadius: 10,

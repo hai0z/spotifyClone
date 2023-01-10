@@ -12,7 +12,8 @@ import React, { useState, useLayoutEffect } from "react";
 import PlayListCard from "../components/PlayListCard";
 import Header from "../components/Header";
 import { navigation } from "../types/RootStackParamList";
-
+import { useSongContext } from "../context/SongProvider";
+import { db } from "../firebase";
 const options = {
     method: "GET",
     url: "https://shazam-core.p.rapidapi.com/v1/charts/world",
@@ -37,31 +38,45 @@ export default function App({
 }: {
     navigation: navigation<"HomeTab">;
 }) {
-    const [playList, setPlayList] = useState([] as any);
-    const [track, setTrack] = useState([] as any);
+    const [playList, setPlayList] = useState([]);
+    const [track, setTrack] = useState([]);
     const [loading, setLoading] = useState<boolean>(true);
 
-    // // useLayoutEffect(() => {
-    // //     setLoading(true);
-    // //     axios
-    // //         .request(options)
-    // //         .then(function (response: AxiosResponse) {
-    // //             setPlayList(response.data.slice(0, 10));
-    // //             setLoading(false);
-    // //         })
-    // //         .catch(function (error: AxiosError) {
-    // //             console.error(error);
-    // //         });
-    // //     axios
-    // //         .request(options2)
-    // //         .then(function (response: AxiosResponse) {
-    // //             setTrack(response.data.slice(0, 10));
-    // //             setLoading(false);
-    // //         })
-    // //         .catch(function (error: AxiosError) {
-    // //             console.error(error);
-    // //         });
-    // }, []);
+    useLayoutEffect(() => {
+        //     setLoading(true);
+        //     axios
+        //         .request(options)
+        //         .then(function (response: AxiosResponse) {
+        //             setPlayList(response.data.slice(0, 10));
+        //             setLoading(false);
+        //         })
+        //         .catch(function (error: AxiosError) {
+        //             console.error(error);
+        //         });
+        //     axios
+        //         .request(options2)
+        //         .then(function (response: AxiosResponse) {
+        //             setTrack(response.data.slice(0, 10));
+        //             setLoading(false);
+        //         })
+        //         .catch(function (error: AxiosError) {
+        //             console.error(error);
+        //         });
+        const getData = async () => {
+            const q = db.query(db.collection(db.getFirestore(), "likedList"));
+            const arr: any[] = [];
+            const querySnapshot = await db.getDocs(q);
+            querySnapshot.forEach((doc) => {
+                arr.push(doc.data());
+            });
+            setTrack(arr.sort(() => 0.5 - Math.random()).slice(0, 10) as any);
+            setPlayList(
+                arr.sort(() => 0.5 - Math.random()).slice(0, 10) as any
+            );
+            setLoading(false);
+        };
+        getData();
+    }, []);
 
     return (
         <View style={styles.container}>
@@ -70,8 +85,8 @@ export default function App({
                     paddingBottom: 100,
                 }}
             >
-                <StatusBar style="light" backgroundColor="#121212" />
                 <Header />
+                <StatusBar style="light" />
                 {loading ? (
                     <View
                         style={{
@@ -196,7 +211,7 @@ export default function App({
                                     marginLeft: 15,
                                 }}
                             >
-                                Hãy thử cách khác
+                                Dành cho bạn
                             </Text>
                             <ScrollView
                                 horizontal
@@ -222,6 +237,6 @@ const styles = StyleSheet.create({
     container: {
         backgroundColor: "#121212",
         flex: 1,
-        marginTop: 30,
+        paddingTop: 50,
     },
 });

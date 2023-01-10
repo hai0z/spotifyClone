@@ -5,6 +5,7 @@ import {
     ScrollView,
     Image,
     TouchableOpacity,
+    KeyboardAvoidingView,
 } from "react-native";
 import React, { useCallback, useEffect, useState } from "react";
 import useDebounce from "../hooks/useDebounce";
@@ -117,11 +118,12 @@ const Search = () => {
         if (searchDebounce) fethSearch();
     }, [searchDebounce]);
     return (
-        <View
+        <KeyboardAvoidingView
+            behavior="height"
             style={{
                 flex: 1,
                 backgroundColor: "#121212",
-                marginTop: 30,
+                paddingTop: 30,
             }}
         >
             <View style={{ backgroundColor: "#535353", position: "relative" }}>
@@ -156,7 +158,7 @@ const Search = () => {
                     />
                 ))}
             </ScrollView>
-        </View>
+        </KeyboardAvoidingView>
     );
 };
 

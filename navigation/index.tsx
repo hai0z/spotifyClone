@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Text, View } from "react-native";
+import { View, KeyboardAvoidingView } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import HomeScreen from "../screens/HomeScreen";
@@ -12,32 +12,41 @@ import MusicPlayerScreens from "../screens/MusicPlayerScreens";
 import AlbumAndArtist from "../screens/AlbumAndArtist";
 import MusicPlayer from "../components/MusicPlayer";
 import Search from "../screens/Search";
+import LibraryScreeens from "../screens/LibraryScreeens";
+import ListFavourite from "../screens/ListFavourite";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const Tab = createBottomTabNavigator();
 
-function SettingsScreen() {
-    return (
-        <View
-            style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-        >
-            <Text>Settings!</Text>
-        </View>
-    );
-}
 const HomeTabScreen = () => {
     return (
         <Stack.Navigator
             screenOptions={{ headerShown: false }}
             initialRouteName="HomeTab"
         >
-            <Stack.Screen name={"HomeTab"} component={HomeScreen} />
-            <Stack.Screen name={"Album"} component={AlbumAndArtist} />
+            <Stack.Screen name="HomeTab" component={HomeScreen} />
+            <Stack.Screen name="Album" component={AlbumAndArtist} />
         </Stack.Navigator>
     );
 };
-
+const LibraryStack = () => {
+    return (
+        <Stack.Navigator
+            screenOptions={{ headerShown: false }}
+            initialRouteName="Lib"
+        >
+            <Stack.Screen name="Lib" component={LibraryScreeens} />
+            <Stack.Screen
+                name="ListFavourite"
+                component={ListFavourite}
+                options={{
+                    animation: "none",
+                }}
+            />
+        </Stack.Navigator>
+    );
+};
 const HomeTab = () => {
     return (
         <Tab.Navigator
@@ -53,7 +62,7 @@ const HomeTab = () => {
                                 color={color}
                             />
                         );
-                    } else if (route.name === "Lib") {
+                    } else if (route.name === "Library") {
                         return (
                             <Ionicons
                                 name="library-outline"
@@ -91,8 +100,8 @@ const HomeTab = () => {
                 }}
             />
             <Tab.Screen
-                name="Lib"
-                component={SettingsScreen}
+                name="Library"
+                component={LibraryStack}
                 options={{
                     title: "Thư viện",
                 }}
