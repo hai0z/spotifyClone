@@ -2,15 +2,18 @@ import React, { FC, useContext, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Song } from "../types/song";
 import axios from "axios";
+import { useSelector } from "react-redux";
+import { setCurrentSong } from "../redux/songSlice";
 export const SongContext = React.createContext({} as ISongContext);
+
 import { db } from "../firebase";
+import { RootState } from "../redux/store";
+import { useDispatch } from "react-redux";
 interface ISongProviderProp {
     children: React.ReactNode;
 }
 
 interface ISongContext {
-    currentSong: Song & Partial<any>;
-    setCurrentSong: React.Dispatch<React.SetStateAction<Song & any>>;
     nextSong: any;
     setNextSong: any;
     isLooping: any;
@@ -19,7 +22,11 @@ interface ISongContext {
     setListFavourite: any;
 }
 const SongProvider: FC<ISongProviderProp> = ({ children }) => {
-    const [currentSong, setCurrentSong] = useState<Song>({} as Song);
+    const dispatch = useDispatch();
+
+    const currentSong = useSelector(
+        (state: RootState) => state.song.currentSong
+    );
 
     const [nextSong, setNextSong] = useState<Song>({} as Song);
 
@@ -47,9 +54,9 @@ const SongProvider: FC<ISongProviderProp> = ({ children }) => {
     const findLatestSong = async () => {
         const song = await AsyncStorage.getItem("song");
         if (song != null) {
-            setCurrentSong(JSON.parse(song));
+            dispatch(setCurrentSong(JSON.parse(song)));
         } else {
-            setCurrentSong({} as Song);
+            dispatch(setCurrentSong({} as Song));
         }
     };
     const getRelatedTrack = async () => {
@@ -92,7 +99,7 @@ const SongProvider: FC<ISongProviderProp> = ({ children }) => {
             const data = querySnapshot.docs.map((doc) => {
                 return doc.data();
             });
-            setListFavourite(data as any);
+            setListFavourite(data as Song[]);
         });
         findLatestSong();
         return () => unsub();
@@ -138,8 +145,6 @@ const SongProvider: FC<ISongProviderProp> = ({ children }) => {
     return (
         <SongContext.Provider
             value={{
-                currentSong,
-                setCurrentSong,
                 nextSong,
                 setNextSong,
                 isLooping,
@@ -155,8 +160,6 @@ const SongProvider: FC<ISongProviderProp> = ({ children }) => {
 
 export const useSongContext = (): ISongContext => {
     const {
-        currentSong,
-        setCurrentSong,
         nextSong,
         setNextSong,
         isLooping,
@@ -165,8 +168,6 @@ export const useSongContext = (): ISongContext => {
         ListFavourite,
     } = useContext(SongContext);
     return {
-        currentSong,
-        setCurrentSong,
         nextSong,
         setNextSong,
         isLooping,

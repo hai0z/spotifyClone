@@ -20,7 +20,11 @@ const MusicPlayer: React.FC<IMusciPayerProp> = ({ navigation }) => {
 
     const musicState = useSelector((state: RootState) => state.song.musicState);
 
-    const { currentSong, ListFavourite } = useSongContext();
+    const currentSong = useSelector(
+        (state: RootState) => state.song.currentSong
+    );
+
+    const { ListFavourite } = useSongContext();
 
     const [joeColor, setJoeColor] = useState("ccc");
 
@@ -67,7 +71,7 @@ const MusicPlayer: React.FC<IMusciPayerProp> = ({ navigation }) => {
 
     React.useEffect(() => {
         setIsLiked(ListFavourite.some((s: any) => s.key == currentSong.key));
-    }, [currentSong, ListFavourite]);
+    }, [currentSong.key, ListFavourite]);
 
     return (
         <TouchableOpacity

@@ -4,9 +4,8 @@ import { Audio, AVPlaybackStatusSuccess } from "expo-av";
 import { Sound } from "expo-av/build/Audio";
 import { useSongContext } from "../context/SongProvider";
 import { RootState } from "../redux/store";
-import { updateSongState } from "../redux/songSlice";
+import { setCurrentSong, updateSongState } from "../redux/songSlice";
 import React, { createContext } from "react";
-
 interface IPlayerContext {
     sound: any;
     setSound: any;
@@ -23,14 +22,17 @@ export const PlayerContext = createContext<IPlayerContext>(
 function PlayerProvider({ children }: { children: React.ReactNode }) {
     const [sound, setSound] = React.useState<Sound | null>(null);
 
-    const { currentSong, setCurrentSong, nextSong, isLooping } =
-        useSongContext();
+    const { nextSong, isLooping } = useSongContext();
     const dispatch = useDispatch();
+
     const musicState = useSelector((state: RootState) => state.song.musicState);
+    const currentSong = useSelector(
+        (state: RootState) => state.song.currentSong
+    );
 
     const onPlaybackStatusUpdate = (status: AVPlaybackStatusSuccess) => {
         if (status.didJustFinish && !status.isLooping) {
-            setCurrentSong(nextSong);
+            dispatch(setCurrentSong(nextSong));
         }
         if (status.isPlaying == null) {
             dispatch(

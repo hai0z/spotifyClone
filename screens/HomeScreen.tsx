@@ -55,7 +55,6 @@ export default function App({
                 songs.push(doc.data() as Song);
             });
             setPlayHistory(songs.slice(0, 6));
-            console.log(songs[0]);
         });
 
         const getData = async () => {

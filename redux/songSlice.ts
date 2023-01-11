@@ -1,3 +1,4 @@
+import { Song } from "./../types/song";
 import { createSlice } from "@reduxjs/toolkit";
 
 export interface ISongSlice {
@@ -14,6 +15,7 @@ const songSlice = createSlice({
             position: 0,
             duration: 0,
         } as ISongSlice,
+        currentSong: {} as Song & any,
     },
     reducers: {
         updateSongState: (state, action) => {
@@ -29,7 +31,11 @@ const songSlice = createSlice({
                 isPlaying: action.payload,
             };
         },
+        setCurrentSong: (state, action) => {
+            state.currentSong = action.payload;
+        },
     },
 });
-export const { updateSongState, setPlaying } = songSlice.actions;
+export const { updateSongState, setPlaying, setCurrentSong } =
+    songSlice.actions;
 export default songSlice.reducer;

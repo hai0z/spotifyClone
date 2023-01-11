@@ -19,25 +19,25 @@ import axios, { AxiosError, AxiosResponse } from "axios";
 import { RootState } from "../redux/store";
 import { useSelector } from "react-redux";
 import { useSongContext } from "../context/SongProvider";
-import { firebaseAuth, db } from "../firebase/index";
+import { db } from "../firebase/index";
 import useSound from "../hooks/useSound";
 import { Song } from "../types/song";
+import { useDispatch } from "react-redux";
+import { setCurrentSong } from "../redux/songSlice";
 
 const { width: SCREEN_WITH } = Dimensions.get("screen");
 
 interface ISongDetail {
     sections: any;
 }
-const MusicPlayerScreens = () => {
-    const {
-        currentSong: song,
-        setCurrentSong,
-        nextSong,
-        isLooping,
-        setIsLooping,
-        ListFavourite,
-    } = useSongContext();
 
+const MusicPlayerScreens = () => {
+    const { nextSong, isLooping, setIsLooping, ListFavourite } =
+        useSongContext();
+
+    const dispatch = useDispatch();
+
+    const song = useSelector((state: RootState) => state.song.currentSong);
     const [isLiked, setIsLiked] = useState(
         ListFavourite.some((s: any) => s.key == song.key)
     );
@@ -65,7 +65,8 @@ const MusicPlayerScreens = () => {
         //     .catch(function (error: AxiosError) {
         //         console.error(error.message);
         //     });
-    }, [song]);
+    }, [song.key]);
+
     const musicState = useSelector((state: RootState) => state.song.musicState);
     const { onPlayPause, playFromPosition } = useSound();
 
@@ -103,7 +104,7 @@ const MusicPlayerScreens = () => {
             console.log(err.message);
         }
     };
-    React.useEffect(() => {
+    useEffect(() => {
         setIsLiked(ListFavourite.some((s: any) => s.key == song.key));
     }, [song, ListFavourite]);
 
@@ -259,7 +260,7 @@ const MusicPlayerScreens = () => {
                             />
                         </TouchableOpacity>
                         <TouchableOpacity
-                            onPress={() => setCurrentSong(nextSong)}
+                            onPress={() => dispatch(setCurrentSong(nextSong))}
                             style={styles.trackBtn}
                         >
                             <AntDesign

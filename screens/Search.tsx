@@ -13,7 +13,7 @@ import axios, { AxiosResponse } from "axios";
 import { Song } from "../types/song";
 import { useSongContext } from "../context/SongProvider";
 import { useDispatch } from "react-redux";
-import { setPlaying } from "../redux/songSlice";
+import { setCurrentSong, setPlaying } from "../redux/songSlice";
 
 const SearchResult = ({
     data,
@@ -84,10 +84,9 @@ const Search = () => {
             "X-RapidAPI-Host": "shazam-core.p.rapidapi.com",
         },
     };
-    const { setCurrentSong } = useSongContext();
 
     const onPress = useCallback((song: Song) => {
-        setCurrentSong(song);
+        dispatch(setCurrentSong(song));
         dispatch(setPlaying(true));
     }, []);
 

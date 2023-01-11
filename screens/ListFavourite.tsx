@@ -11,9 +11,12 @@ import { Animated } from "react-native";
 import { useSongContext } from "../context/SongProvider";
 import { Song } from "../types/song";
 import { useDispatch } from "react-redux";
-import { setPlaying } from "../redux/songSlice";
+import { setCurrentSong, setPlaying } from "../redux/songSlice";
 import { LinearGradient } from "expo-linear-gradient";
 import stringToSlug from "../utils/removeSign";
+import { AntDesign } from "@expo/vector-icons";
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/store";
 
 const { width: SCREEN_WITH } = Dimensions.get("screen");
 const AlbumAndArtist = () => {
@@ -21,15 +24,18 @@ const AlbumAndArtist = () => {
 
     const scrollY = React.useRef(new Animated.Value(0)).current;
 
-    const {
-        setCurrentSong,
-        currentSong,
-        ListFavourite: data,
-    } = useSongContext();
+    const currentSong = useSelector(
+        (state: RootState) => state.song.currentSong
+    );
+    const { ListFavourite: data } = useSongContext();
+
+    const inputRef = React.createRef<TextInput>();
 
     const [searchValue, setSearchValue] = useState("");
 
     const [searchResult, setSearchResult] = useState(data);
+
+    const [isSearching, setIsSearching] = useState(false);
 
     const inputRange = [-150, 0, 120, 140];
     const scale = scrollY.interpolate({
@@ -70,16 +76,27 @@ const AlbumAndArtist = () => {
                 position: "relative",
             }}
         >
-            <LinearGradient
-                colors={["midnightblue", "midnightblue"]}
-                start={{ x: 0.5, y: 0 }}
-                end={{ x: 0.5, y: 1 }}
+            <View
                 style={{
                     paddingTop: 50,
                     paddingHorizontal: 15,
                     paddingBottom: 20,
+                    flexDirection: "row",
+                    alignItems: "center",
+                    backgroundColor: "indigo",
                 }}
             >
+                {isSearching && (
+                    <TouchableOpacity
+                        onPress={() => {
+                            setIsSearching(false);
+                            setSearchValue("");
+                            inputRef.current?.blur();
+                        }}
+                    >
+                        <AntDesign name="arrowleft" color={"#fff"} size={24} />
+                    </TouchableOpacity>
+                )}
                 <TextInput
                     placeholder="Tìm bài hát"
                     placeholderTextColor={"#fff"}
@@ -88,11 +105,18 @@ const AlbumAndArtist = () => {
                         padding: 5,
                         color: "#fff",
                         borderRadius: 4,
+                        width: isSearching ? "80%" : "100%",
+                        marginLeft: isSearching ? 20 : 0,
+                    }}
+                    onFocus={() => {
+                        setIsSearching(true);
                     }}
                     value={searchValue}
                     onChangeText={(e) => onSearch(e)}
+                    ref={inputRef}
                 />
-            </LinearGradient>
+            </View>
+
             <Animated.ScrollView
                 bounces={false}
                 contentContainerStyle={{
@@ -106,7 +130,7 @@ const AlbumAndArtist = () => {
                 )}
             >
                 <LinearGradient
-                    colors={["midnightblue", "#121212"]}
+                    colors={["indigo", "#121212"]}
                     start={{ x: 0.5, y: 0 }}
                     end={{ x: 0.5, y: 1 }}
                     style={{ zIndex: 5, width: SCREEN_WITH }}
@@ -118,26 +142,29 @@ const AlbumAndArtist = () => {
                             transform: [{ scale }],
                         }}
                     >
-                        <Animated.Image
-                            source={{
-                                uri: data.some(
-                                    (song: Song) => song.key == currentSong.key
-                                )
-                                    ? currentSong.images.coverart
-                                    : data[
-                                          Math.floor(
-                                              Math.random() * data.length
-                                          )
-                                      ].images.coverart,
-                            }}
-                            style={{
-                                width: 300,
-                                height: 300,
-                                resizeMode: "cover",
-                                marginBottom: 20,
-                                opacity,
-                            }}
-                        />
+                        {!isSearching && (
+                            <Animated.Image
+                                source={{
+                                    uri: data.some(
+                                        (song: Song) =>
+                                            song.key == currentSong.key
+                                    )
+                                        ? currentSong.images.coverart
+                                        : data[
+                                              Math.floor(
+                                                  Math.random() * data.length
+                                              )
+                                          ].images.coverart,
+                                }}
+                                style={{
+                                    width: 300,
+                                    height: 300,
+                                    resizeMode: "cover",
+                                    marginBottom: 20,
+                                    opacity,
+                                }}
+                            />
+                        )}
                     </Animated.View>
                 </LinearGradient>
                 <Text
@@ -167,9 +194,10 @@ const AlbumAndArtist = () => {
                             alignItems: "center",
                             paddingLeft: 15,
                             paddingTop: 15,
+                            elevation: 100,
                         }}
                         onPress={() => {
-                            setCurrentSong(song);
+                            dispatch(setCurrentSong(song));
                             dispatch(setPlaying(true));
                         }}
                         key={song.key}

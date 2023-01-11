@@ -7,13 +7,11 @@ import {
 } from "react-native";
 import React from "react";
 import { Song } from "../types/song";
-import { useSongContext } from "../context/SongProvider";
 import { useDispatch } from "react-redux";
-import { setPlaying } from "../redux/songSlice";
+import { setCurrentSong, setPlaying } from "../redux/songSlice";
 const { width: SCREEN_WITH } = Dimensions.get("screen");
 
 const MiniPlayCard = ({ song }: { song: Song }) => {
-    const { setCurrentSong } = useSongContext();
     const dispatch = useDispatch();
 
     return (
@@ -21,8 +19,8 @@ const MiniPlayCard = ({ song }: { song: Song }) => {
             style={styles.container}
             activeOpacity={0.9}
             onPress={() => {
+                dispatch(setCurrentSong(song));
                 dispatch(setPlaying(true));
-                setCurrentSong(song);
             }}
         >
             <Image

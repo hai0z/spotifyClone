@@ -1,10 +1,9 @@
 import { Text, View, Image, TouchableOpacity } from "react-native";
 import React from "react";
-import { useSongContext } from "../context/SongProvider";
 import { navigation } from "../types/RootStackParamList";
 import { Song } from "../types/song";
 import { useDispatch } from "react-redux";
-import { setPlaying } from "../redux/songSlice";
+import { setCurrentSong, setPlaying } from "../redux/songSlice";
 type PlayList = {
     title: string;
     images: {
@@ -26,7 +25,6 @@ const PlayListCard: React.FC<IPlayListProp> = ({
     type,
     navigation,
 }) => {
-    const { setCurrentSong } = useSongContext();
     const dispatch = useDispatch();
     return (
         <TouchableOpacity
@@ -35,7 +33,7 @@ const PlayListCard: React.FC<IPlayListProp> = ({
                     return;
                 } else {
                     dispatch(setPlaying(true));
-                    setCurrentSong(playList);
+                    dispatch(setCurrentSong(playList));
                 }
             }}
             activeOpacity={0.7}

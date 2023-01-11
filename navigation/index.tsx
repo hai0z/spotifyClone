@@ -47,7 +47,7 @@ const LibraryStack = () => {
         </Stack.Navigator>
     );
 };
-const HomeTab = () => {
+const HomeTab = ({ navigation }: { navigation: navigation<"HomeTab"> }) => {
     return (
         <Tab.Navigator
             screenOptions={({ route }) => ({
@@ -75,11 +75,12 @@ const HomeTab = () => {
                 headerShown: false,
                 tabBarStyle: {
                     position: "absolute",
-                    backgroundColor: "#121212ce",
+                    backgroundColor: "rgba(0,0,0,0.8)",
                     borderTopWidth: 0,
                     bottom: 0,
                     right: 0,
                     height: 50,
+                    width: "100%",
                 },
                 tabBarActiveTintColor: "#fff",
                 tabBarInactiveTintColor: "gray",
@@ -105,6 +106,9 @@ const HomeTab = () => {
                 options={{
                     title: "Thư viện",
                 }}
+                listeners={{
+                    tabPress: () => navigation.replace("Lib"),
+                }}
             />
         </Tab.Navigator>
     );
@@ -116,7 +120,7 @@ const HomeTabWrapper = ({
 }) => {
     return (
         <View style={{ flex: 1 }}>
-            <HomeTab />
+            <HomeTab navigation={navigation} />
             <MusicPlayer navigation={navigation} />
         </View>
     );
