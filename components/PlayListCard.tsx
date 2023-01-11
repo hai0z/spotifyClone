@@ -32,7 +32,7 @@ const PlayListCard: React.FC<IPlayListProp> = ({
         <TouchableOpacity
             onPress={() => {
                 if (type === "artist") {
-                    navigation?.navigate("Album");
+                    return;
                 } else {
                     dispatch(setPlaying(true));
                     setCurrentSong(playList);
