@@ -103,6 +103,10 @@ const MusicPlayerScreens = () => {
             console.log(err.message);
         }
     };
+    React.useEffect(() => {
+        setIsLiked(ListFavourite.some((s: any) => s.key == song.key));
+    }, [song, ListFavourite]);
+
     return (
         <LinearGradient
             style={{ flex: 1 }}
@@ -180,10 +184,8 @@ const MusicPlayerScreens = () => {
                         }}
                         minimumValue={0}
                         value={
-                            Math.floor(
-                                (musicState.position / musicState.duration) *
-                                    100
-                            ) || 0
+                            (musicState.position / musicState.duration) * 100 ||
+                            0
                         }
                         maximumValue={100}
                         thumbTintColor="#ffffff"
