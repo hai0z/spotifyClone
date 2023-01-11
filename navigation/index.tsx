@@ -75,7 +75,7 @@ const HomeTab = () => {
                 headerShown: false,
                 tabBarStyle: {
                     position: "absolute",
-                    backgroundColor: "#121212CE",
+                    backgroundColor: "#121212ce",
                     borderTopWidth: 0,
                     bottom: 0,
                     right: 0,
