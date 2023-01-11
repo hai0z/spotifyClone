@@ -62,7 +62,7 @@ function PlayerProvider({ children }: { children: React.ReactNode }) {
                 {
                     shouldPlay: musicState.isPlaying,
                     isLooping,
-                    progressUpdateIntervalMillis: 200,
+                    progressUpdateIntervalMillis: 150,
                 },
                 onPlaybackStatusUpdate as any
             );
@@ -96,7 +96,7 @@ function PlayerProvider({ children }: { children: React.ReactNode }) {
     }
     React.useEffect(() => {
         playSound();
-    }, [currentSong]);
+    }, [currentSong.key]);
 
     React.useEffect(() => {
         return sound
