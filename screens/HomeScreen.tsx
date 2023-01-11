@@ -4,239 +4,198 @@ import {
     View,
     StyleSheet,
     ScrollView,
-    ActivityIndicator,
-    Dimensions,
+    RefreshControl,
 } from "react-native";
-import axios, { AxiosError, AxiosResponse } from "axios";
 import React, { useState, useLayoutEffect } from "react";
 import PlayListCard from "../components/PlayListCard";
 import Header from "../components/Header";
 import { navigation } from "../types/RootStackParamList";
-import { useSongContext } from "../context/SongProvider";
 import { db } from "../firebase";
-const options = {
-    method: "GET",
-    url: "https://shazam-core.p.rapidapi.com/v1/charts/world",
-    headers: {
-        "X-RapidAPI-Key": "25afd00c31msh690f22c6a3516c0p1799adjsn0eade0e56e0b",
-        "X-RapidAPI-Host": "shazam-core.p.rapidapi.com",
-    },
-};
-
-const options2 = {
-    method: "GET",
-    url: "https://shazam-core.p.rapidapi.com/v1/tracks/related",
-    params: { track_id: "554591360" },
-    headers: {
-        "X-RapidAPI-Key": "25afd00c31msh690f22c6a3516c0p1799adjsn0eade0e56e0b",
-        "X-RapidAPI-Host": "shazam-core.p.rapidapi.com",
-    },
-};
+import MiniPlayCard from "../components/MiniPlayCard";
+import { Song } from "../types/song";
 
 export default function App({
     navigation,
 }: {
     navigation: navigation<"HomeTab">;
 }) {
-    const [playList, setPlayList] = useState([]);
-    const [track, setTrack] = useState([]);
-    const [loading, setLoading] = useState<boolean>(true);
+    const [playList, setPlayList] = useState<Song[]>([]);
 
-    useLayoutEffect(() => {
-        //     setLoading(true);
-        //     axios
-        //         .request(options)
-        //         .then(function (response: AxiosResponse) {
-        //             setPlayList(response.data.slice(0, 10));
-        //             setLoading(false);
-        //         })
-        //         .catch(function (error: AxiosError) {
-        //             console.error(error);
-        //         });
-        //     axios
-        //         .request(options2)
-        //         .then(function (response: AxiosResponse) {
-        //             setTrack(response.data.slice(0, 10));
-        //             setLoading(false);
-        //         })
-        //         .catch(function (error: AxiosError) {
-        //             console.error(error);
-        //         });
-        const getData = async () => {
-            const q = db.query(db.collection(db.getFirestore(), "likedList"));
-            const arr: any[] = [];
-            const querySnapshot = await db.getDocs(q);
-            querySnapshot.forEach((doc) => {
-                arr.push(doc.data());
-            });
-            setTrack(arr.sort(() => 0.5 - Math.random()).slice(0, 10) as any);
-            setPlayList(
-                arr.sort(() => 0.5 - Math.random()).slice(0, 10) as any
-            );
-            setLoading(false);
-        };
+    const [track, setTrack] = useState<Song[]>([]);
+
+    const [playHistory, setPlayHistory] = useState<Song[]>([]);
+
+    const [refreshing, setRefreshing] = React.useState(false);
+
+    const onRefresh = React.useCallback(() => {
+        setRefreshing(true);
         getData();
     }, []);
 
+    const getData = async () => {
+        const q = db.query(db.collection(db.getFirestore(), "likedList"));
+        const track: Song[] = [];
+        const querySnapshot = await db.getDocs(q);
+        querySnapshot.forEach((doc) => {
+            track.push(doc.data() as Song);
+        });
+        setTrack(track.sort(() => 0.5 - Math.random()).slice(0, 10));
+        setPlayList(track.sort(() => 0.5 - Math.random()).slice(0, 10));
+        setRefreshing(false);
+    };
+    useLayoutEffect(() => {
+        const q = db.query(
+            db.collection(db.getFirestore(), "playHistory"),
+            db.orderBy("time", "desc")
+        );
+        const unsubscribe = db.onSnapshot(q, (querySnapshot) => {
+            const songs: Song[] = [];
+            querySnapshot.docs.map((doc) => {
+                delete doc.data().time;
+                songs.push(doc.data() as Song);
+            });
+            setPlayHistory(songs.slice(0, 6));
+            console.log(songs[0]);
+        });
+
+        const getData = async () => {
+            const q = db.query(db.collection(db.getFirestore(), "likedList"));
+            const track: Song[] = [];
+            const querySnapshot = await db.getDocs(q);
+            querySnapshot.forEach((doc) => {
+                track.push(doc.data() as Song);
+            });
+            setTrack(track.sort(() => 0.5 - Math.random()).slice(0, 10));
+            setPlayList(track.sort(() => 0.5 - Math.random()).slice(0, 10));
+        };
+        getData();
+        return () => unsubscribe();
+    }, []);
+
     return (
-        <View style={styles.container}>
+        <ScrollView
+            style={styles.container}
+            refreshControl={
+                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }
+        >
+            <Header />
             <ScrollView
                 contentContainerStyle={{
-                    paddingBottom: 100,
+                    paddingBottom: 170,
                 }}
             >
-                <Header />
                 <StatusBar style="light" />
-                {loading ? (
-                    <View
+                <View
+                    style={{
+                        marginVertical: 10,
+                        flexWrap: "wrap",
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        marginHorizontal: 10,
+                    }}
+                >
+                    {playHistory.map((song, index) => (
+                        <MiniPlayCard key={index} song={song} />
+                    ))}
+                </View>
+                <View style={{ marginVertical: 10 }}>
+                    <Text
                         style={{
-                            height: Dimensions.get("screen").height / 1.3,
-                            justifyContent: "center",
-                            alignItems: "center",
+                            color: "#fff",
+                            fontWeight: "bold",
+                            fontSize: 22,
+                            marginLeft: 15,
                         }}
                     >
-                        <ActivityIndicator size="large" />
-                    </View>
-                ) : (
-                    <>
-                        <View style={{ marginVertical: 10 }}>
-                            <Text
-                                style={{
-                                    color: "#fff",
-                                    fontWeight: "bold",
-                                    fontSize: 22,
-                                    marginLeft: 15,
-                                }}
-                            >
-                                Thịnh hành
-                            </Text>
-                            <ScrollView
-                                horizontal
-                                contentContainerStyle={{ marginVertical: 10 }}
-                            >
-                                {playList?.map((pl: any, index: number) => {
-                                    return (
-                                        <PlayListCard
-                                            playList={pl}
-                                            key={index}
-                                        />
-                                    );
-                                })}
-                            </ScrollView>
-                        </View>
+                        Thịnh hành
+                    </Text>
+                    <ScrollView
+                        horizontal
+                        contentContainerStyle={{ marginVertical: 10 }}
+                    >
+                        {playList?.map((pl: any, index: number) => {
+                            return <PlayListCard playList={pl} key={index} />;
+                        })}
+                    </ScrollView>
+                </View>
 
-                        <View style={{ marginVertical: 10 }}>
-                            <Text
-                                style={{
-                                    color: "#fff",
-                                    fontWeight: "bold",
-                                    fontSize: 22,
-                                    marginLeft: 15,
-                                }}
-                            >
-                                Nghệ sĩ bạn thích
-                            </Text>
-                            <ScrollView
-                                horizontal
-                                contentContainerStyle={{ marginVertical: 10 }}
-                            >
-                                {track?.map((pl: any, index: number) => {
-                                    return (
-                                        <PlayListCard
-                                            playList={pl}
-                                            type="artist"
-                                            key={index}
-                                            navigation={navigation}
-                                        />
-                                    );
-                                })}
-                            </ScrollView>
-                        </View>
-                        <View style={{ marginVertical: 10 }}>
-                            <Text
-                                style={{
-                                    color: "#fff",
-                                    fontWeight: "bold",
-                                    fontSize: 22,
-                                    marginLeft: 15,
-                                }}
-                            >
-                                Hãy thử cách khác
-                            </Text>
-                            <ScrollView
-                                horizontal
-                                contentContainerStyle={{ marginVertical: 10 }}
-                            >
-                                {playList?.map((pl: any, index: number) => {
-                                    return (
-                                        <PlayListCard
-                                            playList={pl}
-                                            key={index}
-                                        />
-                                    );
-                                })}
-                            </ScrollView>
-                        </View>
-                        <View style={{ marginVertical: 10 }}>
-                            <Text
-                                style={{
-                                    color: "#fff",
-                                    fontWeight: "bold",
-                                    fontSize: 22,
-                                    marginLeft: 15,
-                                }}
-                            >
-                                Hãy thử cách khác
-                            </Text>
-                            <ScrollView
-                                horizontal
-                                contentContainerStyle={{ marginVertical: 10 }}
-                            >
-                                {playList?.map((pl: any, index: number) => {
-                                    return (
-                                        <PlayListCard
-                                            playList={pl}
-                                            key={index}
-                                        />
-                                    );
-                                })}
-                            </ScrollView>
-                        </View>
-                        <View style={{ marginVertical: 10 }}>
-                            <Text
-                                style={{
-                                    color: "#fff",
-                                    fontWeight: "bold",
-                                    fontSize: 22,
-                                    marginLeft: 15,
-                                }}
-                            >
-                                Dành cho bạn
-                            </Text>
-                            <ScrollView
-                                horizontal
-                                contentContainerStyle={{ marginVertical: 10 }}
-                            >
-                                {playList?.map((pl: any, index: number) => {
-                                    return (
-                                        <PlayListCard
-                                            playList={pl}
-                                            key={index}
-                                        />
-                                    );
-                                })}
-                            </ScrollView>
-                        </View>
-                    </>
-                )}
+                <View style={{ marginVertical: 10 }}>
+                    <Text
+                        style={{
+                            color: "#fff",
+                            fontWeight: "bold",
+                            fontSize: 22,
+                            marginLeft: 15,
+                        }}
+                    >
+                        Nghệ sĩ bạn thích
+                    </Text>
+                    <ScrollView
+                        horizontal
+                        contentContainerStyle={{ marginVertical: 10 }}
+                    >
+                        {track?.map((pl: any, index: number) => {
+                            return (
+                                <PlayListCard
+                                    playList={pl}
+                                    type="artist"
+                                    key={index}
+                                    navigation={navigation}
+                                />
+                            );
+                        })}
+                    </ScrollView>
+                </View>
+
+                <View style={{ marginVertical: 10 }}>
+                    <Text
+                        style={{
+                            color: "#fff",
+                            fontWeight: "bold",
+                            fontSize: 22,
+                            marginLeft: 15,
+                        }}
+                    >
+                        Hãy thử cách khác
+                    </Text>
+                    <ScrollView
+                        horizontal
+                        contentContainerStyle={{ marginVertical: 10 }}
+                    >
+                        {playList?.map((pl: any, index: number) => {
+                            return <PlayListCard playList={pl} key={index} />;
+                        })}
+                    </ScrollView>
+                </View>
+                <View style={{ marginVertical: 10 }}>
+                    <Text
+                        style={{
+                            color: "#fff",
+                            fontWeight: "bold",
+                            fontSize: 22,
+                            marginLeft: 15,
+                        }}
+                    >
+                        Dành cho bạn
+                    </Text>
+                    <ScrollView
+                        horizontal
+                        contentContainerStyle={{ marginVertical: 10 }}
+                    >
+                        {playList?.map((pl: any, index: number) => {
+                            return <PlayListCard playList={pl} key={index} />;
+                        })}
+                    </ScrollView>
+                </View>
             </ScrollView>
-        </View>
+        </ScrollView>
     );
 }
 const styles = StyleSheet.create({
     container: {
         backgroundColor: "#121212",
         flex: 1,
-        paddingTop: 50,
+        paddingTop: 80,
     },
 });
