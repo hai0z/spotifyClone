@@ -26,6 +26,7 @@ const SongProvider: FC<ISongProviderProp> = ({ children }) => {
     const [loading, setLoading] = useState(false);
 
     const [ListFavourite, setListFavourite] = useState<Song[]>([]);
+
     const [isLooping, setIsLooping] = useState<boolean | any>(async () => {
         const rs = await AsyncStorage.getItem("isLooping");
         if (rs != null) {
@@ -100,7 +101,7 @@ const SongProvider: FC<ISongProviderProp> = ({ children }) => {
     React.useEffect(() => {
         storeData();
         // getRelatedTrack();
-    }, [currentSong]);
+    }, [currentSong.key]);
 
     React.useEffect(() => {
         async function storeLooping() {
@@ -116,6 +117,22 @@ const SongProvider: FC<ISongProviderProp> = ({ children }) => {
         storeLooping();
     }, [isLooping]);
 
+    React.useEffect(() => {
+        const pushToHistory = async () => {
+            try {
+                await db.setDoc(
+                    db.doc(db.getFirestore(), "playHistory", currentSong.key),
+                    {
+                        ...currentSong,
+                        time: Date.now(),
+                    }
+                );
+            } catch (err) {
+                console.log(err);
+            }
+        };
+        pushToHistory();
+    }, [currentSong.key]);
     if (loading) return null;
 
     return (
