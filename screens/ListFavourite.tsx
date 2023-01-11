@@ -13,6 +13,7 @@ import { Song } from "../types/song";
 import { useDispatch } from "react-redux";
 import { setPlaying } from "../redux/songSlice";
 import { LinearGradient } from "expo-linear-gradient";
+import stringToSlug from "../utils/removeSign";
 
 const { width: SCREEN_WITH } = Dimensions.get("screen");
 const AlbumAndArtist = () => {
@@ -53,7 +54,9 @@ const AlbumAndArtist = () => {
         } else {
             setSearchResult(
                 data.filter((song: any) =>
-                    song.title.toLowerCase().includes(songName.toLowerCase())
+                    stringToSlug(song.title.toLowerCase()).includes(
+                        stringToSlug(songName.toLowerCase())
+                    )
                 )
             );
         }
