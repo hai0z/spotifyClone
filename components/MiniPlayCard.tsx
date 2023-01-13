@@ -11,16 +11,28 @@ import { useDispatch } from "react-redux";
 import { setCurrentSong, setPlaying } from "../redux/songSlice";
 const { width: SCREEN_WITH } = Dimensions.get("screen");
 
-const MiniPlayCard = ({ song }: { song: Song }) => {
+const MiniPlayCard = ({
+    song,
+    displayAnimation,
+}: {
+    song: Song;
+    displayAnimation: () => void;
+}) => {
     const dispatch = useDispatch();
-
+    console.log("playlistcardMini-rerender");
     return (
         <TouchableOpacity
             style={styles.container}
             activeOpacity={0.9}
             onPress={() => {
+                displayAnimation();
                 dispatch(setCurrentSong(song));
-                dispatch(setPlaying(true));
+                dispatch(
+                    setPlaying({
+                        isPlaying: true,
+                        playFrom: "other",
+                    })
+                );
             }}
         >
             <Image
@@ -36,7 +48,7 @@ const MiniPlayCard = ({ song }: { song: Song }) => {
     );
 };
 
-export default MiniPlayCard;
+export default React.memo(MiniPlayCard);
 
 const styles = StyleSheet.create({
     container: {

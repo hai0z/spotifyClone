@@ -1,5 +1,5 @@
 import * as React from "react";
-import { View, KeyboardAvoidingView } from "react-native";
+import { View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import HomeScreen from "../screens/HomeScreen";
@@ -41,13 +41,13 @@ const LibraryStack = () => {
                 name="ListFavourite"
                 component={ListFavourite}
                 options={{
-                    animation: "none",
+                    animation: "slide_from_right",
                 }}
             />
         </Stack.Navigator>
     );
 };
-const HomeTab = ({ navigation }: { navigation: navigation<"HomeTab"> }) => {
+const HomeTab = () => {
     return (
         <Tab.Navigator
             screenOptions={({ route }) => ({
@@ -81,6 +81,7 @@ const HomeTab = ({ navigation }: { navigation: navigation<"HomeTab"> }) => {
                     right: 0,
                     height: 50,
                     width: "100%",
+                    zIndex: 2,
                 },
                 tabBarActiveTintColor: "#fff",
                 tabBarInactiveTintColor: "gray",
@@ -106,9 +107,6 @@ const HomeTab = ({ navigation }: { navigation: navigation<"HomeTab"> }) => {
                 options={{
                     title: "Thư viện",
                 }}
-                listeners={{
-                    tabPress: () => navigation.replace("Lib"),
-                }}
             />
         </Tab.Navigator>
     );
@@ -120,7 +118,7 @@ const HomeTabWrapper = ({
 }) => {
     return (
         <View style={{ flex: 1 }}>
-            <HomeTab navigation={navigation} />
+            <HomeTab />
             <MusicPlayer navigation={navigation} />
         </View>
     );

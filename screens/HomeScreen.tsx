@@ -13,6 +13,7 @@ import { navigation } from "../types/RootStackParamList";
 import { db } from "../firebase";
 import MiniPlayCard from "../components/MiniPlayCard";
 import { Song } from "../types/song";
+import usePlayerAnimation from "../hooks/usePlayerAnimation";
 
 export default function App({
     navigation,
@@ -30,6 +31,8 @@ export default function App({
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
         getData();
+        getHistory();
+        setRefreshing(false);
     }, []);
 
     const getData = async () => {
@@ -41,35 +44,28 @@ export default function App({
         });
         setTrack(track.sort(() => 0.5 - Math.random()).slice(0, 10));
         setPlayList(track.sort(() => 0.5 - Math.random()).slice(0, 10));
-        setRefreshing(false);
     };
-    useLayoutEffect(() => {
+
+    const getHistory = async () => {
+        const song: Song[] = [];
         const q = db.query(
             db.collection(db.getFirestore(), "playHistory"),
             db.orderBy("time", "desc")
         );
-        const unsubscribe = db.onSnapshot(q, (querySnapshot) => {
-            const songs: Song[] = [];
-            querySnapshot.docs.map((doc) => {
-                delete doc.data().time;
-                songs.push(doc.data() as Song);
-            });
-            setPlayHistory(songs.slice(0, 6));
+        const querySnapshot = await db.getDocs(q);
+        querySnapshot.forEach((doc) => {
+            song.push(doc.data() as Song);
         });
-
-        const getData = async () => {
-            const q = db.query(db.collection(db.getFirestore(), "likedList"));
-            const track: Song[] = [];
-            const querySnapshot = await db.getDocs(q);
-            querySnapshot.forEach((doc) => {
-                track.push(doc.data() as Song);
-            });
-            setTrack(track.sort(() => 0.5 - Math.random()).slice(0, 10));
-            setPlayList(track.sort(() => 0.5 - Math.random()).slice(0, 10));
-        };
+        setPlayHistory(song.slice(0, 6));
+    };
+    useLayoutEffect(() => {
+        getHistory();
         getData();
-        return () => unsubscribe();
     }, []);
+
+    const { displayAnimation } = usePlayerAnimation();
+
+    const memo = React.useCallback(() => displayAnimation(), []);
 
     return (
         <ScrollView
@@ -95,7 +91,11 @@ export default function App({
                     }}
                 >
                     {playHistory.map((song, index) => (
-                        <MiniPlayCard key={index} song={song} />
+                        <MiniPlayCard
+                            key={index}
+                            song={song}
+                            displayAnimation={memo}
+                        />
                     ))}
                 </View>
                 <View style={{ marginVertical: 10 }}>
@@ -114,7 +114,13 @@ export default function App({
                         contentContainerStyle={{ marginVertical: 10 }}
                     >
                         {playList?.map((pl: any, index: number) => {
-                            return <PlayListCard playList={pl} key={index} />;
+                            return (
+                                <PlayListCard
+                                    playList={pl}
+                                    key={index}
+                                    displayAnimation={memo}
+                                />
+                            );
                         })}
                     </ScrollView>
                 </View>
@@ -137,6 +143,7 @@ export default function App({
                         {track?.map((pl: any, index: number) => {
                             return (
                                 <PlayListCard
+                                    displayAnimation={memo}
                                     playList={pl}
                                     type="artist"
                                     key={index}
@@ -163,7 +170,13 @@ export default function App({
                         contentContainerStyle={{ marginVertical: 10 }}
                     >
                         {playList?.map((pl: any, index: number) => {
-                            return <PlayListCard playList={pl} key={index} />;
+                            return (
+                                <PlayListCard
+                                    playList={pl}
+                                    key={index}
+                                    displayAnimation={memo}
+                                />
+                            );
                         })}
                     </ScrollView>
                 </View>
@@ -183,7 +196,13 @@ export default function App({
                         contentContainerStyle={{ marginVertical: 10 }}
                     >
                         {playList?.map((pl: any, index: number) => {
-                            return <PlayListCard playList={pl} key={index} />;
+                            return (
+                                <PlayListCard
+                                    playList={pl}
+                                    key={index}
+                                    displayAnimation={memo}
+                                />
+                            );
                         })}
                     </ScrollView>
                 </View>

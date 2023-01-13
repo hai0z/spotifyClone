@@ -1,7 +1,6 @@
 import {
     View,
     Text,
-    Image,
     TouchableOpacity,
     Dimensions,
     TextInput,
@@ -18,15 +17,18 @@ import { AntDesign } from "@expo/vector-icons";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 
+import SongList from "../components/MusicPlayer/SongList";
+import usePlayerAnimation from "../hooks/usePlayerAnimation";
+
 const { width: SCREEN_WITH } = Dimensions.get("screen");
 const AlbumAndArtist = () => {
-    const dispatch = useDispatch();
-
     const scrollY = React.useRef(new Animated.Value(0)).current;
+    const dispatch = useDispatch();
 
     const currentSong = useSelector(
         (state: RootState) => state.song.currentSong
     );
+
     const { ListFavourite: data } = useSongContext();
 
     const inputRef = React.createRef<TextInput>();
@@ -38,6 +40,7 @@ const AlbumAndArtist = () => {
     const [isSearching, setIsSearching] = useState(false);
 
     const inputRange = [-150, 0, 120, 140];
+
     const scale = scrollY.interpolate({
         inputRange,
         outputRange: [1, 1, 0.5, 0],
@@ -51,7 +54,12 @@ const AlbumAndArtist = () => {
 
     useEffect(() => {
         setSearchResult(data);
-    }, [data]);
+    }, []);
+
+    const playSong = React.useCallback((song: Song) => {
+        dispatch(setCurrentSong(song));
+        dispatch(setPlaying({ isPlaying: true, playFrom: "likedList" }));
+    }, []);
 
     const onSearch = (songName: string) => {
         setSearchValue(songName);
@@ -67,6 +75,10 @@ const AlbumAndArtist = () => {
             );
         }
     };
+    const { displayAnimation } = usePlayerAnimation();
+
+    const memo = React.useCallback(() => displayAnimation(), []);
+
     return (
         <View
             style={{
@@ -83,41 +95,52 @@ const AlbumAndArtist = () => {
                     paddingBottom: 20,
                     flexDirection: "row",
                     alignItems: "center",
-                    backgroundColor: "indigo",
+                    backgroundColor: `#${
+                        currentSong?.images?.joecolor?.split(":")[5]
+                    }CE`,
                 }}
             >
                 {isSearching && (
                     <TouchableOpacity
                         onPress={() => {
                             setIsSearching(false);
-                            setSearchValue("");
                             inputRef.current?.blur();
+
+                            setSearchValue("");
+                            setSearchResult(data);
                         }}
                     >
                         <AntDesign name="arrowleft" color={"#fff"} size={24} />
                     </TouchableOpacity>
                 )}
-                <TextInput
-                    placeholder="Tìm bài hát"
-                    placeholderTextColor={"#fff"}
+                <Animated.View
                     style={{
-                        backgroundColor: "rgba(255,255,255,0.3)",
-                        padding: 5,
-                        color: "#fff",
-                        borderRadius: 4,
-                        width: isSearching ? "80%" : "100%",
-                        marginLeft: isSearching ? 20 : 0,
+                        width: "100%",
                     }}
-                    onFocus={() => {
-                        setIsSearching(true);
-                    }}
-                    value={searchValue}
-                    onChangeText={(e) => onSearch(e)}
-                    ref={inputRef}
-                />
+                >
+                    <TextInput
+                        placeholder="Tìm bài hát"
+                        placeholderTextColor={"#fff"}
+                        style={{
+                            backgroundColor: "rgba(255,255,255,0.3)",
+                            padding: 5,
+                            color: "#fff",
+                            borderRadius: 4,
+                            marginLeft: isSearching ? 20 : 0,
+                            width: isSearching ? "80%" : "100%",
+                        }}
+                        onFocus={() => {
+                            setIsSearching(true);
+                        }}
+                        value={searchValue}
+                        onChangeText={(e) => onSearch(e)}
+                        ref={inputRef}
+                    />
+                </Animated.View>
             </View>
 
             <Animated.ScrollView
+                nestedScrollEnabled
                 bounces={false}
                 contentContainerStyle={{
                     paddingBottom: 125,
@@ -130,10 +153,13 @@ const AlbumAndArtist = () => {
                 )}
             >
                 <LinearGradient
-                    colors={["indigo", "#121212"]}
+                    colors={[
+                        `#${currentSong?.images?.joecolor?.split(":")[5]}CE`,
+                        "#121212",
+                    ]}
                     start={{ x: 0.5, y: 0 }}
                     end={{ x: 0.5, y: 1 }}
-                    style={{ zIndex: 5, width: SCREEN_WITH }}
+                    style={{ width: SCREEN_WITH }}
                 >
                     <Animated.View
                         style={{
@@ -167,78 +193,35 @@ const AlbumAndArtist = () => {
                         )}
                     </Animated.View>
                 </LinearGradient>
-                <Text
-                    style={{
-                        color: "#fff",
-                        fontSize: 22,
-                        fontWeight: "bold",
-                        paddingLeft: 15,
-                    }}
-                >
-                    Bài hát đã thích{" "}
+                {!isSearching && (
                     <Text
                         style={{
                             color: "#fff",
-                            fontSize: 18,
+                            fontSize: 22,
                             fontWeight: "bold",
                             paddingLeft: 15,
                         }}
                     >
-                        ({data.length})
-                    </Text>
-                </Text>
-                {searchResult?.map((song: Song) => (
-                    <TouchableOpacity
-                        style={{
-                            flexDirection: "row",
-                            alignItems: "center",
-                            paddingLeft: 15,
-                            paddingTop: 15,
-                            elevation: 100,
-                        }}
-                        onPress={() => {
-                            dispatch(setCurrentSong(song));
-                            dispatch(setPlaying(true));
-                        }}
-                        key={song.key}
-                    >
-                        <Image
-                            source={{ uri: song.images.coverart }}
+                        Bài hát đã thích{" "}
+                        <Text
                             style={{
-                                width: 50,
-                                height: 50,
-                                resizeMode: "cover",
-                            }}
-                        />
-                        <View
-                            style={{
-                                justifyContent: "center",
-                                marginLeft: 10,
-                                maxWidth: "80%",
+                                color: "#fff",
+                                fontSize: 18,
+                                fontWeight: "bold",
+                                paddingLeft: 15,
                             }}
                         >
-                            <Text
-                                style={{
-                                    color:
-                                        song.key == currentSong.key
-                                            ? "#13d670"
-                                            : "#fff",
-                                }}
-                                numberOfLines={1}
-                            >
-                                {song.title}
-                            </Text>
-
-                            <Text
-                                style={{
-                                    color: "#bdbdbd",
-                                }}
-                            >
-                                {song.subtitle}
-                            </Text>
-                        </View>
-                    </TouchableOpacity>
-                ))}
+                            ({data.length})
+                        </Text>
+                    </Text>
+                )}
+                <View style={{ flex: 1, minHeight: "100%" }}>
+                    <SongList
+                        searchResult={searchResult}
+                        playSong={playSong}
+                        displayAnimation={memo}
+                    />
+                </View>
             </Animated.ScrollView>
         </View>
     );

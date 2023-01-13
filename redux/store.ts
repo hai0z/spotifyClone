@@ -5,6 +5,11 @@ const store = configureStore({
     reducer: {
         song: songSlice,
     },
+    middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware({
+            immutableCheck: false,
+            serializableCheck: false,
+        }),
 });
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;

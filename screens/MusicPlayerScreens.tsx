@@ -1,13 +1,13 @@
 import {
     Text,
     View,
-    Image,
     Dimensions,
     ScrollView,
     TouchableOpacity,
     NativeSyntheticEvent,
     NativeScrollEvent,
     StyleSheet,
+    Animated,
 } from "react-native";
 import { Entypo, AntDesign } from "@expo/vector-icons";
 import { SimpleLineIcons } from "@expo/vector-icons";
@@ -15,7 +15,6 @@ import React, { useEffect, useState } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import { FontAwesome } from "@expo/vector-icons";
 import Slider from "@react-native-community/slider";
-import axios, { AxiosError, AxiosResponse } from "axios";
 import { RootState } from "../redux/store";
 import { useSelector } from "react-redux";
 import { useSongContext } from "../context/SongProvider";
@@ -24,78 +23,66 @@ import useSound from "../hooks/useSound";
 import { Song } from "../types/song";
 import { useDispatch } from "react-redux";
 import { setCurrentSong } from "../redux/songSlice";
+import SongImage from "../components/MusicPlayer//SongImage";
+import FlashList from "@shopify/flash-list/dist/FlashList";
+import { navigation } from "../types/RootStackParamList";
 
 const { width: SCREEN_WITH } = Dimensions.get("screen");
 
-interface ISongDetail {
-    sections: any;
-}
-
-const MusicPlayerScreens = () => {
-    const { nextSong, isLooping, setIsLooping, ListFavourite } =
-        useSongContext();
+const MusicPlayerScreens = ({
+    navigation,
+}: {
+    navigation: navigation<"HomeTab">;
+}) => {
+    const { isLooping, setIsLooping, ListFavourite } = useSongContext();
 
     const dispatch = useDispatch();
 
     const song = useSelector((state: RootState) => state.song.currentSong);
+
+    const currentSongIndex = React.useMemo(
+        () => ListFavourite.findIndex((s: Song) => s.key == song.key),
+        [song.key]
+    );
+
     const [isLiked, setIsLiked] = useState(
         ListFavourite.some((s: any) => s.key == song.key)
     );
 
-    const [songDetail, setSongDetail] = useState<ISongDetail>(
-        {} as ISongDetail
-    );
-    const options = {
-        method: "GET",
-        url: "https://shazam-core.p.rapidapi.com/v1/tracks/details",
-        params: { track_id: song.key },
-        headers: {
-            "X-RapidAPI-Key":
-                "25afd00c31msh690f22c6a3516c0p1799adjsn0eade0e56e0b",
-            "X-RapidAPI-Host": "shazam-core.p.rapidapi.com",
-        },
-    };
-
-    React.useEffect(() => {
-        // axios
-        //     .request(options)
-        //     .then(function (response: AxiosResponse) {
-        //         setSongDetail(response.data);
-        //     })
-        //     .catch(function (error: AxiosError) {
-        //         console.error(error.message);
-        //     });
-    }, [song.key]);
-
     const musicState = useSelector((state: RootState) => state.song.musicState);
+
     const { onPlayPause, playFromPosition } = useSound();
 
-    let second: string | number = Math.floor((musicState.position / 1000) % 60);
+    let second: string | number = React.useMemo(() => {
+        return Math.floor((musicState.position / 1000) % 60);
+    }, [musicState.position]);
+
     if (second < 10) {
         second = "0" + second;
     }
-    const min = Math.floor((musicState.position / 1000 / 60) % 60);
+    const min = React.useMemo(
+        () => Math.floor((musicState.position / 1000 / 60) % 60),
+        [musicState.position]
+    );
 
-    const totalTime = `${Math.floor(
-        (musicState.duration / 1000 / 60) % 60
-    )}:${Math.floor((musicState.duration / 1000) % 60)}`;
+    const totalTime = React.useMemo(
+        () =>
+            `${Math.floor((musicState.duration / 1000 / 60) % 60)}:${Math.floor(
+                (musicState.duration / 1000) % 60
+            )}`,
+        [song.key]
+    );
 
-    const handlePageChange = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
-        const offset = e.nativeEvent.contentOffset;
-        if (offset) {
-            const page = Math.round(offset.x / SCREEN_WITH) + 1;
-            console.log(page);
-            if (page) {
-                // setCurrentSong(nextSong);
-            }
-        }
-    };
+    const memoListData = React.useMemo(() => ListFavourite, []);
+    const songTitle = React.useMemo(() => song.title, [song.key]);
+    const subTitle = React.useMemo(() => song.subtitle, [song.key]);
+
     const addToLikedList = async (likedSong: Song) => {
+        console.log(1);
         setIsLiked(!isLiked);
         try {
             const docRef = db.doc(db.getFirestore(), "likedList", song.key);
-            const docSnap = await db.getDoc(docRef);
-            if (docSnap.exists()) {
+            if (ListFavourite.some((s: Song) => s.key == likedSong.key)) {
                 await db.deleteDoc(docRef);
             } else {
                 await db.setDoc(docRef, likedSong);
@@ -104,42 +91,95 @@ const MusicPlayerScreens = () => {
             console.log(err.message);
         }
     };
+    const flatListRef = React.createRef<FlashList<any>>();
+
     useEffect(() => {
-        setIsLiked(ListFavourite.some((s: any) => s.key == song.key));
+        setIsLiked(ListFavourite.some((s: Song) => s.key == song.key));
     }, [song, ListFavourite]);
 
+    useEffect(() => {
+        flatListRef.current?.scrollToIndex({
+            index: currentSongIndex == -1 ? 0 : currentSongIndex,
+            animated: true,
+        });
+    }, [song.key]);
+
+    function onChangeSong(e: NativeSyntheticEvent<NativeScrollEvent>) {
+        const pageNum = Math.min(
+            Math.max(
+                Math.floor(e.nativeEvent.contentOffset.x / SCREEN_WITH + 0.5) +
+                    1,
+                0
+            ),
+            ListFavourite.length
+        );
+        pageNum - 1 != currentSongIndex &&
+            dispatch(setCurrentSong(ListFavourite[pageNum - 1]));
+    }
     return (
         <LinearGradient
             style={{ flex: 1 }}
-            colors={[
-                `#${song?.images?.joecolor?.split(":")[5]}CE`,
-                "#000000ce",
-            ]}
+            colors={[`#${song?.images?.joecolor?.split(":")[5]}CE`, "#000000"]}
             start={{ x: 0.5, y: 0 }}
             end={{ x: 0.5, y: 1 }}
         >
-            <ScrollView>
-                <ScrollView
-                    onMomentumScrollEnd={handlePageChange}
-                    horizontal
-                    showsHorizontalScrollIndicator={false}
-                    pagingEnabled
-                    contentContainerStyle={{
-                        paddingTop: 125,
+            <ScrollView
+                contentContainerStyle={{ paddingBottom: 50 }}
+                showsVerticalScrollIndicator={false}
+            >
+                <View
+                    style={{
+                        marginTop: 35,
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        flexDirection: "row",
+                        paddingHorizontal: 15,
                     }}
                 >
-                    {[song, nextSong].map((src, index) => (
-                        <Image
-                            key={index}
-                            source={{ uri: src?.images?.coverart }}
+                    <TouchableOpacity
+                        onPress={() => navigation.goBack()}
+                        hitSlop={{ top: 20, bottom: 20, left: 50, right: 50 }}
+                    >
+                        <AntDesign name="down" size={24} color="#fff" />
+                    </TouchableOpacity>
+                    <View
+                        style={{
+                            justifyContent: "center",
+                            alignItems: "center",
+                        }}
+                    >
+                        <Text
                             style={{
-                                width: SCREEN_WITH,
-                                height: SCREEN_WITH,
-                                transform: [{ scale: 0.85 }],
+                                color: "#fff",
+                                textTransform: "uppercase",
                             }}
-                        />
-                    ))}
-                </ScrollView>
+                        >
+                            Đang phát từ thư viện
+                        </Text>
+                        <Text style={{ color: "#fff", fontWeight: "bold" }}>
+                            Bài hát đã thích
+                        </Text>
+                    </View>
+                    <Entypo name="dots-three-vertical" size={18} color="#fff" />
+                </View>
+                <View>
+                    <FlashList
+                        keyExtractor={(item) => item.key}
+                        scrollEventThrottle={32}
+                        onMomentumScrollEnd={onChangeSong}
+                        ref={flatListRef}
+                        showsHorizontalScrollIndicator={false}
+                        contentContainerStyle={{
+                            paddingTop: 65,
+                        }}
+                        initialScrollIndex={currentSongIndex}
+                        horizontal
+                        estimatedItemSize={SCREEN_WITH}
+                        pagingEnabled
+                        data={memoListData}
+                        renderItem={({ item }) => <SongImage item={item} />}
+                    />
+                </View>
                 <View
                     style={{
                         flexDirection: "row",
@@ -157,7 +197,7 @@ const MusicPlayerScreens = () => {
                                 color: "#fff",
                             }}
                         >
-                            {song?.title}
+                            {songTitle}
                         </Text>
                         <Text
                             style={{
@@ -166,7 +206,7 @@ const MusicPlayerScreens = () => {
                                 color: "#fff",
                             }}
                         >
-                            {song?.subtitle}
+                            {subTitle}
                         </Text>
                     </View>
                     <TouchableOpacity onPress={() => addToLikedList(song)}>
@@ -238,7 +278,17 @@ const MusicPlayerScreens = () => {
                                 color="white"
                             />
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.trackBtn}>
+                        <TouchableOpacity
+                            style={styles.trackBtn}
+                            onPress={() => {
+                                currentSongIndex != 0 &&
+                                    dispatch(
+                                        setCurrentSong(
+                                            ListFavourite[currentSongIndex - 1]
+                                        )
+                                    );
+                            }}
+                        >
                             <AntDesign
                                 name="stepbackward"
                                 size={32}
@@ -260,7 +310,20 @@ const MusicPlayerScreens = () => {
                             />
                         </TouchableOpacity>
                         <TouchableOpacity
-                            onPress={() => dispatch(setCurrentSong(nextSong))}
+                            onPress={() => {
+                                if (
+                                    currentSongIndex ===
+                                    ListFavourite.length - 1
+                                ) {
+                                    dispatch(setCurrentSong(ListFavourite[0]));
+                                } else {
+                                    dispatch(
+                                        setCurrentSong(
+                                            ListFavourite[currentSongIndex + 1]
+                                        )
+                                    );
+                                }
+                            }}
                             style={styles.trackBtn}
                         >
                             <AntDesign
@@ -289,7 +352,9 @@ const MusicPlayerScreens = () => {
                             marginHorizontal: 20,
                             borderRadius: 10,
                             marginTop: 40,
-                            zIndex: 99,
+                            height: 350,
+                            width: SCREEN_WITH * 0.9,
+                            paddingBottom: 50,
                             padding: 10,
                         }}
                     >
@@ -298,7 +363,7 @@ const MusicPlayerScreens = () => {
                                 <Text
                                     style={{
                                         color: "#ffff",
-                                        fontSize: 18,
+                                        fontSize: 30,
                                         fontWeight: "600",
                                     }}
                                     key={i}

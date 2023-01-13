@@ -87,7 +87,7 @@ const Search = () => {
 
     const onPress = useCallback((song: Song) => {
         dispatch(setCurrentSong(song));
-        dispatch(setPlaying(true));
+        dispatch(setPlaying({ isPlaying: true, playFrom: "other" }));
     }, []);
 
     useEffect(() => {

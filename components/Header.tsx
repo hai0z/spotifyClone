@@ -1,8 +1,9 @@
-import { StyleSheet, Text, View } from "react-native";
+import { Text, View } from "react-native";
 import React from "react";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
 const Header = () => {
+    console.log("heder-rerneder");
     const timeNow = new Date().getHours();
     const greeting =
         timeNow >= 5 && timeNow < 12
@@ -44,4 +45,4 @@ const Header = () => {
     );
 };
 
-export default Header;
+export default React.memo(Header);

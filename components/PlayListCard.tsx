@@ -18,13 +18,15 @@ interface IPlayListProp {
     playList: PlayList & Partial<Song>;
     type?: "song" | "artist";
     navigation?: navigation<"HomeTab">;
+    displayAnimation: () => void;
 }
 
 const PlayListCard: React.FC<IPlayListProp> = ({
     playList,
     type,
-    navigation,
+    displayAnimation,
 }) => {
+    console.log("playlistcard-rerender");
     const dispatch = useDispatch();
     return (
         <TouchableOpacity
@@ -32,8 +34,14 @@ const PlayListCard: React.FC<IPlayListProp> = ({
                 if (type === "artist") {
                     return;
                 } else {
-                    dispatch(setPlaying(true));
+                    displayAnimation();
                     dispatch(setCurrentSong(playList));
+                    dispatch(
+                        setPlaying({
+                            isPlaying: true,
+                            playFrom: "other",
+                        })
+                    );
                 }
             }}
             activeOpacity={0.7}
@@ -73,4 +81,4 @@ const PlayListCard: React.FC<IPlayListProp> = ({
     );
 };
 
-export default PlayListCard;
+export default React.memo(PlayListCard);

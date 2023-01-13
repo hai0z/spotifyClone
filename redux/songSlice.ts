@@ -1,10 +1,11 @@
 import { Song } from "./../types/song";
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface ISongSlice {
     isPlaying: boolean;
     position: number;
     duration: number;
+    playFrom?: "album" | "likedList" | "other";
 }
 
 const songSlice = createSlice({
@@ -14,8 +15,10 @@ const songSlice = createSlice({
             isPlaying: false,
             position: 0,
             duration: 0,
+            playFrom: "likedList",
         } as ISongSlice,
-        currentSong: {} as Song & any,
+        currentSong: {} as Song & { sections?: any },
+        playFrom: "other",
     },
     reducers: {
         updateSongState: (state, action) => {
@@ -25,11 +28,18 @@ const songSlice = createSlice({
                 duration: action.payload.duration,
             };
         },
-        setPlaying: (state, action) => {
+        setPlaying: (
+            state,
+            action: PayloadAction<{
+                isPlaying: boolean;
+                playFrom: "album" | "likedList" | "other";
+            }>
+        ) => {
             state.musicState = {
                 ...state.musicState,
-                isPlaying: action.payload,
+                isPlaying: action.payload.isPlaying,
             };
+            state.playFrom = action.payload.playFrom;
         },
         setCurrentSong: (state, action) => {
             state.currentSong = action.payload;

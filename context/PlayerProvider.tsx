@@ -1,11 +1,17 @@
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
-import { Audio, AVPlaybackStatusSuccess } from "expo-av";
+import {
+    Audio,
+    AVPlaybackStatusSuccess,
+    InterruptionModeAndroid,
+} from "expo-av";
 import { Sound } from "expo-av/build/Audio";
 import { useSongContext } from "../context/SongProvider";
 import { RootState } from "../redux/store";
 import { setCurrentSong, updateSongState } from "../redux/songSlice";
 import React, { createContext } from "react";
+import { Song } from "../types/song";
+import { Animated } from "react-native";
 interface IPlayerContext {
     sound: any;
     setSound: any;
@@ -13,6 +19,9 @@ interface IPlayerContext {
     playSound: any;
     onPlayPause: any;
     playFromPosition: any;
+    playerAnimation: Animated.Value;
+    displayAnimation: () => void;
+    titleAnimation: Animated.Value;
 }
 
 export const PlayerContext = createContext<IPlayerContext>(
@@ -22,17 +31,58 @@ export const PlayerContext = createContext<IPlayerContext>(
 function PlayerProvider({ children }: { children: React.ReactNode }) {
     const [sound, setSound] = React.useState<Sound | null>(null);
 
-    const { nextSong, isLooping } = useSongContext();
+    const { nextSong, isLooping, ListFavourite } = useSongContext();
     const dispatch = useDispatch();
 
     const musicState = useSelector((state: RootState) => state.song.musicState);
+    const playFrom = useSelector((state: RootState) => state.song.playFrom);
+
+    const playerAnimation = React.useRef(new Animated.Value(50)).current;
+    const titleAnimation = React.useRef(new Animated.Value(100)).current;
+
+    const displayAnimation = () => {
+        Animated.parallel([
+            Animated.timing(playerAnimation, {
+                toValue: 40,
+                duration: 150,
+                useNativeDriver: false,
+            }),
+        ]).start(() => displayAnimation2());
+    };
+    const displayAnimation2 = () => {
+        Animated.timing(playerAnimation, {
+            toValue: 50,
+            duration: 150,
+            useNativeDriver: false,
+        }).start();
+        Animated.timing(titleAnimation, {
+            toValue: 0,
+            duration: 250,
+            useNativeDriver: true,
+        }).start(() => {
+            titleAnimation.stopAnimation(() => titleAnimation.setValue(0));
+        });
+    };
+
     const currentSong = useSelector(
         (state: RootState) => state.song.currentSong
     );
 
     const onPlaybackStatusUpdate = (status: AVPlaybackStatusSuccess) => {
         if (status.didJustFinish && !status.isLooping) {
-            dispatch(setCurrentSong(nextSong));
+            if (playFrom == "likedList") {
+                let currentSongIndex: number = ListFavourite.findIndex(
+                    (e: Song) => e.key == currentSong.key
+                );
+                if (currentSongIndex == ListFavourite.length - 1) {
+                    currentSongIndex = 0;
+                    dispatch(setCurrentSong(ListFavourite[currentSongIndex]));
+                } else {
+                    dispatch(
+                        setCurrentSong(ListFavourite[currentSongIndex + 1])
+                    );
+                }
+            }
         }
         if (status.isPlaying == null) {
             dispatch(
@@ -107,6 +157,16 @@ function PlayerProvider({ children }: { children: React.ReactNode }) {
               }
             : undefined;
     }, [sound]);
+    React.useEffect(() => {
+        Audio.setAudioModeAsync({
+            allowsRecordingIOS: false,
+            staysActiveInBackground: true,
+            playsInSilentModeIOS: true,
+            shouldDuckAndroid: true,
+            playThroughEarpieceAndroid: false,
+            interruptionModeAndroid: InterruptionModeAndroid.DoNotMix,
+        });
+    }, []);
     return (
         <PlayerContext.Provider
             value={{
@@ -116,6 +176,9 @@ function PlayerProvider({ children }: { children: React.ReactNode }) {
                 playSound,
                 setSound,
                 playFromPosition,
+                playerAnimation,
+                titleAnimation,
+                displayAnimation,
             }}
         >
             {children}

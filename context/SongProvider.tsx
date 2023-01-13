@@ -3,7 +3,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Song } from "../types/song";
 import axios from "axios";
 import { useSelector } from "react-redux";
-import { setCurrentSong } from "../redux/songSlice";
+import { setCurrentSong, setPlaying } from "../redux/songSlice";
 export const SongContext = React.createContext({} as ISongContext);
 
 import { db } from "../firebase";
@@ -14,11 +14,11 @@ interface ISongProviderProp {
 }
 
 interface ISongContext {
-    nextSong: any;
+    nextSong: Song[];
     setNextSong: any;
     isLooping: any;
     setIsLooping: any;
-    ListFavourite: any;
+    ListFavourite: Song[];
     setListFavourite: any;
 }
 const SongProvider: FC<ISongProviderProp> = ({ children }) => {
@@ -27,8 +27,7 @@ const SongProvider: FC<ISongProviderProp> = ({ children }) => {
     const currentSong = useSelector(
         (state: RootState) => state.song.currentSong
     );
-
-    const [nextSong, setNextSong] = useState<Song>({} as Song);
+    const [nextSong, setNextSong] = useState<Song[]>([]);
 
     const [loading, setLoading] = useState(false);
 
