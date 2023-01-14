@@ -69,6 +69,7 @@ export default function App({
 
     return (
         <ScrollView
+            showsVerticalScrollIndicator={false}
             style={styles.container}
             refreshControl={
                 <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
@@ -94,7 +95,7 @@ export default function App({
                         <MiniPlayCard
                             key={index}
                             song={song}
-                            displayAnimation={memo}
+                            displayAnimation={displayAnimation}
                         />
                     ))}
                 </View>
@@ -111,6 +112,7 @@ export default function App({
                     </Text>
                     <ScrollView
                         horizontal
+                        showsHorizontalScrollIndicator={false}
                         contentContainerStyle={{ marginVertical: 10 }}
                     >
                         {playList?.map((pl: any, index: number) => {
@@ -118,7 +120,7 @@ export default function App({
                                 <PlayListCard
                                     playList={pl}
                                     key={index}
-                                    displayAnimation={memo}
+                                    displayAnimation={displayAnimation}
                                 />
                             );
                         })}
@@ -138,15 +140,16 @@ export default function App({
                     </Text>
                     <ScrollView
                         horizontal
+                        showsHorizontalScrollIndicator={false}
                         contentContainerStyle={{ marginVertical: 10 }}
                     >
                         {track?.map((pl: any, index: number) => {
                             return (
                                 <PlayListCard
-                                    displayAnimation={memo}
                                     playList={pl}
                                     type="artist"
                                     key={index}
+                                    displayAnimation={displayAnimation}
                                     navigation={navigation}
                                 />
                             );
@@ -167,6 +170,7 @@ export default function App({
                     </Text>
                     <ScrollView
                         horizontal
+                        showsHorizontalScrollIndicator={false}
                         contentContainerStyle={{ marginVertical: 10 }}
                     >
                         {playList?.map((pl: any, index: number) => {
@@ -174,7 +178,7 @@ export default function App({
                                 <PlayListCard
                                     playList={pl}
                                     key={index}
-                                    displayAnimation={memo}
+                                    displayAnimation={displayAnimation}
                                 />
                             );
                         })}
@@ -192,6 +196,7 @@ export default function App({
                         Dành cho bạn
                     </Text>
                     <ScrollView
+                        showsHorizontalScrollIndicator={false}
                         horizontal
                         contentContainerStyle={{ marginVertical: 10 }}
                     >
@@ -200,7 +205,7 @@ export default function App({
                                 <PlayListCard
                                     playList={pl}
                                     key={index}
-                                    displayAnimation={memo}
+                                    displayAnimation={displayAnimation}
                                 />
                             );
                         })}

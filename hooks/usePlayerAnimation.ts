@@ -1,11 +1,11 @@
-import { PlayerContext } from "./../context/PlayerProvider";
 import React from "react";
+import { AnimationContext } from "../context/AnimationProvider";
+
 const usePlayerAnimation = () => {
-    const { playerAnimation, displayAnimation, titleAnimation } =
-        React.useContext(PlayerContext);
+    const { playerAnimation, displayAnimation } =
+        React.useContext(AnimationContext);
     return {
         playerAnimation,
-        titleAnimation,
         displayAnimation,
     };
 };

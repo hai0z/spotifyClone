@@ -33,14 +33,7 @@ const SongProvider: FC<ISongProviderProp> = ({ children }) => {
 
     const [ListFavourite, setListFavourite] = useState<Song[]>([]);
 
-    const [isLooping, setIsLooping] = useState<boolean | any>(async () => {
-        const rs = await AsyncStorage.getItem("isLooping");
-        if (rs != null) {
-            setIsLooping(JSON.parse(rs));
-        } else {
-            setIsLooping(false);
-        }
-    });
+    const [isLooping, setIsLooping] = useState<boolean>(false);
 
     const storeData = async () => {
         try {
@@ -56,6 +49,14 @@ const SongProvider: FC<ISongProviderProp> = ({ children }) => {
             dispatch(setCurrentSong(JSON.parse(song)));
         } else {
             dispatch(setCurrentSong({} as Song));
+        }
+    };
+    const getLoopingStatus = async () => {
+        const isLooping = await AsyncStorage.getItem("isLooping");
+        if (isLooping != null) {
+            setIsLooping(JSON.parse(isLooping));
+        } else {
+            setIsLooping(false);
         }
     };
     const getRelatedTrack = async () => {
@@ -101,6 +102,8 @@ const SongProvider: FC<ISongProviderProp> = ({ children }) => {
             setListFavourite(data as Song[]);
         });
         findLatestSong();
+        getLoopingStatus();
+
         return () => unsub();
     }, []);
 
@@ -109,17 +112,14 @@ const SongProvider: FC<ISongProviderProp> = ({ children }) => {
         // getRelatedTrack();
     }, [currentSong.key]);
 
-    React.useEffect(() => {
-        async function storeLooping() {
-            try {
-                await AsyncStorage.setItem(
-                    "isLooping",
-                    JSON.stringify(isLooping)
-                );
-            } catch (err) {
-                console.log(err);
-            }
+    const storeLooping = async () => {
+        try {
+            await AsyncStorage.setItem("isLooping", JSON.stringify(isLooping));
+        } catch (err) {
+            console.log(err);
         }
+    };
+    React.useEffect(() => {
         storeLooping();
     }, [isLooping]);
 

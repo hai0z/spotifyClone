@@ -11,7 +11,6 @@ import { RootState } from "../redux/store";
 import { setCurrentSong, updateSongState } from "../redux/songSlice";
 import React, { createContext } from "react";
 import { Song } from "../types/song";
-import { Animated } from "react-native";
 interface IPlayerContext {
     sound: any;
     setSound: any;
@@ -19,9 +18,8 @@ interface IPlayerContext {
     playSound: any;
     onPlayPause: any;
     playFromPosition: any;
-    playerAnimation: Animated.Value;
-    displayAnimation: () => void;
-    titleAnimation: Animated.Value;
+    // playerAnimation: Animated.Value;
+    // displayAnimation: () => void;
 }
 
 export const PlayerContext = createContext<IPlayerContext>(
@@ -32,42 +30,15 @@ function PlayerProvider({ children }: { children: React.ReactNode }) {
     const [sound, setSound] = React.useState<Sound | null>(null);
 
     const { nextSong, isLooping, ListFavourite } = useSongContext();
+
     const dispatch = useDispatch();
 
     const musicState = useSelector((state: RootState) => state.song.musicState);
     const playFrom = useSelector((state: RootState) => state.song.playFrom);
 
-    const playerAnimation = React.useRef(new Animated.Value(50)).current;
-    const titleAnimation = React.useRef(new Animated.Value(100)).current;
-
-    const displayAnimation = () => {
-        Animated.parallel([
-            Animated.timing(playerAnimation, {
-                toValue: 40,
-                duration: 150,
-                useNativeDriver: false,
-            }),
-        ]).start(() => displayAnimation2());
-    };
-    const displayAnimation2 = () => {
-        Animated.timing(playerAnimation, {
-            toValue: 50,
-            duration: 150,
-            useNativeDriver: false,
-        }).start();
-        Animated.timing(titleAnimation, {
-            toValue: 0,
-            duration: 250,
-            useNativeDriver: true,
-        }).start(() => {
-            titleAnimation.stopAnimation(() => titleAnimation.setValue(0));
-        });
-    };
-
     const currentSong = useSelector(
         (state: RootState) => state.song.currentSong
     );
-
     const onPlaybackStatusUpdate = (status: AVPlaybackStatusSuccess) => {
         if (status.didJustFinish && !status.isLooping) {
             if (playFrom == "likedList") {
@@ -176,9 +147,6 @@ function PlayerProvider({ children }: { children: React.ReactNode }) {
                 playSound,
                 setSound,
                 playFromPosition,
-                playerAnimation,
-                titleAnimation,
-                displayAnimation,
             }}
         >
             {children}

@@ -37,7 +37,6 @@ const MusicPlayerScreens = ({
     const { isLooping, setIsLooping, ListFavourite } = useSongContext();
 
     const dispatch = useDispatch();
-
     const song = useSelector((state: RootState) => state.song.currentSong);
 
     const currentSongIndex = React.useMemo(
@@ -78,7 +77,6 @@ const MusicPlayerScreens = ({
     const subTitle = React.useMemo(() => song.subtitle, [song.key]);
 
     const addToLikedList = async (likedSong: Song) => {
-        console.log(1);
         setIsLiked(!isLiked);
         try {
             const docRef = db.doc(db.getFirestore(), "likedList", song.key);
@@ -116,6 +114,7 @@ const MusicPlayerScreens = ({
         pageNum - 1 != currentSongIndex &&
             dispatch(setCurrentSong(ListFavourite[pageNum - 1]));
     }
+
     return (
         <LinearGradient
             style={{ flex: 1 }}
@@ -224,10 +223,6 @@ const MusicPlayerScreens = ({
                             width: SCREEN_WITH - 40,
                         }}
                         minimumValue={0}
-                        value={
-                            (musicState.position / musicState.duration) * 100 ||
-                            0
-                        }
                         maximumValue={100}
                         thumbTintColor="#ffffff"
                         minimumTrackTintColor="#ffffff"
@@ -235,6 +230,10 @@ const MusicPlayerScreens = ({
                         onSlidingComplete={(e) => {
                             playFromPosition((musicState.duration * e) / 100);
                         }}
+                        value={
+                            (musicState.position / musicState.duration) * 100 ||
+                            0
+                        }
                     />
                     <View
                         style={{

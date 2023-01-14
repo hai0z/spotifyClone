@@ -15,7 +15,7 @@ type PlayList = {
     }[];
 };
 interface IPlayListProp {
-    playList: PlayList & Partial<Song>;
+    playList: Song;
     type?: "song" | "artist";
     navigation?: navigation<"HomeTab">;
     displayAnimation: () => void;

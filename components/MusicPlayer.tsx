@@ -1,5 +1,4 @@
 import {
-    Text,
     View,
     Image,
     TouchableOpacity,
@@ -81,9 +80,19 @@ const MusicPlayer: React.FC<IMusciPayerProp> = ({ navigation }) => {
         setIsLiked(ListFavourite.some((s: any) => s.key == currentSong.key));
     }, [currentSong.key, ListFavourite]);
 
-    const { playerAnimation, titleAnimation } = usePlayerAnimation();
+    const { playerAnimation } = usePlayerAnimation();
 
     const memo = React.useMemo(() => playerAnimation, []);
+
+    const translateX = memo.interpolate({
+        inputRange: [40, 45, 50],
+        outputRange: [150, 50, 0],
+    });
+
+    const opacity = memo.interpolate({
+        inputRange: [40, 45, 50],
+        outputRange: [0, 0.5, 1],
+    });
 
     return (
         <Animated.View
@@ -142,7 +151,8 @@ const MusicPlayer: React.FC<IMusciPayerProp> = ({ navigation }) => {
                             style={{
                                 color: "#fff",
                                 fontWeight: "600",
-                                transform: [{ translateX: titleAnimation }],
+                                transform: [{ translateX }],
+                                opacity,
                             }}
                         >
                             {currentSong?.title}
@@ -150,8 +160,8 @@ const MusicPlayer: React.FC<IMusciPayerProp> = ({ navigation }) => {
                         <Animated.Text
                             style={{
                                 color: "#fff",
-
-                                transform: [{ translateX: titleAnimation }],
+                                transform: [{ translateX }],
+                                opacity,
                             }}
                             numberOfLines={1}
                         >
