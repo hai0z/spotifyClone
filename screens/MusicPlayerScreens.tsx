@@ -7,7 +7,6 @@ import {
     NativeSyntheticEvent,
     NativeScrollEvent,
     StyleSheet,
-    Animated,
 } from "react-native";
 import { Entypo, AntDesign } from "@expo/vector-icons";
 import { SimpleLineIcons } from "@expo/vector-icons";
@@ -118,7 +117,7 @@ const MusicPlayerScreens = ({
     return (
         <LinearGradient
             style={{ flex: 1 }}
-            colors={[`#${song?.images?.joecolor?.split(":")[5]}CE`, "#000000"]}
+            colors={[`#${song?.images?.joecolor?.split(":")[5]}`, "#000000"]}
             start={{ x: 0.5, y: 0 }}
             end={{ x: 0.5, y: 1 }}
         >

@@ -43,12 +43,17 @@ const AlbumAndArtist = () => {
 
     const scale = scrollY.interpolate({
         inputRange,
-        outputRange: [1, 1, 0.5, 0],
+        outputRange: [1.5, 1, 0.3, 0],
         extrapolate: "clamp",
     });
     const opacity = scrollY.interpolate({
-        inputRange: [-150, 0, 100, 120],
-        outputRange: [0, 1, 0.5, 0],
+        inputRange: [-100, 0, 100, 120],
+        outputRange: [0, 1, 0.3, 0],
+        extrapolate: "clamp",
+    });
+    const translateY = scrollY.interpolate({
+        inputRange,
+        outputRange: [0, 0, -120, -120],
         extrapolate: "clamp",
     });
 
@@ -148,7 +153,7 @@ const AlbumAndArtist = () => {
                 onScroll={Animated.event(
                     [{ nativeEvent: { contentOffset: { y: scrollY } } }],
                     {
-                        useNativeDriver: true,
+                        useNativeDriver: false,
                     }
                 )}
             >
@@ -193,35 +198,42 @@ const AlbumAndArtist = () => {
                         )}
                     </Animated.View>
                 </LinearGradient>
-                {!isSearching && (
-                    <Text
-                        style={{
-                            color: "#fff",
-                            fontSize: 22,
-                            fontWeight: "bold",
-                            paddingLeft: 15,
-                        }}
-                    >
-                        Bài hát đã thích{" "}
+
+                <Animated.View
+                    style={{
+                        flex: 1,
+                        minHeight: "100%",
+                        transform: [{ translateY }],
+                    }}
+                >
+                    {!isSearching && (
                         <Text
                             style={{
                                 color: "#fff",
-                                fontSize: 18,
+                                fontSize: 22,
                                 fontWeight: "bold",
                                 paddingLeft: 15,
                             }}
                         >
-                            ({data.length})
+                            Bài hát đã thích{" "}
+                            <Text
+                                style={{
+                                    color: "#fff",
+                                    fontSize: 18,
+                                    fontWeight: "bold",
+                                    paddingLeft: 15,
+                                }}
+                            >
+                                ({data.length})
+                            </Text>
                         </Text>
-                    </Text>
-                )}
-                <View style={{ flex: 1, minHeight: "100%" }}>
+                    )}
                     <SongList
                         searchResult={searchResult}
                         playSong={playSong}
                         displayAnimation={memo}
                     />
-                </View>
+                </Animated.View>
             </Animated.ScrollView>
         </View>
     );

@@ -65,8 +65,6 @@ export default function App({
 
     const { displayAnimation } = usePlayerAnimation();
 
-    const memo = React.useCallback(() => displayAnimation(), []);
-
     return (
         <ScrollView
             showsVerticalScrollIndicator={false}

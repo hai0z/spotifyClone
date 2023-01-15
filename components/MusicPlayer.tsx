@@ -77,7 +77,7 @@ const MusicPlayer: React.FC<IMusciPayerProp> = ({ navigation }) => {
     }, [currentSong]);
 
     React.useEffect(() => {
-        setIsLiked(ListFavourite.some((s: any) => s.key == currentSong.key));
+        setIsLiked(ListFavourite.some((s: Song) => s.key == currentSong.key));
     }, [currentSong.key, ListFavourite]);
 
     const { playerAnimation } = usePlayerAnimation();
@@ -91,7 +91,7 @@ const MusicPlayer: React.FC<IMusciPayerProp> = ({ navigation }) => {
 
     const opacity = memo.interpolate({
         inputRange: [40, 45, 50],
-        outputRange: [0, 0.5, 1],
+        outputRange: [0, 0.3, 1],
     });
 
     return (
@@ -99,7 +99,7 @@ const MusicPlayer: React.FC<IMusciPayerProp> = ({ navigation }) => {
             style={{
                 position: "absolute",
                 width: "96%",
-                height: 60,
+                height: 55,
                 bottom: memo,
                 zIndex: 1,
                 transform: [
@@ -137,8 +137,8 @@ const MusicPlayer: React.FC<IMusciPayerProp> = ({ navigation }) => {
                             }}
                             style={{
                                 resizeMode: "cover",
-                                width: 50,
-                                height: 50,
+                                width: 40,
+                                height: 40,
                                 borderRadius: 7,
                                 marginLeft: 7,
                                 zIndex: 1111,
