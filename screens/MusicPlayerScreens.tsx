@@ -23,7 +23,7 @@ import { Song } from "../types/song";
 import { useDispatch } from "react-redux";
 import { setCurrentSong } from "../redux/songSlice";
 import SongImage from "../components/MusicPlayer//SongImage";
-import FlashList from "@shopify/flash-list/dist/FlashList";
+import { FlashList } from "@shopify/flash-list";
 import { navigation } from "../types/RootStackParamList";
 
 const { width: SCREEN_WITH } = Dimensions.get("screen");
@@ -116,10 +116,10 @@ const MusicPlayerScreens = ({
 
     return (
         <LinearGradient
-            style={{ flex: 1 }}
             colors={[`#${song?.images?.joecolor?.split(":")[5]}`, "#000000"]}
             start={{ x: 0.5, y: 0 }}
             end={{ x: 0.5, y: 1 }}
+            className="flex-1"
         >
             <ScrollView
                 contentContainerStyle={{ paddingBottom: 50 }}
@@ -127,12 +127,9 @@ const MusicPlayerScreens = ({
             >
                 <View
                     style={{
-                        marginTop: 35,
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        flexDirection: "row",
                         paddingHorizontal: 15,
                     }}
+                    className="mt-[35px] justify-between items-center flex-row"
                 >
                     <TouchableOpacity
                         onPress={() => navigation.goBack()}
@@ -140,21 +137,11 @@ const MusicPlayerScreens = ({
                     >
                         <AntDesign name="down" size={24} color="#fff" />
                     </TouchableOpacity>
-                    <View
-                        style={{
-                            justifyContent: "center",
-                            alignItems: "center",
-                        }}
-                    >
-                        <Text
-                            style={{
-                                color: "#fff",
-                                textTransform: "uppercase",
-                            }}
-                        >
+                    <View className="items-center justify-center">
+                        <Text className="text-white uppercase">
                             Đang phát từ thư viện
                         </Text>
-                        <Text style={{ color: "#fff", fontWeight: "bold" }}>
+                        <Text className="text-white font-bold">
                             Bài hát đã thích
                         </Text>
                     </View>
@@ -178,32 +165,12 @@ const MusicPlayerScreens = ({
                         renderItem={({ item }) => <SongImage item={item} />}
                     />
                 </View>
-                <View
-                    style={{
-                        flexDirection: "row",
-                        paddingTop: 70,
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        marginHorizontal: 30,
-                    }}
-                >
+                <View className="flex-row justify-between items-center pt-[70px] mx-[30px]">
                     <View>
-                        <Text
-                            style={{
-                                fontSize: 20,
-                                fontWeight: "bold",
-                                color: "#fff",
-                            }}
-                        >
+                        <Text className="text-[20px] font-bold text-white">
                             {songTitle}
                         </Text>
-                        <Text
-                            style={{
-                                fontSize: 13,
-                                fontWeight: "500",
-                                color: "#fff",
-                            }}
-                        >
+                        <Text className="text-[13px] font-semibold text-white">
                             {subTitle}
                         </Text>
                     </View>
@@ -216,7 +183,7 @@ const MusicPlayerScreens = ({
                         />
                     </TouchableOpacity>
                 </View>
-                <View style={{ alignItems: "center", marginTop: 15 }}>
+                <View className="items-center mt-[15px]">
                     <Slider
                         style={{
                             width: SCREEN_WITH - 40,
@@ -235,11 +202,8 @@ const MusicPlayerScreens = ({
                         }
                     />
                     <View
-                        style={{
-                            flexDirection: "row",
-                            justifyContent: "space-between",
-                            width: SCREEN_WITH - 70,
-                        }}
+                        style={{ width: SCREEN_WITH - 70 }}
+                        className={`flex-row justify-between`}
                     >
                         <Text
                             style={{

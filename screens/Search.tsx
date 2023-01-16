@@ -11,7 +11,6 @@ import React, { useCallback, useEffect, useState } from "react";
 import useDebounce from "../hooks/useDebounce";
 import axios, { AxiosResponse } from "axios";
 import { Song } from "../types/song";
-import { useSongContext } from "../context/SongProvider";
 import { useDispatch } from "react-redux";
 import { setCurrentSong, setPlaying } from "../redux/songSlice";
 
@@ -33,27 +32,11 @@ const SearchResult = ({
         >
             <Image
                 source={{ uri: data.images.coverart }}
-                style={{
-                    width: 50,
-                    height: 50,
-                    resizeMode: "cover",
-                }}
+                className="w-[50px] h-[50px] object-cover"
             />
-            <View
-                style={{
-                    flexDirection: "column",
-                    justifyContent: "space-between",
-                    marginLeft: 10,
-                    width: "100%",
-                }}
-            >
+            <View className="flex flex-col justify-between ml-[10px] w-full">
                 <Text
-                    style={{
-                        color: "#fff",
-                        fontWeight: "700",
-                        textTransform: "capitalize",
-                        maxWidth: "70%",
-                    }}
+                    className="text-white font-semibold capitalize max-w-[70%]"
                     numberOfLines={1}
                 >
                     {data.title}
@@ -119,11 +102,7 @@ const Search = () => {
     return (
         <KeyboardAvoidingView
             behavior="height"
-            style={{
-                flex: 1,
-                backgroundColor: "#121212",
-                paddingTop: 30,
-            }}
+            className="flex-1 bg-[#121212] pt-[30px]"
         >
             <View style={{ backgroundColor: "#535353", position: "relative" }}>
                 <TextInput
@@ -138,9 +117,9 @@ const Search = () => {
                 />
                 <TouchableOpacity
                     onPress={() => setSearch("")}
-                    style={{ position: "absolute", right: 20, top: 10 }}
+                    className="absolute right-[20px] top-[10px]"
                 >
-                    <Text style={{ color: "#fff", fontSize: 18 }}>X</Text>
+                    <Text className="text-white text-[18px]">X</Text>
                 </TouchableOpacity>
             </View>
             <ScrollView

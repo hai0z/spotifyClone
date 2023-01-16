@@ -84,6 +84,10 @@ const AlbumAndArtist = () => {
 
     const memo = React.useCallback(() => displayAnimation(), []);
 
+    const songImg = data.some((song: Song) => song.key == currentSong.key)
+        ? currentSong.images.coverart
+        : data[Math.floor(Math.random() * data.length)].images.coverart;
+
     return (
         <View
             style={{
@@ -110,7 +114,6 @@ const AlbumAndArtist = () => {
                         onPress={() => {
                             setIsSearching(false);
                             inputRef.current?.blur();
-
                             setSearchValue("");
                             setSearchResult(data);
                         }}
@@ -176,16 +179,7 @@ const AlbumAndArtist = () => {
                         {!isSearching && (
                             <Animated.Image
                                 source={{
-                                    uri: data.some(
-                                        (song: Song) =>
-                                            song.key == currentSong.key
-                                    )
-                                        ? currentSong.images.coverart
-                                        : data[
-                                              Math.floor(
-                                                  Math.random() * data.length
-                                              )
-                                          ].images.coverart,
+                                    uri: songImg,
                                 }}
                                 style={{
                                     width: 300,

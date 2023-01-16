@@ -1,7 +1,6 @@
 import { Text, View, Image, TouchableOpacity } from "react-native";
 import React, { memo } from "react";
 import { Song } from "../../types/song";
-import usePlayerAnimation from "../../hooks/usePlayerAnimation";
 
 const SongComponent = ({
     song,
@@ -16,13 +15,7 @@ const SongComponent = ({
 
     return (
         <TouchableOpacity
-            style={{
-                flexDirection: "row",
-                alignItems: "center",
-                paddingLeft: 15,
-                paddingTop: 15,
-                elevation: 100,
-            }}
+            className="flex-row items-center pt-[15px] pl-[15px]"
             onPress={() => {
                 displayAnimation();
                 playSong(song);
@@ -30,35 +23,14 @@ const SongComponent = ({
         >
             <Image
                 source={{ uri: song.images.coverart }}
-                style={{
-                    width: 50,
-                    height: 50,
-                    resizeMode: "cover",
-                }}
+                className="h-[50px] w-[50px] "
             />
-            <View
-                style={{
-                    justifyContent: "center",
-                    marginLeft: 10,
-                    maxWidth: "80%",
-                }}
-            >
-                <Text
-                    style={{
-                        color: "#fff",
-                    }}
-                    numberOfLines={1}
-                >
+            <View className="justify-center ml-[10px] max-w-[80%]">
+                <Text className="text-white" numberOfLines={1}>
                     {song.title}
                 </Text>
 
-                <Text
-                    style={{
-                        color: "#fff",
-                    }}
-                >
-                    {song.subtitle}
-                </Text>
+                <Text className="text-white">{song.subtitle}</Text>
             </View>
         </TouchableOpacity>
     );

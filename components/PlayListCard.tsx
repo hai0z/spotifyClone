@@ -4,16 +4,7 @@ import { navigation } from "../types/RootStackParamList";
 import { Song } from "../types/song";
 import { useDispatch } from "react-redux";
 import { setCurrentSong, setPlaying } from "../redux/songSlice";
-type PlayList = {
-    title: string;
-    images: {
-        background: string;
-        coverart: string;
-    };
-    artists: {
-        alias: string;
-    }[];
-};
+
 interface IPlayListProp {
     playList: Song;
     type?: "song" | "artist";
@@ -45,11 +36,7 @@ const PlayListCard: React.FC<IPlayListProp> = ({
                 }
             }}
             activeOpacity={0.7}
-            style={{
-                marginLeft: 15,
-                flex: 1,
-                flexDirection: "column",
-            }}
+            className="flex-1 flex-col ml-[15px]"
         >
             <Image
                 source={{
@@ -64,7 +51,7 @@ const PlayListCard: React.FC<IPlayListProp> = ({
                     resizeMode: "cover",
                 }}
             />
-            <View style={{ width: 150 }}>
+            <View className="w-[150px]">
                 <Text
                     numberOfLines={2}
                     style={{

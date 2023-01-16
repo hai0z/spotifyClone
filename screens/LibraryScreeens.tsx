@@ -27,27 +27,18 @@ const LibraryScreeens = ({
                 </View>
                 <AntDesign name="plus" size={24} style={styles.plusIcon} />
             </View>
-            <View
-                // horizontal
-                style={{
-                    height: 40,
-                    flexDirection: "row",
-                    alignItems: "center",
-                }}
-            >
+            <View className="h-10 flex-row items-center">
                 {["Danh sách phát", "Nghệ sĩ"].map((item, index) => (
                     <View
                         key={index}
                         style={{
-                            height: 30,
                             borderWidth: 1,
                             borderColor: "#dbdbdb",
                             paddingHorizontal: 15,
                             borderRadius: 12,
                             marginHorizontal: 7,
-                            alignItems: "center",
-                            justifyContent: "center",
                         }}
+                        className="h-[30px] items-center justify-center"
                     >
                         <Text style={{ color: "#fff" }}>{item}</Text>
                     </View>
@@ -59,27 +50,16 @@ const LibraryScreeens = ({
                         navigation.navigate("ListFavourite");
                     }}
                     activeOpacity={0.8}
-                    style={{ flexDirection: "row", alignItems: "center" }}
+                    className="flex-row items-center"
                 >
                     <LinearGradient
                         colors={["blue", "#bdbdbd"]}
-                        style={{
-                            width: 80,
-                            height: 80,
-                            justifyContent: "center",
-                            alignItems: "center",
-                        }}
+                        className="w-20 h-20 justify-center items-center"
                     >
                         <Entypo name="heart" size={36} color="#fff" />
                     </LinearGradient>
                     <View style={{ marginLeft: 10 }}>
-                        <Text
-                            style={{
-                                color: "#fff",
-                                fontWeight: "bold",
-                                marginBottom: 5,
-                            }}
-                        >
+                        <Text className="text-white font-bold mb-[5px]">
                             Bài hát đã thích
                         </Text>
                         <Text style={{ color: "#bdbdbd" }}>

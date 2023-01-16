@@ -97,9 +97,6 @@ const MusicPlayer: React.FC<IMusciPayerProp> = ({ navigation }) => {
     return (
         <Animated.View
             style={{
-                position: "absolute",
-                width: "96%",
-                height: 55,
                 bottom: memo,
                 zIndex: 1,
                 transform: [
@@ -108,6 +105,7 @@ const MusicPlayer: React.FC<IMusciPayerProp> = ({ navigation }) => {
                     },
                 ],
             }}
+            className={`absolute w-[96%] h-[55px] z-[1]`}
         >
             <TouchableOpacity
                 activeOpacity={1}
@@ -116,44 +114,26 @@ const MusicPlayer: React.FC<IMusciPayerProp> = ({ navigation }) => {
                 }}
                 style={{
                     backgroundColor: `#${joeColor}`,
-                    flexDirection: "column",
-                    borderRadius: 7,
-                    justifyContent: "center",
-                    width: "100%",
-                    height: "100%",
                 }}
+                className="flex-col rounded-lg justify-center w-[100%] h-[100%]"
             >
-                <View
-                    style={{
-                        flexDirection: "row",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                    }}
-                >
+                <View className="flex-row justify-between items-center">
                     <View>
                         <Image
                             source={{
                                 uri: currentSong?.images?.coverart,
                             }}
-                            style={{
-                                resizeMode: "cover",
-                                width: 40,
-                                height: 40,
-                                borderRadius: 7,
-                                marginLeft: 7,
-                                zIndex: 1111,
-                            }}
+                            className="object-cover w-10 h-10 rounded-lg ml-[7px] z-50"
                         />
                     </View>
                     <View style={{ marginLeft: 10, maxWidth: "60%" }}>
                         <Animated.Text
                             numberOfLines={1}
                             style={{
-                                color: "#fff",
-                                fontWeight: "600",
                                 transform: [{ translateX }],
                                 opacity,
                             }}
+                            className="text-white font-semibold "
                         >
                             {currentSong?.title}
                         </Animated.Text>
@@ -168,14 +148,7 @@ const MusicPlayer: React.FC<IMusciPayerProp> = ({ navigation }) => {
                             {currentSong?.subtitle}
                         </Animated.Text>
                     </View>
-                    <View
-                        style={{
-                            marginLeft: "auto",
-                            flexDirection: "row",
-                            alignItems: "center",
-                            justifyContent: "space-between",
-                        }}
-                    >
+                    <View className="ml-auto flex-row items-center justify-between">
                         <TouchableOpacity>
                             <AntDesign
                                 onPress={() => addToLikedList(currentSong)}
@@ -205,25 +178,17 @@ const MusicPlayer: React.FC<IMusciPayerProp> = ({ navigation }) => {
                 </View>
                 <View
                     style={{
-                        height: 2,
-                        marginTop: 0,
                         backgroundColor: "rgba(255,255,255,0.5)",
-                        marginHorizontal: 8,
-                        maxWidth: "100%",
-                        position: "relative",
-                        bottom: -4,
                         borderRadius: 2,
                     }}
+                    className="h-[2px] mt-0 max-w-[100%] relative bottom-[-4px] mx-[8px]"
                 >
                     <View
                         style={{
-                            height: 2,
-                            backgroundColor: "#fff",
-                            maxWidth: "100%",
-                            position: "absolute",
                             borderRadius: 2,
                             width: `${getProgress()}%`,
                         }}
+                        className="h-[2px] bg-[#fff] max-w-[100%] absolute"
                     />
                 </View>
             </TouchableOpacity>

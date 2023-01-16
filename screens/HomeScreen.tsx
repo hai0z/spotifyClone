@@ -83,11 +83,9 @@ export default function App({
                 <View
                     style={{
                         marginVertical: 10,
-                        flexWrap: "wrap",
-                        flexDirection: "row",
-                        justifyContent: "space-between",
                         marginHorizontal: 10,
                     }}
+                    className="mt-[10px] mb-0-[10px] flex-wrap flex-row justify-between mr-[10xp] ml-[10px]"
                 >
                     {playHistory.map((song, index) => (
                         <MiniPlayCard
@@ -98,14 +96,7 @@ export default function App({
                     ))}
                 </View>
                 <View style={{ marginVertical: 10 }}>
-                    <Text
-                        style={{
-                            color: "#fff",
-                            fontWeight: "bold",
-                            fontSize: 22,
-                            marginLeft: 15,
-                        }}
-                    >
+                    <Text className="text-white font-bold text-[22px] ml-[15px]">
                         Thịnh hành
                     </Text>
                     <ScrollView
@@ -126,14 +117,7 @@ export default function App({
                 </View>
 
                 <View style={{ marginVertical: 10 }}>
-                    <Text
-                        style={{
-                            color: "#fff",
-                            fontWeight: "bold",
-                            fontSize: 22,
-                            marginLeft: 15,
-                        }}
-                    >
+                    <Text className="text-white font-bold text-[22px] ml-[15px]">
                         Nghệ sĩ bạn thích
                     </Text>
                     <ScrollView
@@ -156,14 +140,7 @@ export default function App({
                 </View>
 
                 <View style={{ marginVertical: 10 }}>
-                    <Text
-                        style={{
-                            color: "#fff",
-                            fontWeight: "bold",
-                            fontSize: 22,
-                            marginLeft: 15,
-                        }}
-                    >
+                    <Text className="text-white font-bold text-[22px] ml-[15px]">
                         Hãy thử cách khác
                     </Text>
                     <ScrollView
@@ -183,14 +160,7 @@ export default function App({
                     </ScrollView>
                 </View>
                 <View style={{ marginVertical: 10 }}>
-                    <Text
-                        style={{
-                            color: "#fff",
-                            fontWeight: "bold",
-                            fontSize: 22,
-                            marginLeft: 15,
-                        }}
-                    >
+                    <Text className="text-white font-bold text-[22px] ml-[15px]">
                         Dành cho bạn
                     </Text>
                     <ScrollView

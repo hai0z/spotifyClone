@@ -11,32 +11,13 @@ const Header = () => {
             : timeNow >= 12 && timeNow < 18
             ? "Chào buổi chiều"
             : "Chào buổi tối";
+
     return (
-        <View
-            style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-            }}
-        >
-            <Text
-                style={{
-                    color: "#fff",
-                    fontWeight: "bold",
-                    fontSize: 22,
-                    marginLeft: 15,
-                }}
-            >
+        <View className="flex-row justify-between items-center">
+            <Text className="text-white font-bold text-[22px] ml-[15px]">
                 {greeting}
             </Text>
-            <View
-                style={{
-                    marginLeft: "auto",
-                    flexDirection: "row",
-                    justifyContent: "space-around",
-                    width: 150,
-                }}
-            >
+            <View className="ml-auto flex-row justify-around w-[150px]">
                 <FontAwesome5 name="bell" size={24} color="#fff" />
                 <FontAwesome5 name="clock" size={24} color="#fff" />
                 <Feather name="settings" size={24} color="#fff" />
