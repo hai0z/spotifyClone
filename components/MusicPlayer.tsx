@@ -11,7 +11,6 @@ import { AntDesign } from "@expo/vector-icons";
 import { useSongContext } from "../context/SongProvider";
 import { navigation } from "../types/RootStackParamList";
 import { useSelector } from "react-redux";
-
 import { RootState } from "../redux/store";
 import useSound from "../hooks/useSound";
 import { Song } from "../types/song";
@@ -34,12 +33,12 @@ const MusicPlayer: React.FC<IMusciPayerProp> = ({ navigation }) => {
 
     const { ListFavourite } = useSongContext();
 
-    const [joeColor, setJoeColor] = useState("ccc");
+    const [joeColor, setJoeColor] = useState("#cccccc");
 
     const { sound, onPlayPause } = useSound();
 
     const [isLiked, setIsLiked] = useState(
-        ListFavourite.some((s: any) => s.key == currentSong.key)
+        ListFavourite.some((s: Song) => s.key == currentSong.key)
     );
 
     const addToLikedList = async (likedSong: Song) => {
@@ -73,7 +72,7 @@ const MusicPlayer: React.FC<IMusciPayerProp> = ({ navigation }) => {
     };
 
     React.useEffect(() => {
-        setJoeColor(currentSong?.images?.joecolor?.split(":")?.[5]);
+        setJoeColor(`#${currentSong?.images?.joecolor?.split(":")?.[5]}`);
     }, [currentSong]);
 
     React.useEffect(() => {
@@ -98,7 +97,6 @@ const MusicPlayer: React.FC<IMusciPayerProp> = ({ navigation }) => {
         <Animated.View
             style={{
                 bottom: memo,
-                zIndex: 1,
                 transform: [
                     {
                         translateX: (SCREEN_WIDTH - SCREEN_WIDTH * 0.96) / 2,
@@ -112,9 +110,7 @@ const MusicPlayer: React.FC<IMusciPayerProp> = ({ navigation }) => {
                 onPress={() => {
                     navigation.navigate("MusicPlayer");
                 }}
-                style={{
-                    backgroundColor: `#${joeColor}`,
-                }}
+                style={{ backgroundColor: `${joeColor}` }}
                 className="flex-col rounded-lg justify-center w-[100%] h-[100%]"
             >
                 <View className="flex-row justify-between items-center">
@@ -129,32 +125,24 @@ const MusicPlayer: React.FC<IMusciPayerProp> = ({ navigation }) => {
                     <View style={{ marginLeft: 10, maxWidth: "60%" }}>
                         <Animated.Text
                             numberOfLines={1}
-                            style={{
-                                transform: [{ translateX }],
-                                opacity,
-                                fontSize: 14,
-                            }}
-                            className="text-white font-semibold "
+                            style={{ transform: [{ translateX }], opacity }}
+                            className="text-white font-semibold text-[14px] "
                         >
                             {currentSong?.title}
                         </Animated.Text>
                         <Animated.Text
-                            style={{
-                                color: "#fff",
-                                fontSize: 12,
-                                transform: [{ translateX }],
-                                opacity,
-                                fontWeight: "500",
-                            }}
+                            style={{ transform: [{ translateX }], opacity }}
                             numberOfLines={1}
+                            className="text-white text-[12px] font-normal"
                         >
                             {currentSong?.subtitle}
                         </Animated.Text>
                     </View>
                     <View className="ml-auto flex-row items-center justify-between">
-                        <TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={() => addToLikedList(currentSong)}
+                        >
                             <AntDesign
-                                onPress={() => addToLikedList(currentSong)}
                                 name={isLiked ? "heart" : "hearto"}
                                 size={24}
                                 color={isLiked ? "#13d670" : "#fff"}
@@ -186,11 +174,8 @@ const MusicPlayer: React.FC<IMusciPayerProp> = ({ navigation }) => {
                     className="h-[2px] mt-0 max-w-[100%] relative bottom-[-6px] mx-[8px] rounded-[2px]"
                 >
                     <View
-                        style={{
-                            borderRadius: 2,
-                            width: `${getProgress()}%`,
-                        }}
-                        className="h-[2px] bg-[#fff] max-w-[100%] absolute"
+                        style={{ width: `${getProgress()}%` }}
+                        className="h-[2px] bg-[#fff] max-w-[100%] absolute rounded-[2px]"
                     />
                 </View>
             </TouchableOpacity>

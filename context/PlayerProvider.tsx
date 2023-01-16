@@ -18,8 +18,6 @@ interface IPlayerContext {
     playSound: any;
     onPlayPause: any;
     playFromPosition: any;
-    // playerAnimation: Animated.Value;
-    // displayAnimation: () => void;
 }
 
 export const PlayerContext = createContext<IPlayerContext>(
@@ -107,9 +105,7 @@ function PlayerProvider({ children }: { children: React.ReactNode }) {
     async function playFromPosition(position: number) {
         if (!sound) return;
         if (musicState.isPlaying) {
-            await sound
-                .playFromPositionAsync(position)
-                .catch((err) => console.log(err));
+            await sound.playFromPositionAsync(position);
         } else {
             await sound
                 .setPositionAsync(position)

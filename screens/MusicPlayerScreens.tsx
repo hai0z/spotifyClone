@@ -6,28 +6,25 @@ import {
     TouchableOpacity,
     NativeSyntheticEvent,
     NativeScrollEvent,
-    StyleSheet,
 } from "react-native";
 import { Entypo, AntDesign } from "@expo/vector-icons";
-import { SimpleLineIcons } from "@expo/vector-icons";
 import React, { useEffect, useState } from "react";
 import { LinearGradient } from "expo-linear-gradient";
-import { FontAwesome } from "@expo/vector-icons";
-import Slider from "@react-native-community/slider";
+
 import { RootState } from "../redux/store";
 import { useSelector } from "react-redux";
 import { useSongContext } from "../context/SongProvider";
 import { db } from "../firebase/index";
-import useSound from "../hooks/useSound";
 import { Song } from "../types/song";
 import { useDispatch } from "react-redux";
 import { setCurrentSong } from "../redux/songSlice";
 import SongImage from "../components/MusicPlayer//SongImage";
 import { FlashList } from "@shopify/flash-list";
 import { navigation } from "../types/RootStackParamList";
+import Player from "../components/MusicPlayer/Player";
 
-const { width: SCREEN_WITH } = Dimensions.get("screen");
-
+const { width: SCREEN_WIDTH } = Dimensions.get("screen");
+const SCROLL_VIEW_HEIGHT = 350;
 interface IMusicPlayerScreenProps {
     navigation: navigation<"HomeTab">;
 }
@@ -35,7 +32,7 @@ interface IMusicPlayerScreenProps {
 const MusicPlayerScreens: React.FC<IMusicPlayerScreenProps> = ({
     navigation,
 }) => {
-    const { isLooping, setIsLooping, ListFavourite } = useSongContext();
+    const { ListFavourite } = useSongContext();
 
     const dispatch = useDispatch();
     const song = useSelector((state: RootState) => state.song.currentSong);
@@ -46,31 +43,7 @@ const MusicPlayerScreens: React.FC<IMusicPlayerScreenProps> = ({
     );
 
     const [isLiked, setIsLiked] = useState(
-        ListFavourite.some((s: any) => s.key == song.key)
-    );
-
-    const musicState = useSelector((state: RootState) => state.song.musicState);
-
-    const { onPlayPause, playFromPosition } = useSound();
-
-    let second: string | number = React.useMemo(() => {
-        return Math.floor((musicState.position / 1000) % 60);
-    }, [musicState.position]);
-
-    if (second < 10) {
-        second = "0" + second;
-    }
-    const min = React.useMemo(
-        () => Math.floor((musicState.position / 1000 / 60) % 60),
-        [musicState.position]
-    );
-
-    const totalTime = React.useMemo(
-        () =>
-            `${Math.floor((musicState.duration / 1000 / 60) % 60)}:${Math.floor(
-                (musicState.duration / 1000) % 60
-            )}`,
-        [song.key]
+        ListFavourite.some((s: Song) => s.key == song.key)
     );
 
     const memoListData = React.useMemo(() => ListFavourite, []);
@@ -106,7 +79,7 @@ const MusicPlayerScreens: React.FC<IMusicPlayerScreenProps> = ({
     function onChangeSong(e: NativeSyntheticEvent<NativeScrollEvent>) {
         const pageNum = Math.min(
             Math.max(
-                Math.floor(e.nativeEvent.contentOffset.x / SCREEN_WITH + 0.5) +
+                Math.floor(e.nativeEvent.contentOffset.x / SCREEN_WIDTH + 0.5) +
                     1,
                 0
             ),
@@ -127,12 +100,7 @@ const MusicPlayerScreens: React.FC<IMusicPlayerScreenProps> = ({
                 contentContainerStyle={{ paddingBottom: 50 }}
                 showsVerticalScrollIndicator={false}
             >
-                <View
-                    style={{
-                        paddingHorizontal: 15,
-                    }}
-                    className="mt-[35px] justify-between items-center flex-row"
-                >
+                <View className="mt-[35px] justify-between items-center flex-row px-[15px]">
                     <TouchableOpacity
                         onPress={() => navigation.goBack()}
                         hitSlop={{ top: 20, bottom: 20, left: 50, right: 50 }}
@@ -156,12 +124,10 @@ const MusicPlayerScreens: React.FC<IMusicPlayerScreenProps> = ({
                         onMomentumScrollEnd={onChangeSong}
                         ref={flatListRef}
                         showsHorizontalScrollIndicator={false}
-                        contentContainerStyle={{
-                            paddingTop: 65,
-                        }}
+                        contentContainerStyle={{ paddingTop: 65 }}
                         initialScrollIndex={currentSongIndex}
                         horizontal
-                        estimatedItemSize={SCREEN_WITH}
+                        estimatedItemSize={SCREEN_WIDTH}
                         pagingEnabled
                         data={memoListData}
                         renderItem={({ item }) => <SongImage item={item} />}
@@ -186,112 +152,7 @@ const MusicPlayerScreens: React.FC<IMusicPlayerScreenProps> = ({
                     </TouchableOpacity>
                 </View>
                 <View className="items-center mt-[15px]">
-                    <Slider
-                        style={{
-                            width: SCREEN_WITH - 40,
-                        }}
-                        minimumValue={0}
-                        maximumValue={100}
-                        thumbTintColor="#ffffff"
-                        minimumTrackTintColor="#ffffff"
-                        maximumTrackTintColor="rgba(255,255,255,0.5)"
-                        onSlidingComplete={(value) => {
-                            playFromPosition(
-                                (musicState.duration * value) / 100
-                            );
-                        }}
-                        value={
-                            (musicState.position / musicState.duration) * 100 ||
-                            0
-                        }
-                    />
-                    <View
-                        style={{ width: SCREEN_WITH - 70 }}
-                        className={`flex-row justify-between`}
-                    >
-                        <Text className="text-stone-300 font-semibold text-[12px]">
-                            {min}:{second}
-                        </Text>
-                        <Text className="text-white font-semibold text-[12px]">
-                            {totalTime}
-                        </Text>
-                    </View>
-                    <View
-                        style={{ width: SCREEN_WITH - 40 }}
-                        className="flex-row justify-between items-center mt-[5px]"
-                    >
-                        <TouchableOpacity style={styles.trackBtn}>
-                            <FontAwesome
-                                name="random"
-                                size={24}
-                                color="white"
-                            />
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                            style={styles.trackBtn}
-                            onPress={() => {
-                                currentSongIndex != 0 &&
-                                    dispatch(
-                                        setCurrentSong(
-                                            ListFavourite[currentSongIndex - 1]
-                                        )
-                                    );
-                            }}
-                        >
-                            <AntDesign
-                                name="stepbackward"
-                                size={32}
-                                color="white"
-                            />
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                            onPress={() => onPlayPause()}
-                            style={styles.playBtn}
-                        >
-                            <Entypo
-                                name={
-                                    !musicState.isPlaying
-                                        ? "controller-play"
-                                        : "controller-paus"
-                                }
-                                size={36}
-                                color="#000"
-                            />
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                            onPress={() => {
-                                if (
-                                    currentSongIndex ===
-                                    ListFavourite.length - 1
-                                ) {
-                                    dispatch(setCurrentSong(ListFavourite[0]));
-                                } else {
-                                    dispatch(
-                                        setCurrentSong(
-                                            ListFavourite[currentSongIndex + 1]
-                                        )
-                                    );
-                                }
-                            }}
-                            style={styles.trackBtn}
-                        >
-                            <AntDesign
-                                name="stepforward"
-                                size={32}
-                                color="white"
-                            />
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                            style={styles.trackBtn}
-                            onPress={() => setIsLooping(!isLooping)}
-                        >
-                            <SimpleLineIcons
-                                name="loop"
-                                size={24}
-                                color={isLooping ? "#13d670" : "white"}
-                            />
-                        </TouchableOpacity>
-                    </View>
+                    <Player />
                     <ScrollView
                         nestedScrollEnabled
                         contentContainerStyle={{
@@ -301,8 +162,8 @@ const MusicPlayerScreens: React.FC<IMusicPlayerScreenProps> = ({
                             marginHorizontal: 20,
                             borderRadius: 10,
                             marginTop: 40,
-                            height: 350,
-                            width: SCREEN_WITH * 0.9,
+                            height: SCROLL_VIEW_HEIGHT,
+                            width: SCREEN_WIDTH * 0.9,
                             paddingBottom: 50,
                             padding: 10,
                         }}
@@ -325,19 +186,3 @@ const MusicPlayerScreens: React.FC<IMusicPlayerScreenProps> = ({
 };
 
 export default MusicPlayerScreens;
-const styles = StyleSheet.create({
-    trackBtn: {
-        width: 60,
-        height: 60,
-        justifyContent: "center",
-        alignItems: "center",
-    },
-    playBtn: {
-        width: 60,
-        height: 60,
-        borderRadius: 30,
-        backgroundColor: "#fff",
-        justifyContent: "center",
-        alignItems: "center",
-    },
-});
