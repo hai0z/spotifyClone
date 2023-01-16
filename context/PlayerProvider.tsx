@@ -18,6 +18,7 @@ interface IPlayerContext {
     playSound: any;
     onPlayPause: any;
     playFromPosition: any;
+    updateLoopingStatus: (isLooping: boolean) => Promise<void>;
 }
 
 export const PlayerContext = createContext<IPlayerContext>(
@@ -112,6 +113,11 @@ function PlayerProvider({ children }: { children: React.ReactNode }) {
                 .catch((err) => console.log(err));
         }
     }
+    async function updateLoopingStatus(isLooping: boolean) {
+        await sound?.setStatusAsync({
+            isLooping,
+        });
+    }
     React.useEffect(() => {
         playSound();
     }, [currentSong]);
@@ -142,6 +148,7 @@ function PlayerProvider({ children }: { children: React.ReactNode }) {
                 playSound,
                 setSound,
                 playFromPosition,
+                updateLoopingStatus,
             }}
         >
             {children}

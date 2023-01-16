@@ -7,6 +7,7 @@ function useSound() {
         onPlaybackStatusUpdate,
         playSound,
         playFromPosition,
+        updateLoopingStatus,
     } = useContext(PlayerContext);
     return {
         sound,
@@ -14,6 +15,7 @@ function useSound() {
         onPlaybackStatusUpdate,
         playSound,
         playFromPosition,
+        updateLoopingStatus,
     };
 }
 

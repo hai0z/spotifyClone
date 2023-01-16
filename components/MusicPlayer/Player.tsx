@@ -25,7 +25,7 @@ const Player = () => {
     console.log("player-rerender");
     const { isLooping, setIsLooping, ListFavourite } = useSongContext();
 
-    const { playFromPosition, onPlayPause } = useSound();
+    const { playFromPosition, onPlayPause, updateLoopingStatus } = useSound();
 
     const dispatch = useDispatch();
 
@@ -143,7 +143,10 @@ const Player = () => {
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={styles.trackBtn}
-                    onPress={() => setIsLooping(!isLooping)}
+                    onPress={() => {
+                        setIsLooping(!isLooping);
+                        updateLoopingStatus(!isLooping);
+                    }}
                 >
                     <SimpleLineIcons
                         name="loop"
