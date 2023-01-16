@@ -15,11 +15,10 @@ import MiniPlayCard from "../components/MiniPlayCard";
 import { Song } from "../types/song";
 import usePlayerAnimation from "../hooks/usePlayerAnimation";
 
-export default function App({
-    navigation,
-}: {
+interface IHomeProps {
     navigation: navigation<"HomeTab">;
-}) {
+}
+export default function App({ navigation }: IHomeProps) {
     const [playList, setPlayList] = useState<Song[]>([]);
 
     const [track, setTrack] = useState<Song[]>([]);
@@ -80,13 +79,7 @@ export default function App({
                 }}
             >
                 <StatusBar style="light" />
-                <View
-                    style={{
-                        marginVertical: 10,
-                        marginHorizontal: 10,
-                    }}
-                    className="mt-[10px] mb-0-[10px] flex-wrap flex-row justify-between mr-[10xp] ml-[10px]"
-                >
+                <View className="mt-[10px] mb-0-[10px] flex-wrap flex-row justify-between mr-[10xp] ml-[10px] my-[10px] mx-[10px]">
                     {playHistory.map((song, index) => (
                         <MiniPlayCard
                             key={index}
@@ -95,8 +88,8 @@ export default function App({
                         />
                     ))}
                 </View>
-                <View style={{ marginVertical: 10 }}>
-                    <Text className="text-white font-bold text-[22px] ml-[15px]">
+                <View>
+                    <Text className="text-white font-bold text-[22px] ml-[15px] my-[10xp]">
                         Thịnh hành
                     </Text>
                     <ScrollView
@@ -139,8 +132,8 @@ export default function App({
                     </ScrollView>
                 </View>
 
-                <View style={{ marginVertical: 10 }}>
-                    <Text className="text-white font-bold text-[22px] ml-[15px]">
+                <View>
+                    <Text className="text-white font-bold text-[22px] ml-[15px] my-[10px]">
                         Hãy thử cách khác
                     </Text>
                     <ScrollView
@@ -159,7 +152,7 @@ export default function App({
                         })}
                     </ScrollView>
                 </View>
-                <View style={{ marginVertical: 10 }}>
+                <View style={{ marginVertical: 10 }} className="my-[10px]">
                     <Text className="text-white font-bold text-[22px] ml-[15px]">
                         Dành cho bạn
                     </Text>

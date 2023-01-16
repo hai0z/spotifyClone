@@ -44,7 +44,7 @@ const AlbumAndArtist = () => {
     }, []);
     const scrollY = React.useRef(new Animated.Value(0)).current;
     const songAnimated = React.useRef(new Animated.Value(1)).current;
-    const { setCurrentSong } = useSongContext();
+    // const { setCurrentSong } = useSongContext();
 
     const inputRange = [-150, 0, 120, 140];
     const scale = scrollY.interpolate({
@@ -117,16 +117,16 @@ const AlbumAndArtist = () => {
                         key={x.uri}
                         onPress={() => {
                             songScale();
-                            setCurrentSong({
-                                title: x.item.title,
-                                subtitle: x.item.subTitle,
-                                images: {
-                                    coverart: x.item.image,
-                                },
-                                hub: {
-                                    actions: [1, { uri: x.uri }],
-                                },
-                            });
+                            // setCurrentSong({
+                            //     title: x.item.title,
+                            //     subtitle: x.item.subTitle,
+                            //     images: {
+                            //         coverart: x.item.image,
+                            //     },
+                            //     hub: {
+                            //         actions: [1, { uri: x.uri }],
+                            //     },
+                            // });
                             setActiveSong(x.uri);
                         }}
                     >

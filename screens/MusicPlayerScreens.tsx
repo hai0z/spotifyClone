@@ -28,10 +28,12 @@ import { navigation } from "../types/RootStackParamList";
 
 const { width: SCREEN_WITH } = Dimensions.get("screen");
 
-const MusicPlayerScreens = ({
-    navigation,
-}: {
+interface IMusicPlayerScreenProps {
     navigation: navigation<"HomeTab">;
+}
+
+const MusicPlayerScreens: React.FC<IMusicPlayerScreenProps> = ({
+    navigation,
 }) => {
     const { isLooping, setIsLooping, ListFavourite } = useSongContext();
 
@@ -193,8 +195,10 @@ const MusicPlayerScreens = ({
                         thumbTintColor="#ffffff"
                         minimumTrackTintColor="#ffffff"
                         maximumTrackTintColor="rgba(255,255,255,0.5)"
-                        onSlidingComplete={(e) => {
-                            playFromPosition((musicState.duration * e) / 100);
+                        onSlidingComplete={(value) => {
+                            playFromPosition(
+                                (musicState.duration * value) / 100
+                            );
                         }}
                         value={
                             (musicState.position / musicState.duration) * 100 ||
@@ -205,33 +209,16 @@ const MusicPlayerScreens = ({
                         style={{ width: SCREEN_WITH - 70 }}
                         className={`flex-row justify-between`}
                     >
-                        <Text
-                            style={{
-                                color: "rgba(255,255,255,0.5)",
-                                fontWeight: "500",
-                                fontSize: 12,
-                            }}
-                        >
+                        <Text className="text-stone-300 font-semibold text-[12px]">
                             {min}:{second}
                         </Text>
-                        <Text
-                            style={{
-                                color: "#fff",
-                                fontWeight: "500",
-                                fontSize: 12,
-                            }}
-                        >
+                        <Text className="text-white font-semibold text-[12px]">
                             {totalTime}
                         </Text>
                     </View>
                     <View
-                        style={{
-                            flexDirection: "row",
-                            justifyContent: "space-between",
-                            width: SCREEN_WITH - 40,
-                            alignItems: "center",
-                            marginTop: 5,
-                        }}
+                        style={{ width: SCREEN_WITH - 40 }}
+                        className="flex-row justify-between items-center mt-[5px]"
                     >
                         <TouchableOpacity style={styles.trackBtn}>
                             <FontAwesome
@@ -323,11 +310,7 @@ const MusicPlayerScreens = ({
                         {song.sections?.[1].text?.map(
                             (l: string, i: number) => (
                                 <Text
-                                    style={{
-                                        color: "#ffff",
-                                        fontSize: 30,
-                                        fontWeight: "600",
-                                    }}
+                                    className="text-white text-[30px] font-semibold"
                                     key={i}
                                 >
                                     {l}

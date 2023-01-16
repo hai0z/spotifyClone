@@ -2,14 +2,15 @@ import { Text, View, Image, TouchableOpacity } from "react-native";
 import React, { memo } from "react";
 import { Song } from "../../types/song";
 
-const SongComponent = ({
-    song,
-    playSong,
-    displayAnimation,
-}: {
+interface ISongComponentProps {
     song: Song;
     playSong: (song: Song) => void;
     displayAnimation: () => void;
+}
+const SongComponent: React.FC<ISongComponentProps> = ({
+    song,
+    playSong,
+    displayAnimation,
 }) => {
     console.log("re-render-Songcomp1");
 

@@ -9,7 +9,10 @@ export const AnimationContext = createContext<IAnimationContext>(
     {} as IAnimationContext
 );
 
-const AnimationProvider = ({ children }: { children: ReactNode }) => {
+interface IAnimationProviderProps {
+    children: ReactNode;
+}
+const AnimationProvider = ({ children }: IAnimationProviderProps) => {
     const playerAnimation = useRef(new Animated.Value(50)).current;
 
     const displayAnimation = () => {

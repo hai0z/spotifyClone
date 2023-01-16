@@ -21,6 +21,7 @@ import SongList from "../components/MusicPlayer/SongList";
 import usePlayerAnimation from "../hooks/usePlayerAnimation";
 
 const { width: SCREEN_WITH } = Dimensions.get("screen");
+
 const AlbumAndArtist = () => {
     const scrollY = React.useRef(new Animated.Value(0)).current;
     const dispatch = useDispatch();

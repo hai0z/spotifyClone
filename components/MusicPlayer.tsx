@@ -132,6 +132,7 @@ const MusicPlayer: React.FC<IMusciPayerProp> = ({ navigation }) => {
                             style={{
                                 transform: [{ translateX }],
                                 opacity,
+                                fontSize: 14,
                             }}
                             className="text-white font-semibold "
                         >
@@ -140,8 +141,10 @@ const MusicPlayer: React.FC<IMusciPayerProp> = ({ navigation }) => {
                         <Animated.Text
                             style={{
                                 color: "#fff",
+                                fontSize: 12,
                                 transform: [{ translateX }],
                                 opacity,
+                                fontWeight: "500",
                             }}
                             numberOfLines={1}
                         >
@@ -179,9 +182,8 @@ const MusicPlayer: React.FC<IMusciPayerProp> = ({ navigation }) => {
                 <View
                     style={{
                         backgroundColor: "rgba(255,255,255,0.5)",
-                        borderRadius: 2,
                     }}
-                    className="h-[2px] mt-0 max-w-[100%] relative bottom-[-4px] mx-[8px]"
+                    className="h-[2px] mt-0 max-w-[100%] relative bottom-[-6px] mx-[8px] rounded-[2px]"
                 >
                     <View
                         style={{

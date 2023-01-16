@@ -11,13 +11,11 @@ import { useDispatch } from "react-redux";
 import { setCurrentSong, setPlaying } from "../redux/songSlice";
 const { width: SCREEN_WITH } = Dimensions.get("screen");
 
-const MiniPlayCard = ({
-    song,
-    displayAnimation,
-}: {
+interface IMiniCardProps {
     song: Song;
     displayAnimation: () => void;
-}) => {
+}
+const MiniPlayCard: React.FC<IMiniCardProps> = ({ song, displayAnimation }) => {
     const dispatch = useDispatch();
     console.log("playlistcardMini-rerender");
     return (

@@ -3,7 +3,10 @@ import React, { memo } from "react";
 import { Song } from "../../types/song";
 const { width: SCREEN_WITH } = Dimensions.get("screen");
 
-const SongImage = ({ item }: { item: Song }) => {
+interface ISongImageProps {
+    item: Song;
+}
+const SongImage: React.FC<ISongImageProps> = ({ item }) => {
     console.log("re-render-songImg");
     return (
         <Image

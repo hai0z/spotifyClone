@@ -3,14 +3,15 @@ import { FlashList } from "@shopify/flash-list";
 import { Song } from "../../types/song";
 import SongComponent from "./SongComponent";
 
-const SongList = ({
-    searchResult,
-    playSong,
-    displayAnimation,
-}: {
+interface ISongListProps {
     searchResult: Song[];
     playSong: (song: Song) => void;
     displayAnimation: () => void;
+}
+const SongList: React.FC<ISongListProps> = ({
+    searchResult,
+    playSong,
+    displayAnimation,
 }) => {
     console.log("re-render-songlist");
     return (

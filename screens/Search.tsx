@@ -14,13 +14,11 @@ import { Song } from "../types/song";
 import { useDispatch } from "react-redux";
 import { setCurrentSong, setPlaying } from "../redux/songSlice";
 
-const SearchResult = ({
-    data,
-    onPress,
-}: {
+interface ISearchResultProps {
     data: Song;
     onPress: () => void;
-}) => {
+}
+const SearchResult: React.FC<ISearchResultProps> = ({ data, onPress }) => {
     return (
         <TouchableOpacity
             onPress={onPress}
