@@ -31,14 +31,8 @@ const LibraryScreeens = ({
                 {["Danh sách phát", "Nghệ sĩ"].map((item, index) => (
                     <View
                         key={index}
-                        style={{
-                            borderWidth: 1,
-                            borderColor: "#dbdbdb",
-                            paddingHorizontal: 15,
-                            borderRadius: 12,
-                            marginHorizontal: 7,
-                        }}
-                        className="h-[30px] items-center justify-center"
+                        style={{ borderColor: "#dbdbdb" }}
+                        className="h-[30px] items-center justify-center mx-[7px] px-[15px] rounded-[12px] border"
                     >
                         <Text style={{ color: "#fff" }}>{item}</Text>
                     </View>

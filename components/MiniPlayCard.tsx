@@ -18,20 +18,23 @@ interface IMiniCardProps {
 const MiniPlayCard: React.FC<IMiniCardProps> = ({ song, displayAnimation }) => {
     const dispatch = useDispatch();
     console.log("playlistcardMini-rerender");
+
+    const handleClick = () => {
+        displayAnimation();
+        dispatch(setCurrentSong(song));
+        dispatch(
+            setPlaying({
+                isPlaying: true,
+                playFrom: "likedList",
+            })
+        );
+    };
+
     return (
         <TouchableOpacity
             style={styles.container}
             activeOpacity={0.9}
-            onPress={() => {
-                displayAnimation();
-                dispatch(setCurrentSong(song));
-                dispatch(
-                    setPlaying({
-                        isPlaying: true,
-                        playFrom: "other",
-                    })
-                );
-            }}
+            onPress={handleClick}
         >
             <Image
                 style={styles.songImg}

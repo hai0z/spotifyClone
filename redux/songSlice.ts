@@ -5,7 +5,6 @@ export interface ISongSlice {
     isPlaying: boolean;
     position: number;
     duration: number;
-    playFrom?: "album" | "likedList" | "other";
 }
 
 const songSlice = createSlice({
@@ -15,9 +14,8 @@ const songSlice = createSlice({
             isPlaying: false,
             position: 0,
             duration: 0,
-            playFrom: "likedList",
         } as ISongSlice,
-        currentSong: {} as Song & { sections?: any },
+        currentSong: {} as Song & { sections?: any[] },
         playFrom: "other",
     },
     reducers: {

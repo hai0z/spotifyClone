@@ -19,22 +19,23 @@ const PlayListCard: React.FC<IPlayListProp> = ({
 }) => {
     console.log("playlistcard-rerender");
     const dispatch = useDispatch();
+    const handleClick = () => {
+        if (type === "artist") {
+            return;
+        } else {
+            displayAnimation();
+            dispatch(setCurrentSong(playList));
+            dispatch(
+                setPlaying({
+                    isPlaying: true,
+                    playFrom: "likedList",
+                })
+            );
+        }
+    };
     return (
         <TouchableOpacity
-            onPress={() => {
-                if (type === "artist") {
-                    return;
-                } else {
-                    displayAnimation();
-                    dispatch(setCurrentSong(playList));
-                    dispatch(
-                        setPlaying({
-                            isPlaying: true,
-                            playFrom: "other",
-                        })
-                    );
-                }
-            }}
+            onPress={handleClick}
             activeOpacity={0.7}
             className="flex-1 flex-col ml-[15px]"
         >

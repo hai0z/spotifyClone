@@ -6,6 +6,7 @@ import {
     TouchableOpacity,
     NativeSyntheticEvent,
     NativeScrollEvent,
+    StyleSheet,
 } from "react-native";
 import { Entypo, AntDesign } from "@expo/vector-icons";
 import React, { useEffect, useState } from "react";
@@ -32,22 +33,22 @@ interface IMusicPlayerScreenProps {
 const MusicPlayerScreens: React.FC<IMusicPlayerScreenProps> = ({
     navigation,
 }) => {
-    const { ListFavourite } = useSongContext();
+    const { ListFavourite, isShuffle } = useSongContext();
+
+    const [playList] = React.useState<Song[]>(ListFavourite);
 
     const dispatch = useDispatch();
+
     const song = useSelector((state: RootState) => state.song.currentSong);
 
-    const currentSongIndex = React.useMemo(
-        () => ListFavourite.findIndex((s: Song) => s.key == song.key),
-        [song.key]
-    );
+    const currentSongIndex = playList.findIndex((s: Song) => s.key == song.key);
 
     const [isLiked, setIsLiked] = useState(
         ListFavourite.some((s: Song) => s.key == song.key)
     );
 
-    const memoListData = React.useMemo(() => ListFavourite, []);
     const songTitle = React.useMemo(() => song.title, [song.key]);
+
     const subTitle = React.useMemo(() => song.subtitle, [song.key]);
 
     const addToLikedList = async (likedSong: Song) => {
@@ -63,7 +64,7 @@ const MusicPlayerScreens: React.FC<IMusicPlayerScreenProps> = ({
             console.log(err.message);
         }
     };
-    const flatListRef = React.createRef<FlashList<any>>();
+    const flatListRef = React.createRef<FlashList<Song>>();
 
     useEffect(() => {
         setIsLiked(ListFavourite.some((s: Song) => s.key == song.key));
@@ -72,7 +73,7 @@ const MusicPlayerScreens: React.FC<IMusicPlayerScreenProps> = ({
     useEffect(() => {
         flatListRef.current?.scrollToIndex({
             index: currentSongIndex == -1 ? 0 : currentSongIndex,
-            animated: true,
+            animated: isShuffle ? false : true,
         });
     }, [song.key]);
 
@@ -129,7 +130,7 @@ const MusicPlayerScreens: React.FC<IMusicPlayerScreenProps> = ({
                         horizontal
                         estimatedItemSize={SCREEN_WIDTH}
                         pagingEnabled
-                        data={memoListData}
+                        data={playList}
                         renderItem={({ item }) => <SongImage item={item} />}
                     />
                 </View>
@@ -152,20 +153,14 @@ const MusicPlayerScreens: React.FC<IMusicPlayerScreenProps> = ({
                     </TouchableOpacity>
                 </View>
                 <View className="items-center mt-[15px]">
-                    <Player />
+                    <Player playList={playList} />
                     <ScrollView
                         nestedScrollEnabled
                         contentContainerStyle={{
+                            ...styles.scrollView,
                             backgroundColor: `#${
                                 song?.images?.joecolor?.split(":")[5]
                             }`,
-                            marginHorizontal: 20,
-                            borderRadius: 10,
-                            marginTop: 40,
-                            height: SCROLL_VIEW_HEIGHT,
-                            width: SCREEN_WIDTH * 0.9,
-                            paddingBottom: 50,
-                            padding: 10,
                         }}
                     >
                         {song.sections?.[1].text?.map(
@@ -186,3 +181,14 @@ const MusicPlayerScreens: React.FC<IMusicPlayerScreenProps> = ({
 };
 
 export default MusicPlayerScreens;
+const styles = StyleSheet.create({
+    scrollView: {
+        marginHorizontal: 20,
+        borderRadius: 10,
+        marginTop: 40,
+        height: SCROLL_VIEW_HEIGHT,
+        width: SCREEN_WIDTH * 0.9,
+        paddingBottom: 50,
+        padding: 10,
+    },
+});

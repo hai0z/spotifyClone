@@ -1,5 +1,4 @@
-import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import {
     Audio,
     AVPlaybackStatusSuccess,
@@ -12,12 +11,12 @@ import { setCurrentSong, updateSongState } from "../redux/songSlice";
 import React, { createContext } from "react";
 import { Song } from "../types/song";
 interface IPlayerContext {
-    sound: any;
-    setSound: any;
-    onPlaybackStatusUpdate: any;
-    playSound: any;
-    onPlayPause: any;
-    playFromPosition: any;
+    sound: Sound | null;
+    setSound: React.Dispatch<React.SetStateAction<Sound | null>>;
+    onPlaybackStatusUpdate: (status: AVPlaybackStatusSuccess) => void;
+    playSound: () => Promise<void>;
+    onPlayPause: () => Promise<void>;
+    playFromPosition: (position: number) => Promise<void>;
     updateLoopingStatus: (isLooping: boolean) => Promise<void>;
 }
 
@@ -118,6 +117,7 @@ function PlayerProvider({ children }: { children: React.ReactNode }) {
             isLooping,
         });
     }
+
     React.useEffect(() => {
         playSound();
     }, [currentSong]);
@@ -129,6 +129,7 @@ function PlayerProvider({ children }: { children: React.ReactNode }) {
               }
             : undefined;
     }, [sound]);
+
     React.useEffect(() => {
         Audio.setAudioModeAsync({
             allowsRecordingIOS: false,
@@ -139,6 +140,7 @@ function PlayerProvider({ children }: { children: React.ReactNode }) {
             interruptionModeAndroid: InterruptionModeAndroid.DoNotMix,
         });
     }, []);
+
     return (
         <PlayerContext.Provider
             value={{

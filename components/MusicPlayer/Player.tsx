@@ -11,7 +11,7 @@ import {
     Entypo,
     SimpleLineIcons,
     AntDesign,
-    FontAwesome,
+    Ionicons,
 } from "@expo/vector-icons";
 import { useSelector, useDispatch } from "react-redux";
 import useSound from "../../hooks/useSound";
@@ -21,9 +21,13 @@ import { useSongContext } from "../../context/SongProvider";
 import { setCurrentSong } from "../../redux/songSlice";
 const { width: SCREEN_WIDTH } = Dimensions.get("screen");
 
-const Player = () => {
+interface IPlayerProps {
+    playList: Song[];
+}
+const Player: React.FC<IPlayerProps> = ({ playList }) => {
     console.log("player-rerender");
-    const { isLooping, setIsLooping, ListFavourite } = useSongContext();
+    const { isLooping, setIsLooping, isShuffle, setIsShuffle } =
+        useSongContext();
 
     const { playFromPosition, onPlayPause, updateLoopingStatus } = useSound();
 
@@ -33,10 +37,7 @@ const Player = () => {
 
     const song = useSelector((state: RootState) => state.song.currentSong);
 
-    const currentSongIndex = React.useMemo(
-        () => ListFavourite.findIndex((s: Song) => s.key == song.key),
-        [song.key]
-    );
+    const currentSongIndex = playList.findIndex((s: Song) => s.key == song.key);
 
     let second: string | number = React.useMemo(() => {
         return Math.floor((musicState.position / 1000) % 60);
@@ -57,6 +58,30 @@ const Player = () => {
             )}`,
         [song.key]
     );
+
+    const handleNextSong = () => {
+        if (!isShuffle) {
+            if (currentSongIndex === playList.length - 1) {
+                dispatch(setCurrentSong(playList[0]));
+            } else {
+                dispatch(setCurrentSong(playList[currentSongIndex + 1]));
+            }
+        } else {
+            dispatch(
+                setCurrentSong(
+                    playList[Math.floor(Math.random() * playList.length)]
+                )
+            );
+        }
+    };
+    const handleLooping = () => {
+        setIsLooping(!isLooping);
+        updateLoopingStatus(!isLooping);
+    };
+    const handlePrevSong = () => {
+        currentSongIndex != 0 &&
+            dispatch(setCurrentSong(playList[currentSongIndex - 1]));
+    };
 
     return (
         <View className="items-center mt-[15px]">
@@ -95,19 +120,19 @@ const Player = () => {
                 style={{ width: SCREEN_WIDTH - 40 }}
                 className="flex-row justify-between items-center mt-[5px]"
             >
-                <TouchableOpacity style={styles.trackBtn}>
-                    <FontAwesome name="random" size={24} color="white" />
+                <TouchableOpacity
+                    style={styles.trackBtn}
+                    onPress={() => setIsShuffle(!isShuffle)}
+                >
+                    <Ionicons
+                        name="shuffle"
+                        size={28}
+                        color={isShuffle ? "#13d670" : "white"}
+                    />
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={styles.trackBtn}
-                    onPress={() => {
-                        currentSongIndex != 0 &&
-                            dispatch(
-                                setCurrentSong(
-                                    ListFavourite[currentSongIndex - 1]
-                                )
-                            );
-                    }}
+                    onPress={handlePrevSong}
                 >
                     <AntDesign name="stepbackward" size={32} color="white" />
                 </TouchableOpacity>
@@ -126,27 +151,14 @@ const Player = () => {
                     />
                 </TouchableOpacity>
                 <TouchableOpacity
-                    onPress={() => {
-                        if (currentSongIndex === ListFavourite.length - 1) {
-                            dispatch(setCurrentSong(ListFavourite[0]));
-                        } else {
-                            dispatch(
-                                setCurrentSong(
-                                    ListFavourite[currentSongIndex + 1]
-                                )
-                            );
-                        }
-                    }}
+                    onPress={handleNextSong}
                     style={styles.trackBtn}
                 >
                     <AntDesign name="stepforward" size={32} color="white" />
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={styles.trackBtn}
-                    onPress={() => {
-                        setIsLooping(!isLooping);
-                        updateLoopingStatus(!isLooping);
-                    }}
+                    onPress={handleLooping}
                 >
                     <SimpleLineIcons
                         name="loop"
