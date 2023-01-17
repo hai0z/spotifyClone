@@ -14,6 +14,7 @@ import MusicPlayer from "../components/MusicPlayer";
 import Search from "../screens/Search";
 import LibraryScreeens from "../screens/LibraryScreeens";
 import ListFavourite from "../screens/ListFavourite";
+import PlayHistoryScreen from "../screens/PlayHistory";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -27,6 +28,13 @@ const HomeTabScreen = () => {
         >
             <Stack.Screen name="HomeTab" component={HomeScreen} />
             <Stack.Screen name="Album" component={AlbumAndArtist} />
+            <Stack.Screen
+                name="History"
+                component={PlayHistoryScreen}
+                options={{
+                    animation: "none",
+                }}
+            />
         </Stack.Navigator>
     );
 };

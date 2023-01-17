@@ -1,11 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import {
-    Text,
-    View,
-    StyleSheet,
-    ScrollView,
-    RefreshControl,
-} from "react-native";
+import { Text, View, ScrollView, RefreshControl } from "react-native";
 import React, { useState, useLayoutEffect } from "react";
 import PlayListCard from "../components/PlayListCard";
 import Header from "../components/Header";
@@ -57,6 +51,7 @@ export default function App({ navigation }: IHomeProps) {
         });
         setPlayHistory(song.slice(0, 6));
     };
+
     useLayoutEffect(() => {
         getHistory();
         getData();
@@ -67,7 +62,7 @@ export default function App({ navigation }: IHomeProps) {
     return (
         <ScrollView
             showsVerticalScrollIndicator={false}
-            style={styles.container}
+            className="pt-[80px] flex-1 bg-[#121212] "
             refreshControl={
                 <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
             }
@@ -176,10 +171,3 @@ export default function App({ navigation }: IHomeProps) {
         </ScrollView>
     );
 }
-const styles = StyleSheet.create({
-    container: {
-        backgroundColor: "#121212",
-        flex: 1,
-        paddingTop: 80,
-    },
-});
