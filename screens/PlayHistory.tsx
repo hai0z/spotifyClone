@@ -41,6 +41,7 @@ const PlayHistory = () => {
     const handlePress = () => {
         navigation.goBack();
     };
+
     const [history, setHistory] = useState<Song[]>([]);
 
     const { displayAnimation } = usePlayerAnimation();
