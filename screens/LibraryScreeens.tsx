@@ -18,15 +18,27 @@ const LibraryScreeens = ({
     navigation: navigation<"HomeTab">;
 }) => {
     const { ListFavourite } = useSongContext();
+
     const [modalVisible, setModalVisible] = React.useState(false);
+
     const [PlayListManageVisible, setPlayListManageVisible] =
         React.useState(false);
+
     const [playList, setPlayList] = React.useState<IPlayList[]>([]);
+
+    const [selectedPlaylist, setSelectedPlaylist] = React.useState<string>("");
+
     const handleOpenModal = () => {
         setModalVisible(true);
     };
+
     const handleCloseModal = () => {
         setModalVisible(false);
+    };
+
+    const handleShowPlaylistManage = (playlistName: string) => {
+        setSelectedPlaylist(playlistName);
+        setPlayListManageVisible(true);
     };
     React.useEffect(() => {
         const getPlayList = () => {
@@ -76,7 +88,9 @@ const LibraryScreeens = ({
             <View style={{ flex: 1, marginHorizontal: 10, marginTop: 20 }}>
                 <TouchableOpacity
                     onPress={() => {
-                        navigation.navigate("ListFavourite");
+                        navigation.navigate("ListFavourite", {
+                            type: "favourite",
+                        });
                     }}
                     activeOpacity={0.8}
                     className="flex-row items-center"
@@ -99,7 +113,15 @@ const LibraryScreeens = ({
                 {playList.map((pl: IPlayList) => {
                     return (
                         <TouchableOpacity
-                            onLongPress={() => setPlayListManageVisible(true)}
+                            onPress={() =>
+                                navigation.navigate("ListFavourite", {
+                                    type: "playlist",
+                                    playlistName: pl.name,
+                                })
+                            }
+                            onLongPress={() =>
+                                handleShowPlaylistManage(pl.name)
+                            }
                             key={pl.name}
                             className="flex-row items-center pt-2"
                         >
@@ -125,7 +147,11 @@ const LibraryScreeens = ({
                 visible={modalVisible}
                 onClose={handleCloseModal}
             />
-            <PlayListManage visible={PlayListManageVisible} />
+            <PlayListManage
+                visible={PlayListManageVisible}
+                playListName={selectedPlaylist}
+                onClose={() => setPlayListManageVisible(false)}
+            />
         </View>
     );
 };

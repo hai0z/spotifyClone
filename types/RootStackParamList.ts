@@ -5,7 +5,10 @@ export type RootStackParamList = {
     HomeTab: undefined;
     Album: undefined;
     MusicPlayer: undefined;
-    ListFavourite: undefined;
+    ListFavourite: {
+        type: "favourite" | "playlist";
+        playlistName?: string;
+    };
     Lib: undefined;
     History: undefined;
 };
