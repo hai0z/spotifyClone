@@ -18,7 +18,7 @@ const Header: React.FC<IHeaderProps> = () => {
     const greeting =
         timeNow >= 5 && timeNow < 12
             ? "Chào buổi sáng"
-            : timeNow >= 12 && timeNow < 18
+            : timeNow >= 12 && timeNow < 17
             ? "Chào buổi chiều"
             : "Chào buổi tối";
 
@@ -26,7 +26,7 @@ const Header: React.FC<IHeaderProps> = () => {
         navigation?.navigate("History");
     };
     return (
-        <View className="flex-row justify-between items-center">
+        <View className="flex-row justify-between items-center pt-20">
             <Text className="text-white font-bold text-[22px] ml-[15px]">
                 {greeting}
             </Text>

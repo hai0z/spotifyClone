@@ -77,14 +77,11 @@ const AlbumAndArtist = ({ route }: { route: route<"ListFavourite"> }) => {
                     )
                 );
                 db.onSnapshot(q, (querySnapshot) => {
-                    const pl: any = [];
+                    const pl: Song[] = [];
                     querySnapshot.forEach((doc) => {
-                        pl.push({
-                            name: doc.data(),
-                        });
+                        pl.push(doc.data() as Song);
                     });
-                    setSearchResult(pl as any);
-                    console.log(pl);
+                    setSearchResult(pl as Song[]);
                 });
             };
             getPlayList();
@@ -253,7 +250,7 @@ const AlbumAndArtist = ({ route }: { route: route<"ListFavourite"> }) => {
                         </Text>
                     )}
                     <SongList
-                        searchResult={data}
+                        searchResult={searchResult}
                         playSong={playSong}
                         displayAnimation={memo}
                     />

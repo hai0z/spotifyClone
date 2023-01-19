@@ -8,6 +8,7 @@ import { db } from "../firebase";
 import MiniPlayCard from "../components/MiniPlayCard";
 import { Song } from "../types/song";
 import usePlayerAnimation from "../hooks/usePlayerAnimation";
+import { LinearGradient } from "expo-linear-gradient";
 
 interface IHomeProps {
     navigation: navigation<"HomeTab">;
@@ -62,21 +63,32 @@ export default function App({ navigation }: IHomeProps) {
     return (
         <ScrollView
             showsVerticalScrollIndicator={false}
-            className="pt-[80px] flex-1 bg-[#121212] "
+            className="flex-1 bg-[#121212] relative "
             refreshControl={
                 <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
             }
         >
-            <Header />
+            <View className="relative -z-1">
+                <LinearGradient
+                    className="w-full h-40"
+                    colors={["indigo", "#121212"]}
+                    start={{ x: 0.4, y: 0.1 }}
+                    end={{ x: 0.5, y: 0.75 }}
+                    style={{ zIndex: -1 }}
+                >
+                    <Header />
+                </LinearGradient>
+            </View>
             <ScrollView
+                className="z-10 -mt-10"
                 contentContainerStyle={{
                     paddingBottom: 170,
                 }}
             >
                 <StatusBar style="light" />
                 <View
-                    className="mt-[10px] mb-0-[10px] flex-wrap 
-                flex-row justify-between mr-[10xp] ml-[10px] my-[10px]
+                    className="mt-[10px]  flex-wrap 
+                flex-row justify-between ml-[10px] my-[10px]
                 mx-[10px]"
                 >
                     {playHistory.map((song, index) => (

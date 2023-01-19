@@ -2,6 +2,7 @@ import { View, Text, Modal, TextInput, TouchableOpacity } from "react-native";
 import React from "react";
 import { db } from "../../firebase";
 import { Song } from "../../types/song";
+import { useSongContext } from "../../context/SongProvider";
 
 interface IModalProps {
     visible: boolean;
@@ -10,7 +11,6 @@ interface IModalProps {
 const AddPlayListModal: React.FC<IModalProps> = ({ visible, onClose }) => {
     const inputRef = React.createRef<TextInput>();
     const [playListName, setPlaylistName] = React.useState<string>("");
-
     const createPlayList = async () => {
         try {
             await db.setDoc(

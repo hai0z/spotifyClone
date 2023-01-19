@@ -81,14 +81,12 @@ const MusicPlayer: React.FC<IMusciPayerProp> = ({ navigation }) => {
 
     const { playerAnimation } = usePlayerAnimation();
 
-    const memo = React.useMemo(() => playerAnimation, []);
-
-    const translateX = memo.interpolate({
+    const translateX = playerAnimation.interpolate({
         inputRange: [40, 45, 50],
         outputRange: [150, 50, 0],
     });
 
-    const opacity = memo.interpolate({
+    const opacity = playerAnimation.interpolate({
         inputRange: [40, 45, 50],
         outputRange: [0, 0.3, 1],
     });
@@ -96,7 +94,7 @@ const MusicPlayer: React.FC<IMusciPayerProp> = ({ navigation }) => {
     return (
         <Animated.View
             style={{
-                bottom: memo,
+                bottom: playerAnimation,
                 transform: [
                     {
                         translateX: (SCREEN_WIDTH - SCREEN_WIDTH * 0.96) / 2,
@@ -171,7 +169,7 @@ const MusicPlayer: React.FC<IMusciPayerProp> = ({ navigation }) => {
                     style={{
                         backgroundColor: "rgba(255,255,255,0.5)",
                     }}
-                    className="h-[2px] mt-0 max-w-[100%] relative bottom-[-6px] mx-[8px] rounded-[2px]"
+                    className="h-[2px] max-w-[100%] relative mx-[8px] bottom-[-6px]  rounded-[2px]"
                 >
                     <View
                         style={{ width: `${getProgress()}%` }}
