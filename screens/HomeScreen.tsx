@@ -74,7 +74,11 @@ export default function App({ navigation }: IHomeProps) {
                 }}
             >
                 <StatusBar style="light" />
-                <View className="mt-[10px] mb-0-[10px] flex-wrap flex-row justify-between mr-[10xp] ml-[10px] my-[10px] mx-[10px]">
+                <View
+                    className="mt-[10px] mb-0-[10px] flex-wrap 
+                flex-row justify-between mr-[10xp] ml-[10px] my-[10px]
+                mx-[10px]"
+                >
                     {playHistory.map((song, index) => (
                         <MiniPlayCard
                             key={index}

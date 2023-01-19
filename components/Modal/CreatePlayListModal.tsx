@@ -21,7 +21,6 @@ const AddPlayListModal: React.FC<IModalProps> = ({ visible, onClose }) => {
             );
             onClose();
         } catch (error: any) {
-            onClose();
             console.log(error.message);
         }
     };

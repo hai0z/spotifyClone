@@ -19,10 +19,14 @@ import { RootState } from "../redux/store";
 
 import SongList from "../components/MusicPlayer/SongList";
 import usePlayerAnimation from "../hooks/usePlayerAnimation";
+import { route } from "../types/RootStackParamList";
+import { db } from "../firebase";
 
 const { width: SCREEN_WITH } = Dimensions.get("screen");
 
-const AlbumAndArtist = () => {
+const AlbumAndArtist = ({ route }: { route: route<"ListFavourite"> }) => {
+    const { type, playlistName } = route.params;
+
     const scrollY = React.useRef(new Animated.Value(0)).current;
     const dispatch = useDispatch();
 
@@ -36,7 +40,7 @@ const AlbumAndArtist = () => {
 
     const [searchValue, setSearchValue] = useState("");
 
-    const [searchResult, setSearchResult] = useState(data);
+    const [searchResult, setSearchResult] = useState<Song[]>([]);
 
     const [isSearching, setIsSearching] = useState(false);
 
@@ -58,8 +62,33 @@ const AlbumAndArtist = () => {
         extrapolate: "clamp",
     });
 
-    useEffect(() => {
-        setSearchResult(data);
+    React.useEffect(() => {
+        if (type == "favourite") {
+            setSearchResult(data);
+            return;
+        }
+        if (type == "playlist") {
+            const getPlayList = () => {
+                const q = db.query(
+                    db.collection(
+                        db.getFirestore(),
+                        "playlist",
+                        `${playlistName}/playlist`
+                    )
+                );
+                db.onSnapshot(q, (querySnapshot) => {
+                    const pl: any = [];
+                    querySnapshot.forEach((doc) => {
+                        pl.push({
+                            name: doc.data(),
+                        });
+                    });
+                    setSearchResult(pl as any);
+                    console.log(pl);
+                });
+            };
+            getPlayList();
+        }
     }, []);
 
     const playSong = React.useCallback((song: Song) => {
@@ -224,7 +253,7 @@ const AlbumAndArtist = () => {
                         </Text>
                     )}
                     <SongList
-                        searchResult={searchResult}
+                        searchResult={data}
                         playSong={playSong}
                         displayAnimation={memo}
                     />
