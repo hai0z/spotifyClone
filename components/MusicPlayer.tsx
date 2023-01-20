@@ -117,7 +117,7 @@ const MusicPlayer: React.FC<IMusciPayerProp> = ({ navigation }) => {
                             source={{
                                 uri: currentSong?.images?.coverart,
                             }}
-                            className="object-cover w-10 h-10 rounded-lg ml-[7px] z-50"
+                            className="object-cover w-10 h-10 rounded-[5px] ml-[7px] z-50"
                         />
                     </View>
                     <View style={{ marginLeft: 10, maxWidth: "60%" }}>

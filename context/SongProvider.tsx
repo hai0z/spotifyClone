@@ -30,7 +30,7 @@ const SongProvider: FC<ISongProviderProp> = ({ children }) => {
     );
     const [nextSong, setNextSong] = useState<Song[]>([]);
 
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState<boolean>(false);
 
     const [ListFavourite, setListFavourite] = useState<Song[]>([]);
 
