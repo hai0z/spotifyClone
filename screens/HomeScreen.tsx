@@ -65,7 +65,7 @@ export default function App({ navigation }: IHomeProps) {
         timeNow >= 5 && timeNow < 12
             ? "#ffffff90"
             : timeNow >= 12 && timeNow < 17
-            ? "#ff7f5095"
+            ? "#ff7f5090"
             : "indigo";
 
     return (

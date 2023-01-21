@@ -15,7 +15,7 @@ const songSlice = createSlice({
             position: 0,
             duration: 0,
         } as ISongSlice,
-        currentSong: {} as Song & { sections?: any[] },
+        currentSong: {} as Song & { sections?: string[] | any[] },
         playFrom: "likedList",
     },
     reducers: {

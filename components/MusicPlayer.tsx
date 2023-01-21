@@ -109,7 +109,7 @@ const MusicPlayer: React.FC<IMusciPayerProp> = ({ navigation }) => {
                     navigation.navigate("MusicPlayer");
                 }}
                 style={{ backgroundColor: `${joeColor}` }}
-                className="flex-col rounded-lg justify-center w-[100%] h-[100%]"
+                className="flex-col rounded-md justify-center w-[100%] h-[100%]"
             >
                 <View className="flex-row justify-between items-center">
                     <View>

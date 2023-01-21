@@ -136,10 +136,7 @@ const Player: React.FC<IPlayerProps> = ({ playList }) => {
                 >
                     <AntDesign name="stepbackward" size={32} color="white" />
                 </TouchableOpacity>
-                <TouchableOpacity
-                    onPress={() => onPlayPause()}
-                    style={styles.playBtn}
-                >
+                <TouchableOpacity onPress={onPlayPause} style={styles.playBtn}>
                     <Entypo
                         name={
                             !musicState.isPlaying
