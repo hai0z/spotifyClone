@@ -23,7 +23,6 @@ import SongImage from "../components/MusicPlayer//SongImage";
 import { FlashList } from "@shopify/flash-list";
 import { navigation } from "../types/RootStackParamList";
 import Player from "../components/MusicPlayer/Player";
-import AddPlayListModal from "../components/Modal/CreatePlayListModal";
 import AddToPlaylist from "../components/Modal/AddToPlaylist";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("screen");
@@ -111,10 +110,10 @@ const MusicPlayerScreens: React.FC<IMusicPlayerScreenProps> = ({
                         <AntDesign name="down" size={24} color="#fff" />
                     </TouchableOpacity>
                     <View className="items-center justify-center">
-                        <Text className="text-white uppercase">
+                        <Text className="text-white uppercase text-[12px]">
                             Đang phát từ thư viện
                         </Text>
-                        <Text className="text-white font-bold">
+                        <Text className="text-white font-bold text-[12px]">
                             Bài hát đã thích
                         </Text>
                     </View>

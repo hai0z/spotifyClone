@@ -60,6 +60,14 @@ export default function App({ navigation }: IHomeProps) {
 
     const { displayAnimation } = usePlayerAnimation();
 
+    const timeNow = new Date().getHours();
+    const color =
+        timeNow >= 5 && timeNow < 12
+            ? "#ffffff90"
+            : timeNow >= 12 && timeNow < 17
+            ? "#ff7f5095"
+            : "indigo";
+
     return (
         <ScrollView
             showsVerticalScrollIndicator={false}
@@ -71,9 +79,9 @@ export default function App({ navigation }: IHomeProps) {
             <View className="relative -z-1">
                 <LinearGradient
                     className="w-full h-40"
-                    colors={["indigo", "#121212"]}
+                    colors={[color, "#121212"]}
                     start={{ x: 0.4, y: 0.1 }}
-                    end={{ x: 0.5, y: 0.75 }}
+                    end={{ x: 0.5, y: 0.9 }}
                     style={{ zIndex: -1 }}
                 >
                     <Header />
@@ -85,7 +93,7 @@ export default function App({ navigation }: IHomeProps) {
                     paddingBottom: 170,
                 }}
             >
-                <StatusBar style="light" />
+                <StatusBar style="light" backgroundColor="#00000070" animated />
                 <View
                     className="mt-[10px]  flex-wrap 
                 flex-row justify-between ml-[10px] my-[10px]
