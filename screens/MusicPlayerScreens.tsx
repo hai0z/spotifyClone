@@ -42,7 +42,10 @@ const MusicPlayerScreens: React.FC<IMusicPlayerScreenProps> = ({
 
     const song = useSelector((state: RootState) => state.song.currentSong);
 
-    const currentSongIndex = playList.findIndex((s: Song) => s.key == song.key);
+    const currentSongIndex = React.useMemo(
+        () => playList.findIndex((s: Song) => s.key == song.key),
+        [song.key]
+    );
 
     const [isLiked, setIsLiked] = useState(
         ListFavourite.some((s: Song) => s.key == song.key)
@@ -183,6 +186,7 @@ const MusicPlayerScreens: React.FC<IMusicPlayerScreenProps> = ({
 };
 
 export default MusicPlayerScreens;
+
 const styles = StyleSheet.create({
     scrollView: {
         marginHorizontal: 20,
