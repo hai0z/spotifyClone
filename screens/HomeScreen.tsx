@@ -81,7 +81,7 @@ export default function App({ navigation }: IHomeProps) {
                     className="w-full h-40"
                     colors={[color, "#121212"]}
                     start={{ x: 0.4, y: 0.1 }}
-                    end={{ x: 0.5, y: 0.9 }}
+                    end={{ x: 0.5, y: 0.75 }}
                     style={{ zIndex: -1 }}
                 >
                     <Header />
@@ -93,7 +93,7 @@ export default function App({ navigation }: IHomeProps) {
                     paddingBottom: 170,
                 }}
             >
-                <StatusBar style="light" backgroundColor="#00000070" animated />
+                <StatusBar style="light" />
                 <View
                     className="mt-[10px]  flex-wrap 
                 flex-row justify-between ml-[10px] my-[10px]
