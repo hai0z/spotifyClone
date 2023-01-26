@@ -49,7 +49,7 @@ const MusicPlayer: React.FC<IMusciPayerProp> = ({ navigation }) => {
                 "likedList",
                 currentSong.key
             );
-            if (ListFavourite.some((s: any) => s.key == likedSong.key)) {
+            if (ListFavourite.some((s: Song) => s.key == likedSong.key)) {
                 await db.deleteDoc(docRef);
             } else {
                 await db.setDoc(docRef, likedSong);
@@ -82,12 +82,12 @@ const MusicPlayer: React.FC<IMusciPayerProp> = ({ navigation }) => {
     const { playerAnimation } = usePlayerAnimation();
 
     const translateX = playerAnimation.interpolate({
-        inputRange: [40, 45, 50],
+        inputRange: [50, 60, 70],
         outputRange: [150, 50, 0],
     });
 
     const opacity = playerAnimation.interpolate({
-        inputRange: [40, 45, 50],
+        inputRange: [50, 60, 70],
         outputRange: [0, 0.3, 1],
     });
 
@@ -169,7 +169,7 @@ const MusicPlayer: React.FC<IMusciPayerProp> = ({ navigation }) => {
                     style={{
                         backgroundColor: "rgba(255,255,255,0.5)",
                     }}
-                    className="h-[2px] max-w-[100%] relative mx-[8px] bottom-[-6px]  rounded-[2px]"
+                    className="h-[2px] max-w-[100%] relative mx-[8px] bottom-[-6px] rounded-[2px]"
                 >
                     <View
                         style={{ width: `${getProgress()}%` }}

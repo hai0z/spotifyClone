@@ -3,9 +3,8 @@ import { View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import HomeScreen from "../screens/HomeScreen";
-import { Entypo } from "@expo/vector-icons";
+import { Entypo, MaterialIcons } from "@expo/vector-icons";
 import { FontAwesome } from "@expo/vector-icons";
-import { Ionicons } from "@expo/vector-icons";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { navigation, RootStackParamList } from "../types/RootStackParamList";
 import MusicPlayerScreens from "../screens/MusicPlayerScreens";
@@ -15,6 +14,7 @@ import Search from "../screens/Search";
 import LibraryScreeens from "../screens/LibraryScreeens";
 import ListFavourite from "../screens/ListFavourite";
 import PlayHistoryScreen from "../screens/PlayHistory";
+import { tabBarIconStyle, tabBarStyle } from "./style";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -55,6 +55,7 @@ const LibraryStack = () => {
         </Stack.Navigator>
     );
 };
+
 const HomeTab = () => {
     return (
         <Tab.Navigator
@@ -72,8 +73,8 @@ const HomeTab = () => {
                         );
                     } else if (route.name === "Library") {
                         return (
-                            <Ionicons
-                                name="library-outline"
+                            <MaterialIcons
+                                name="library-music"
                                 size={24}
                                 color={color}
                             />
@@ -81,18 +82,16 @@ const HomeTab = () => {
                     }
                 },
                 headerShown: false,
-                tabBarStyle: {
-                    position: "absolute",
-                    backgroundColor: "rgba(0,0,0,0.8)",
-                    borderTopWidth: 0,
-                    bottom: 0,
-                    right: 0,
-                    height: 50,
-                    width: "100%",
-                    zIndex: 2,
-                },
+                tabBarStyle: tabBarStyle as any,
                 tabBarActiveTintColor: "#fff",
                 tabBarInactiveTintColor: "gray",
+                tabBarIconStyle: {
+                    bottom: -5,
+                },
+                tabBarItemStyle: tabBarIconStyle as any,
+                tabBarLabelStyle: {
+                    bottom: 5,
+                },
             })}
         >
             <Tab.Screen

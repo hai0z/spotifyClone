@@ -13,18 +13,18 @@ interface IAnimationProviderProps {
     children: ReactNode;
 }
 const AnimationProvider = ({ children }: IAnimationProviderProps) => {
-    const playerAnimation = useRef(new Animated.Value(50)).current;
+    const playerAnimation = useRef(new Animated.Value(70)).current;
 
     const displayAnimation = () => {
         Animated.timing(playerAnimation, {
-            toValue: 35,
+            toValue: 45,
             duration: 150,
             useNativeDriver: false,
         }).start(() => displayAnimation2());
     };
     const displayAnimation2 = () => {
         Animated.timing(playerAnimation, {
-            toValue: 50,
+            toValue: 70,
             duration: 150,
             useNativeDriver: false,
         }).start();

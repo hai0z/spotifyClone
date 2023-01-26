@@ -114,10 +114,10 @@ const MusicPlayerScreens: React.FC<IMusicPlayerScreenProps> = ({
                         <AntDesign name="down" size={24} color="#fff" />
                     </TouchableOpacity>
                     <View className="items-center justify-center">
-                        <Text className="text-white uppercase">
+                        <Text className="text-white uppercase text-[12px]">
                             Đang phát từ thư viện
                         </Text>
-                        <Text className="text-white font-bold">
+                        <Text className="text-white font-bold text-[12px]">
                             Bài hát đã thích
                         </Text>
                     </View>

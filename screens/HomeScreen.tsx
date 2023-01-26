@@ -10,6 +10,12 @@ import { Song } from "../types/song";
 import usePlayerAnimation from "../hooks/usePlayerAnimation";
 import { LinearGradient } from "expo-linear-gradient";
 
+enum COLOR {
+    WHITE = "#ffffff90",
+    CORAL = "#ff7f5080",
+    INDIGO = "#33009970",
+}
+
 interface IHomeProps {
     navigation: navigation<"HomeTab">;
 }
@@ -61,12 +67,13 @@ export default function App({ navigation }: IHomeProps) {
     const { displayAnimation } = usePlayerAnimation();
 
     const timeNow = new Date().getHours();
+
     const color =
         timeNow >= 5 && timeNow < 12
-            ? "#ffffff90"
+            ? COLOR.WHITE
             : timeNow >= 12 && timeNow < 17
-            ? "#ff7f5090"
-            : "indigo";
+            ? COLOR.CORAL
+            : COLOR.INDIGO;
 
     return (
         <ScrollView
@@ -93,9 +100,9 @@ export default function App({ navigation }: IHomeProps) {
                     paddingBottom: 170,
                 }}
             >
-                <StatusBar style="light" />
+                <StatusBar style="light" backgroundColor="#00000050" />
                 <View
-                    className="mt-[10px]  flex-wrap 
+                    className="mt-[10px] flex-wrap 
                 flex-row justify-between ml-[10px] my-[10px]
                 mx-[10px]"
                 >
