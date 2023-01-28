@@ -6,6 +6,10 @@ export interface ISongSlice {
     position: number;
     duration: number;
 }
+interface IPlayFrom {
+    from: "album" | "library" | "search" | "related";
+    name: string;
+}
 
 const songSlice = createSlice({
     name: "song",
@@ -17,9 +21,9 @@ const songSlice = createSlice({
         } as ISongSlice,
         currentSong: {} as Song & { sections?: string[] | any[] },
         playFrom: {
-            from: "",
-            name: "",
-        },
+            from: "library",
+            name: "Bài hát đã thích",
+        } as IPlayFrom,
     },
     reducers: {
         updateSongState: (state, action) => {
@@ -33,10 +37,7 @@ const songSlice = createSlice({
             state,
             action: PayloadAction<{
                 isPlaying: boolean;
-                playFrom: {
-                    from: "album" | "likedList" | "search" | "related";
-                    name: string;
-                };
+                playFrom: IPlayFrom;
             }>
         ) => {
             state.musicState = {
