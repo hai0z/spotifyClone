@@ -5,14 +5,14 @@ export const tabBarStyle: StyleProp<ViewStyle> = {
     borderTopWidth: 0,
     bottom: 0,
     right: 0,
-    height: 70,
+    height: 65,
     width: "100%",
     zIndex: 2,
-    backgroundColor: "#00000075",
-    opacity: 0.9,
+    backgroundColor: "#00000050",
+    opacity: 0.95,
 };
 
-export const tabBarIconStyle: StyleProp<ViewStyle> = {
-    backgroundColor: "#00000075",
+export const tabBarItemStyle: StyleProp<ViewStyle> = {
+    backgroundColor: "#00000050",
     position: "relative",
 };

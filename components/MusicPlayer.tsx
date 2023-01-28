@@ -82,12 +82,12 @@ const MusicPlayer: React.FC<IMusciPayerProp> = ({ navigation }) => {
     const { playerAnimation } = usePlayerAnimation();
 
     const translateX = playerAnimation.interpolate({
-        inputRange: [50, 60, 70],
+        inputRange: [50, 58, 65],
         outputRange: [150, 50, 0],
     });
 
     const opacity = playerAnimation.interpolate({
-        inputRange: [50, 60, 70],
+        inputRange: [50, 58, 65],
         outputRange: [0, 0.3, 1],
     });
 
@@ -165,18 +165,18 @@ const MusicPlayer: React.FC<IMusciPayerProp> = ({ navigation }) => {
                         </TouchableOpacity>
                     </View>
                 </View>
-                <View
-                    style={{
-                        backgroundColor: "rgba(255,255,255,0.5)",
-                    }}
-                    className="h-[2px] max-w-[100%] relative mx-[8px] bottom-[-6px] rounded-[2px]"
-                >
-                    <View
-                        style={{ width: `${getProgress()}%` }}
-                        className="h-[2px] bg-[#fff] max-w-[100%] absolute rounded-l-[2px]"
-                    />
-                </View>
             </TouchableOpacity>
+            <View
+                style={{
+                    backgroundColor: "rgba(255,255,255,0.5)",
+                }}
+                className="h-[2px] max-w-[100%] relative mx-[8px] bottom-1 rounded-[2px]"
+            >
+                <View
+                    style={{ width: `${getProgress()}%` }}
+                    className="h-[2px] bg-[#fff] max-w-[100%] absolute rounded-l-[2px]"
+                />
+            </View>
         </Animated.View>
     );
 };

@@ -39,7 +39,7 @@ function PlayerProvider({ children }: { children: React.ReactNode }) {
     );
     const onPlaybackStatusUpdate = (status: AVPlaybackStatusSuccess) => {
         if (status.didJustFinish && !status.isLooping) {
-            if (playFrom == "likedList") {
+            if (playFrom.from == "likedList") {
                 const currentSongIndex: number = ListFavourite.findIndex(
                     (e: Song) => e.key == currentSong.key
                 );

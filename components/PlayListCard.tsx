@@ -28,7 +28,10 @@ const PlayListCard: React.FC<IPlayListProp> = ({
             dispatch(
                 setPlaying({
                     isPlaying: true,
-                    playFrom: "likedList",
+                    playFrom: {
+                        from: "likedList",
+                        name: "bài hát đã thích",
+                    },
                 })
             );
         }
@@ -52,7 +55,7 @@ const PlayListCard: React.FC<IPlayListProp> = ({
                     resizeMode: "cover",
                 }}
             />
-            <View className="w-[150px]">
+            <View className="w-[150px] mt-2">
                 <Text
                     numberOfLines={2}
                     style={{

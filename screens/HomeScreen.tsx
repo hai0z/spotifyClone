@@ -1,5 +1,11 @@
 import { StatusBar } from "expo-status-bar";
-import { Text, View, ScrollView, RefreshControl } from "react-native";
+import {
+    Text,
+    View,
+    ScrollView,
+    RefreshControl,
+    ActivityIndicator,
+} from "react-native";
 import React, { useState, useLayoutEffect } from "react";
 import PlayListCard from "../components/PlayListCard";
 import Header from "../components/Header";
@@ -11,7 +17,7 @@ import usePlayerAnimation from "../hooks/usePlayerAnimation";
 import { LinearGradient } from "expo-linear-gradient";
 
 enum COLOR {
-    WHITE = "#ffffff90",
+    WHITE = "#3cb37160",
     CORAL = "#ff7f5080",
     INDIGO = "#33009970",
 }
@@ -27,6 +33,8 @@ export default function App({ navigation }: IHomeProps) {
     const [playHistory, setPlayHistory] = useState<Song[]>([]);
 
     const [refreshing, setRefreshing] = React.useState(false);
+
+    const [loading, setLoading] = React.useState(true);
 
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
@@ -44,19 +52,21 @@ export default function App({ navigation }: IHomeProps) {
         });
         setTrack(track.sort(() => 0.5 - Math.random()).slice(0, 10));
         setPlayList(track.sort(() => 0.5 - Math.random()).slice(0, 10));
+        setLoading(false);
     };
 
     const getHistory = async () => {
         const song: Song[] = [];
         const q = db.query(
             db.collection(db.getFirestore(), "playHistory"),
-            db.orderBy("time", "desc")
+            db.orderBy("time", "desc"),
+            db.limit(6)
         );
         const querySnapshot = await db.getDocs(q);
         querySnapshot.forEach((doc) => {
             song.push(doc.data() as Song);
         });
-        setPlayHistory(song.slice(0, 6));
+        setPlayHistory(song);
     };
 
     useLayoutEffect(() => {
@@ -75,130 +85,140 @@ export default function App({ navigation }: IHomeProps) {
             ? COLOR.CORAL
             : COLOR.INDIGO;
 
-    return (
-        <ScrollView
-            showsVerticalScrollIndicator={false}
-            className="flex-1 bg-[#121212] relative "
-            refreshControl={
-                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-            }
-        >
-            <View className="relative -z-1">
-                <LinearGradient
-                    className="w-full h-40"
-                    colors={[color, "#121212"]}
-                    start={{ x: 0.4, y: 0.1 }}
-                    end={{ x: 0.5, y: 0.75 }}
-                    style={{ zIndex: -1 }}
-                >
-                    <Header />
-                </LinearGradient>
+    if (loading) {
+        return (
+            <View className="bg-black w-full h-full relative z-20 items-center justify-center">
+                <ActivityIndicator size="large" color="mediumseagreen" />
             </View>
+        );
+    } else
+        return (
             <ScrollView
-                className="z-10 -mt-10"
-                contentContainerStyle={{
-                    paddingBottom: 170,
-                }}
+                showsVerticalScrollIndicator={false}
+                className="flex-1 bg-[#121212] relative "
+                refreshControl={
+                    <RefreshControl
+                        refreshing={refreshing}
+                        onRefresh={onRefresh}
+                    />
+                }
             >
-                <StatusBar style="light" backgroundColor="#00000050" />
-                <View
-                    className="mt-[10px] flex-wrap 
+                <View className="relative -z-1">
+                    <LinearGradient
+                        className="w-full h-40"
+                        colors={[color, "#121212"]}
+                        start={{ x: 0.4, y: 0.1 }}
+                        end={{ x: 0.5, y: 0.75 }}
+                        style={{ zIndex: -1 }}
+                    >
+                        <Header />
+                    </LinearGradient>
+                </View>
+                <ScrollView
+                    className="z-10 -mt-12"
+                    contentContainerStyle={{
+                        paddingBottom: 170,
+                    }}
+                >
+                    <StatusBar style="light" backgroundColor="#00000050" />
+                    <View
+                        className="mt-[10px] flex-wrap 
                 flex-row justify-between ml-[10px] my-[10px]
                 mx-[10px]"
-                >
-                    {playHistory.map((song, index) => (
-                        <MiniPlayCard
-                            key={index}
-                            song={song}
-                            displayAnimation={displayAnimation}
-                        />
-                    ))}
-                </View>
-                <View>
-                    <Text className="text-white font-bold text-[22px] ml-[15px] my-[10xp]">
-                        Thịnh hành
-                    </Text>
-                    <ScrollView
-                        horizontal
-                        showsHorizontalScrollIndicator={false}
-                        contentContainerStyle={{ marginVertical: 10 }}
                     >
-                        {playList?.map((pl: any, index: number) => {
-                            return (
-                                <PlayListCard
-                                    playList={pl}
-                                    key={index}
-                                    displayAnimation={displayAnimation}
-                                />
-                            );
-                        })}
-                    </ScrollView>
-                </View>
+                        {playHistory.map((song, index) => (
+                            <MiniPlayCard
+                                key={index}
+                                song={song}
+                                displayAnimation={displayAnimation}
+                            />
+                        ))}
+                    </View>
+                    <View className="mt-8">
+                        <Text className="text-white font-bold text-[22px] ml-[15px] mb-[10px]">
+                            Thịnh hành
+                        </Text>
+                        <ScrollView
+                            horizontal
+                            showsHorizontalScrollIndicator={false}
+                            contentContainerStyle={{ marginVertical: 10 }}
+                        >
+                            {playList?.map((pl: any, index: number) => {
+                                return (
+                                    <PlayListCard
+                                        playList={pl}
+                                        key={index}
+                                        displayAnimation={displayAnimation}
+                                    />
+                                );
+                            })}
+                        </ScrollView>
+                    </View>
 
-                <View style={{ marginVertical: 10 }}>
-                    <Text className="text-white font-bold text-[22px] ml-[15px]">
-                        Nghệ sĩ bạn thích
-                    </Text>
-                    <ScrollView
-                        horizontal
-                        showsHorizontalScrollIndicator={false}
-                        contentContainerStyle={{ marginVertical: 10 }}
-                    >
-                        {track?.map((pl: any, index: number) => {
-                            return (
-                                <PlayListCard
-                                    playList={pl}
-                                    type="artist"
-                                    key={index}
-                                    displayAnimation={displayAnimation}
-                                    navigation={navigation}
-                                />
-                            );
-                        })}
-                    </ScrollView>
-                </View>
+                    <View className="my-2">
+                        <Text className="text-white font-bold text-[22px] ml-[15px] mb-[10px]">
+                            Nghệ sĩ bạn thích
+                        </Text>
+                        <ScrollView
+                            horizontal
+                            showsHorizontalScrollIndicator={false}
+                            contentContainerStyle={{ marginVertical: 10 }}
+                        >
+                            {track?.map((pl: any, index: number) => {
+                                return (
+                                    <PlayListCard
+                                        playList={pl}
+                                        type="artist"
+                                        key={index}
+                                        displayAnimation={displayAnimation}
+                                        navigation={navigation}
+                                    />
+                                );
+                            })}
+                        </ScrollView>
+                    </View>
 
-                <View>
-                    <Text className="text-white font-bold text-[22px] ml-[15px] my-[10px]">
-                        Hãy thử cách khác
-                    </Text>
-                    <ScrollView
-                        horizontal
-                        showsHorizontalScrollIndicator={false}
-                        contentContainerStyle={{ marginVertical: 10 }}
-                    >
-                        {playList?.map((pl: any, index: number) => {
-                            return (
-                                <PlayListCard
-                                    playList={pl}
-                                    key={index}
-                                    displayAnimation={displayAnimation}
-                                />
-                            );
-                        })}
-                    </ScrollView>
-                </View>
-                <View style={{ marginVertical: 10 }} className="my-[10px]">
-                    <Text className="text-white font-bold text-[22px] ml-[15px]">
-                        Dành cho bạn
-                    </Text>
-                    <ScrollView
-                        showsHorizontalScrollIndicator={false}
-                        horizontal
-                        contentContainerStyle={{ marginVertical: 10 }}
-                    >
-                        {playList?.map((pl: any, index: number) => {
-                            return (
-                                <PlayListCard
-                                    playList={pl}
-                                    key={index}
-                                    displayAnimation={displayAnimation}
-                                />
-                            );
-                        })}
-                    </ScrollView>
-                </View>
+                    <View className="my-2">
+                        <Text className="text-white font-bold text-[22px] ml-[15px] mb-[10px] ">
+                            Hãy thử cách khác
+                        </Text>
+                        <ScrollView
+                            horizontal
+                            showsHorizontalScrollIndicator={false}
+                            contentContainerStyle={{ marginVertical: 10 }}
+                        >
+                            {playList?.map((pl: any, index: number) => {
+                                return (
+                                    <PlayListCard
+                                        playList={pl}
+                                        key={index}
+                                        displayAnimation={displayAnimation}
+                                    />
+                                );
+                            })}
+                        </ScrollView>
+                    </View>
+                    <View className="my-2">
+                        <Text className="text-white font-bold text-[22px] ml-[15px] mb-[10px]">
+                            Dành cho bạn
+                        </Text>
+                        <ScrollView
+                            showsHorizontalScrollIndicator={false}
+                            horizontal
+                            contentContainerStyle={{ marginVertical: 10 }}
+                        >
+                            {playList?.map((pl: any, index: number) => {
+                                return (
+                                    <PlayListCard
+                                        playList={pl}
+                                        key={index}
+                                        displayAnimation={displayAnimation}
+                                    />
+                                );
+                            })}
+                        </ScrollView>
+                    </View>
+                </ScrollView>
             </ScrollView>
-        </ScrollView>
-    );
+        );
 }

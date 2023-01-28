@@ -5,7 +5,7 @@ import {
     Dimensions,
     TextInput,
 } from "react-native";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Animated } from "react-native";
 import { useSongContext } from "../context/SongProvider";
 import { Song } from "../types/song";

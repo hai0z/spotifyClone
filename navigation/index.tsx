@@ -1,5 +1,5 @@
-import * as React from "react";
-import { View } from "react-native";
+import React from "react";
+import { StyleSheet, View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import HomeScreen from "../screens/HomeScreen";
@@ -14,8 +14,8 @@ import Search from "../screens/Search";
 import LibraryScreeens from "../screens/LibraryScreeens";
 import ListFavourite from "../screens/ListFavourite";
 import PlayHistoryScreen from "../screens/PlayHistory";
-import { tabBarIconStyle, tabBarStyle } from "./style";
-
+import { tabBarItemStyle, tabBarStyle } from "./style";
+import { BlurView } from "expo-blur";
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const Tab = createBottomTabNavigator();
@@ -82,13 +82,13 @@ const HomeTab = () => {
                     }
                 },
                 headerShown: false,
-                tabBarStyle: tabBarStyle as any,
+                tabBarStyle,
                 tabBarActiveTintColor: "#fff",
                 tabBarInactiveTintColor: "gray",
                 tabBarIconStyle: {
                     bottom: -5,
                 },
-                tabBarItemStyle: tabBarIconStyle as any,
+                tabBarItemStyle,
                 tabBarLabelStyle: {
                     bottom: 5,
                 },
