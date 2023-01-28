@@ -16,6 +16,7 @@ const SongList: React.FC<ISongListProps> = ({
     console.log("re-render-songlist");
     return (
         <FlashList
+            removeClippedSubviews
             data={searchResult}
             keyExtractor={(item) => item.key}
             estimatedItemSize={65}
