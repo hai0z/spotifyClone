@@ -50,7 +50,7 @@ const SearchResult: React.FC<ISearchResultProps> = ({ data, onPress }) => {
 const Search = () => {
     const [search, setSearch] = useState<string>("");
 
-    const searchDebounce = useDebounce(search, 3000);
+    const searchDebounce = useDebounce(search, 1500);
 
     const [searchData, setSearchData] = useState([] as any);
 
@@ -68,7 +68,15 @@ const Search = () => {
 
     const onPress = useCallback((song: Song) => {
         dispatch(setCurrentSong(song));
-        dispatch(setPlaying({ isPlaying: true, playFrom: "other" }));
+        dispatch(
+            setPlaying({
+                isPlaying: true,
+                playFrom: {
+                    from: "search",
+                    name: `Nội dung: ${search}`,
+                },
+            })
+        );
     }, []);
 
     useEffect(() => {
@@ -78,7 +86,7 @@ const Search = () => {
                 const { data }: AxiosResponse = await axios.request(options);
                 console.log(data);
                 setSearchData(
-                    data.tracks.hits.map((d: any) => ({
+                    data.tracks.hits.map((d: Song & { track: Song }) => ({
                         title: d.track.title,
                         subtitle: d.track.subtitle,
                         joecolor: d.track.images.joecolor,
