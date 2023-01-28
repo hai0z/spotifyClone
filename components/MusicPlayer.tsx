@@ -5,7 +5,7 @@ import {
     Dimensions,
     Animated,
 } from "react-native";
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import { Entypo } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
 import { useSongContext } from "../context/SongProvider";
@@ -14,17 +14,15 @@ import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import useSound from "../hooks/useSound";
 import { Song } from "../types/song";
-import { db } from "../firebase";
 import usePlayerAnimation from "../hooks/usePlayerAnimation";
-import addToLikedList from "../services/addToLikedList";
+import { addToLikedList } from "../services/firebaseService";
+
 const { width: SCREEN_WIDTH } = Dimensions.get("screen");
 interface IMusciPayerProp {
     navigation: navigation<"HomeTab">;
 }
 
 const MusicPlayer: React.FC<IMusciPayerProp> = ({ navigation }) => {
-    const progress = useRef<number>(0);
-
     const musicState = useSelector((state: RootState) => state.song.musicState);
 
     const currentSong = useSelector(
@@ -58,8 +56,7 @@ const MusicPlayer: React.FC<IMusciPayerProp> = ({ navigation }) => {
         ) {
             return 0;
         }
-        progress.current = (musicState.position / musicState.duration) * 100;
-        return progress.current;
+        return (musicState.position / musicState.duration) * 100;
     };
 
     React.useEffect(() => {

@@ -9,11 +9,10 @@ import {
 } from "react-native";
 import React, { useCallback, useEffect, useState } from "react";
 import useDebounce from "../hooks/useDebounce";
-import axios, { AxiosResponse } from "axios";
 import { Song } from "../types/song";
 import { useDispatch } from "react-redux";
 import { setCurrentSong, setPlaying } from "../redux/songSlice";
-import searchingSong from "../services/search";
+import { searchingSong } from "../services/firebaseService";
 
 interface ISearchResultProps {
     data: Song;

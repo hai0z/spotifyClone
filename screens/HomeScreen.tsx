@@ -14,14 +14,9 @@ import MiniPlayCard from "../components/MiniPlayCard";
 import { Song } from "../types/song";
 import usePlayerAnimation from "../hooks/usePlayerAnimation";
 import { LinearGradient } from "expo-linear-gradient";
-import getPlayHistory from "../services/getPlayHistory";
-import getSong from "../services/getSong";
-enum COLOR {
-    WHITE = "#3cb37160",
-    CORAL = "#ff7f5080",
-    INDIGO = "#33009970",
-}
+import { getPlayHistory, getSong } from "../services/firebaseService";
 
+import useHeaderColor from "../hooks/useHeaderColor";
 interface IHomeProps {
     navigation: navigation<"HomeTab">;
 }
@@ -62,14 +57,7 @@ export default function App({ navigation }: IHomeProps) {
 
     const { displayAnimation } = usePlayerAnimation();
 
-    const timeNow = new Date().getHours();
-
-    const color =
-        timeNow >= 5 && timeNow < 12
-            ? COLOR.WHITE
-            : timeNow >= 12 && timeNow < 17
-            ? COLOR.CORAL
-            : COLOR.INDIGO;
+    const headerColor = useHeaderColor();
 
     if (loading) {
         return (
@@ -92,7 +80,7 @@ export default function App({ navigation }: IHomeProps) {
                 <View className="relative -z-1">
                     <LinearGradient
                         className="w-full h-40"
-                        colors={[color, "#121212"]}
+                        colors={[headerColor, "#121212"]}
                         start={{ x: 0.4, y: 0.1 }}
                         end={{ x: 0.5, y: 0.75 }}
                         style={{ zIndex: -1 }}

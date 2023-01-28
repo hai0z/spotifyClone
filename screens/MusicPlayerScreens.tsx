@@ -23,7 +23,7 @@ import { FlashList } from "@shopify/flash-list";
 import { navigation } from "../types/RootStackParamList";
 import Player from "../components/MusicPlayer/Player";
 import AddToPlaylist from "../components/Modal/AddToPlaylist";
-import addToLikedList from "../services/addToLikedList";
+import { addToLikedList } from "../services/firebaseService";
 const { width: SCREEN_WIDTH } = Dimensions.get("screen");
 const SCROLL_VIEW_HEIGHT = 350;
 interface IMusicPlayerScreenProps {
