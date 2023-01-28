@@ -13,6 +13,7 @@ import axios, { AxiosResponse } from "axios";
 import { Song } from "../types/song";
 import { useDispatch } from "react-redux";
 import { setCurrentSong, setPlaying } from "../redux/songSlice";
+import searchingSong from "../services/search";
 
 interface ISearchResultProps {
     data: Song;
@@ -55,16 +56,6 @@ const Search = () => {
     const [searchData, setSearchData] = useState([] as any);
 
     const dispatch = useDispatch();
-    const options = {
-        method: "GET",
-        url: "https://shazam-core.p.rapidapi.com/v1/search/multi",
-        params: { query: `${search}`, search_type: "SONGS" },
-        headers: {
-            "X-RapidAPI-Key":
-                "25afd00c31msh690f22c6a3516c0p1799adjsn0eade0e56e0b",
-            "X-RapidAPI-Host": "shazam-core.p.rapidapi.com",
-        },
-    };
 
     const onPress = useCallback((song: Song) => {
         dispatch(setCurrentSong(song));
@@ -80,30 +71,16 @@ const Search = () => {
     }, []);
 
     useEffect(() => {
-        const fethSearch = async () => {
+        const fetchSearch = async () => {
             console.log(`searching...`);
             try {
-                const { data }: AxiosResponse = await axios.request(options);
-                console.log(data);
-                setSearchData(
-                    data.tracks.hits.map((d: Song & { track: Song }) => ({
-                        title: d.track.title,
-                        subtitle: d.track.subtitle,
-                        joecolor: d.track.images.joecolor,
-                        key: d.track.key,
-                        images: {
-                            background: d.track.images.background,
-                            coverart: d.track.images.coverart,
-                            joecolor: d.track.images.joecolor,
-                        },
-                        hub: d.track.hub,
-                    }))
-                );
+                const data = await searchingSong(search);
+                setSearchData(data);
             } catch (err: any) {
                 console.log(err.message);
             }
         };
-        if (searchDebounce) fethSearch();
+        if (searchDebounce) fetchSearch();
     }, [searchDebounce]);
     return (
         <KeyboardAvoidingView

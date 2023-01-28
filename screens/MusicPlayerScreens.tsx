@@ -15,7 +15,6 @@ import { LinearGradient } from "expo-linear-gradient";
 import { RootState } from "../redux/store";
 import { useSelector } from "react-redux";
 import { useSongContext } from "../context/SongProvider";
-import { db } from "../firebase/index";
 import { Song } from "../types/song";
 import { useDispatch } from "react-redux";
 import { setCurrentSong } from "../redux/songSlice";

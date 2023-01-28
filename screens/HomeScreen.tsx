@@ -10,7 +10,6 @@ import React, { useState } from "react";
 import PlayListCard from "../components/PlayListCard";
 import Header from "../components/Header";
 import { navigation } from "../types/RootStackParamList";
-import { db } from "../firebase";
 import MiniPlayCard from "../components/MiniPlayCard";
 import { Song } from "../types/song";
 import usePlayerAnimation from "../hooks/usePlayerAnimation";
