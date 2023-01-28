@@ -29,7 +29,7 @@ const PlayListCard: React.FC<IPlayListProp> = ({
                 setPlaying({
                     isPlaying: true,
                     playFrom: {
-                        from: "likedList",
+                        from: "library",
                         name: "bài hát đã thích",
                     },
                 })
