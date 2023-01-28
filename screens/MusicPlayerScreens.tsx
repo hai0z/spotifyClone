@@ -66,17 +66,15 @@ const MusicPlayerScreens: React.FC<IMusicPlayerScreenProps> = ({
     const flatListRef = React.createRef<FlashList<Song>>();
 
     useEffect(() => {
-        setIsLiked(ListFavourite.some((s: Song) => s.key == song.key));
-    }, [song, ListFavourite]);
-
-    useEffect(() => {
         flatListRef.current?.scrollToIndex({
             index: currentSongIndex == -1 ? 0 : currentSongIndex,
             animated: isShuffle ? false : true,
         });
     }, [song.key]);
 
-    function onChangeSong(e: NativeSyntheticEvent<NativeScrollEvent>) {
+    const swpipeToChangeSong = (
+        e: NativeSyntheticEvent<NativeScrollEvent>
+    ): void => {
         const pageNum = Math.min(
             Math.max(
                 Math.floor(e.nativeEvent.contentOffset.x / SCREEN_WIDTH + 0.5) +
@@ -87,7 +85,7 @@ const MusicPlayerScreens: React.FC<IMusicPlayerScreenProps> = ({
         );
         pageNum - 1 != currentSongIndex &&
             dispatch(setCurrentSong(ListFavourite[pageNum - 1]));
-    }
+    };
 
     return (
         <LinearGradient
@@ -121,7 +119,7 @@ const MusicPlayerScreens: React.FC<IMusicPlayerScreenProps> = ({
                     <FlashList
                         keyExtractor={(item) => item.key}
                         scrollEventThrottle={32}
-                        onMomentumScrollEnd={onChangeSong}
+                        onMomentumScrollEnd={swpipeToChangeSong}
                         ref={flatListRef}
                         showsHorizontalScrollIndicator={false}
                         contentContainerStyle={{ paddingTop: 65 }}
