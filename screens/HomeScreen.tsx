@@ -15,7 +15,8 @@ import MiniPlayCard from "../components/MiniPlayCard";
 import { Song } from "../types/song";
 import usePlayerAnimation from "../hooks/usePlayerAnimation";
 import { LinearGradient } from "expo-linear-gradient";
-
+import getPlayHistory from "../services/getPlayHistory";
+import getSong from "../services/getSong";
 enum COLOR {
     WHITE = "#3cb37160",
     CORAL = "#ff7f5080",
@@ -44,28 +45,14 @@ export default function App({ navigation }: IHomeProps) {
     }, []);
 
     const getData = async () => {
-        const q = db.query(db.collection(db.getFirestore(), "likedList"));
-        const track: Song[] = [];
-        const querySnapshot = await db.getDocs(q);
-        querySnapshot.forEach((doc) => {
-            track.push(doc.data() as Song);
-        });
-        setTrack(track.sort(() => 0.5 - Math.random()).slice(0, 10));
-        setPlayList(track.sort(() => 0.5 - Math.random()).slice(0, 10));
+        const data = await getSong();
+        setTrack(data.sort(() => 0.5 - Math.random()).slice(0, 10));
+        setPlayList(data.sort(() => 0.5 - Math.random()).slice(0, 10));
     };
 
     const getHistory = async () => {
-        const song: Song[] = [];
-        const q = db.query(
-            db.collection(db.getFirestore(), "playHistory"),
-            db.orderBy("time", "desc"),
-            db.limit(6)
-        );
-        const querySnapshot = await db.getDocs(q);
-        querySnapshot.forEach((doc) => {
-            song.push(doc.data() as Song);
-        });
-        setPlayHistory(song);
+        const data = await getPlayHistory();
+        setPlayHistory(data);
         setLoading(false);
     };
 
