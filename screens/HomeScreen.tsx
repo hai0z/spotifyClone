@@ -6,7 +6,7 @@ import {
     RefreshControl,
     ActivityIndicator,
 } from "react-native";
-import React, { useState, useLayoutEffect } from "react";
+import React, { useState } from "react";
 import PlayListCard from "../components/PlayListCard";
 import Header from "../components/Header";
 import { navigation } from "../types/RootStackParamList";
@@ -52,7 +52,6 @@ export default function App({ navigation }: IHomeProps) {
         });
         setTrack(track.sort(() => 0.5 - Math.random()).slice(0, 10));
         setPlayList(track.sort(() => 0.5 - Math.random()).slice(0, 10));
-        setLoading(false);
     };
 
     const getHistory = async () => {
@@ -67,9 +66,10 @@ export default function App({ navigation }: IHomeProps) {
             song.push(doc.data() as Song);
         });
         setPlayHistory(song);
+        setLoading(false);
     };
 
-    useLayoutEffect(() => {
+    React.useEffect(() => {
         getHistory();
         getData();
     }, []);

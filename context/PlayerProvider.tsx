@@ -27,7 +27,7 @@ export const PlayerContext = createContext<IPlayerContext>(
 function PlayerProvider({ children }: { children: React.ReactNode }) {
     const [sound, setSound] = React.useState<Sound | null>(null);
 
-    const { nextSong, isLooping, ListFavourite } = useSongContext();
+    const { isLooping, ListFavourite } = useSongContext();
 
     const dispatch = useDispatch();
 
@@ -39,7 +39,7 @@ function PlayerProvider({ children }: { children: React.ReactNode }) {
     );
     const onPlaybackStatusUpdate = (status: AVPlaybackStatusSuccess) => {
         if (status.didJustFinish && !status.isLooping) {
-            if (playFrom.from == "likedList") {
+            if (playFrom.from == "library") {
                 const currentSongIndex: number = ListFavourite.findIndex(
                     (e: Song) => e.key == currentSong.key
                 );
