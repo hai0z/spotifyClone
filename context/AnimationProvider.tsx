@@ -1,7 +1,7 @@
-import React, { useRef, createContext, ReactNode } from "react";
+import React, { useRef, createContext, ReactNode, ComponentProps } from "react";
 import { Animated } from "react-native";
 
-interface IAnimationContext {
+export interface IAnimationContext {
     playerAnimation: Animated.Value;
     displayAnimation: () => void;
 }
