@@ -78,6 +78,7 @@ const Player: React.FC<IPlayerProps> = ({ playList }) => {
         setIsLooping(!isLooping);
         updateLoopingStatus(!isLooping);
     };
+
     const handlePrevSong = () => {
         currentSongIndex != 0 &&
             dispatch(setCurrentSong(playList[currentSongIndex - 1]));

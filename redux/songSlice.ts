@@ -6,7 +6,7 @@ export interface ISongSlice {
     position: number;
     duration: number;
 }
-interface IPlayFrom {
+export interface IPlayFrom {
     from: "album" | "library" | "search" | "related";
     name: string;
 }

@@ -3,7 +3,7 @@ import React from "react";
 import { navigation } from "../types/RootStackParamList";
 import { Song } from "../types/song";
 import { useDispatch } from "react-redux";
-import { setCurrentSong, setPlaying } from "../redux/songSlice";
+import { IPlayFrom, setCurrentSong, setPlaying } from "../redux/songSlice";
 
 interface IPlayListProp {
     playList: Song;
@@ -18,24 +18,26 @@ const PlayListCard: React.FC<IPlayListProp> = ({
     displayAnimation,
 }) => {
     console.log("playlistcard-rerender");
+
     const dispatch = useDispatch();
-    const handleClick = () => {
-        if (type === "artist") {
-            return;
-        } else {
-            displayAnimation();
-            dispatch(setCurrentSong(playList));
-            dispatch(
-                setPlaying({
-                    isPlaying: true,
-                    playFrom: {
-                        from: "library",
-                        name: "bài hát đã thích",
-                    },
-                })
-            );
-        }
+
+    const playFrom: IPlayFrom = {
+        from: "library",
+        name: "bài hát đã thích",
     };
+
+    const handleClick = () => {
+        if (type === "artist") return;
+        displayAnimation();
+        dispatch(setCurrentSong(playList));
+        dispatch(
+            setPlaying({
+                isPlaying: true,
+                playFrom,
+            })
+        );
+    };
+
     return (
         <TouchableOpacity
             onPress={handleClick}
