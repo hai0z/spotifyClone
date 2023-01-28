@@ -23,9 +23,8 @@ import SongImage from "../components/MusicPlayer//SongImage";
 import { FlashList } from "@shopify/flash-list";
 import { navigation } from "../types/RootStackParamList";
 import Player from "../components/MusicPlayer/Player";
-import AddPlayListModal from "../components/Modal/CreatePlayListModal";
 import AddToPlaylist from "../components/Modal/AddToPlaylist";
-
+import addToLikedList from "../services/addToLikedList";
 const { width: SCREEN_WIDTH } = Dimensions.get("screen");
 const SCROLL_VIEW_HEIGHT = 350;
 interface IMusicPlayerScreenProps {
@@ -56,15 +55,10 @@ const MusicPlayerScreens: React.FC<IMusicPlayerScreenProps> = ({
 
     const subTitle = React.useMemo(() => song.subtitle, [song.key]);
 
-    const addToLikedList = async (likedSong: Song) => {
+    const handleAddToLikedList = async (likedSong: Song) => {
         setIsLiked(!isLiked);
         try {
-            const docRef = db.doc(db.getFirestore(), "likedList", song.key);
-            if (ListFavourite.some((s: Song) => s.key == likedSong.key)) {
-                await db.deleteDoc(docRef);
-            } else {
-                await db.setDoc(docRef, likedSong);
-            }
+            await addToLikedList(likedSong, song, ListFavourite);
         } catch (err: any) {
             console.log(err.message);
         }
@@ -148,7 +142,9 @@ const MusicPlayerScreens: React.FC<IMusicPlayerScreenProps> = ({
                             {subTitle}
                         </Text>
                     </View>
-                    <TouchableOpacity onPress={() => addToLikedList(song)}>
+                    <TouchableOpacity
+                        onPress={() => handleAddToLikedList(song)}
+                    >
                         <AntDesign
                             name={isLiked ? "heart" : "hearto"}
                             size={24}

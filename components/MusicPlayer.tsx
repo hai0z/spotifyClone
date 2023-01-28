@@ -16,7 +16,7 @@ import useSound from "../hooks/useSound";
 import { Song } from "../types/song";
 import { db } from "../firebase";
 import usePlayerAnimation from "../hooks/usePlayerAnimation";
-
+import addToLikedList from "../services/addToLikedList";
 const { width: SCREEN_WIDTH } = Dimensions.get("screen");
 interface IMusciPayerProp {
     navigation: navigation<"HomeTab">;
@@ -41,21 +41,12 @@ const MusicPlayer: React.FC<IMusciPayerProp> = ({ navigation }) => {
         ListFavourite.some((s: Song) => s.key == currentSong.key)
     );
 
-    const addToLikedList = async (likedSong: Song) => {
+    const handleAddToLikedList = async (likedSong: Song) => {
         setIsLiked(!isLiked);
         try {
-            const docRef = db.doc(
-                db.getFirestore(),
-                "likedList",
-                currentSong.key
-            );
-            if (ListFavourite.some((s: Song) => s.key == likedSong.key)) {
-                await db.deleteDoc(docRef);
-            } else {
-                await db.setDoc(docRef, likedSong);
-            }
+            await addToLikedList(likedSong, currentSong, ListFavourite);
         } catch (err: any) {
-            console.log(err.message);
+            console.log(err);
         }
     };
 
@@ -138,7 +129,7 @@ const MusicPlayer: React.FC<IMusciPayerProp> = ({ navigation }) => {
                     </View>
                     <View className="ml-auto flex-row items-center justify-between">
                         <TouchableOpacity
-                            onPress={() => addToLikedList(currentSong)}
+                            onPress={() => handleAddToLikedList(currentSong)}
                         >
                             <AntDesign
                                 name={isLiked ? "heart" : "hearto"}
