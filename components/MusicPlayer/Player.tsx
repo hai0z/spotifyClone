@@ -5,7 +5,7 @@ import {
     TouchableOpacity,
     StyleSheet,
 } from "react-native";
-import React from "react";
+import React, { useCallback, useMemo } from "react";
 import Slider from "@react-native-community/slider";
 import {
     Entypo,
@@ -24,8 +24,32 @@ const { width: SCREEN_WIDTH } = Dimensions.get("screen");
 interface IPlayerProps {
     playList: Song[];
 }
+
+const caculateTime = (duration: number, position: number) => {
+    let second: string | number = Math.floor((position / 1000) % 60);
+
+    if (second < 10) {
+        second = "0" + second;
+    }
+    const min = Math.floor((position / 1000 / 60) % 60);
+
+    let totalTimeSecond: string | number | any =
+        Math.floor(duration / 1000) % 60;
+
+    if (totalTimeSecond < 10) {
+        totalTimeSecond = "0" + totalTimeSecond;
+    }
+    const totalTime = `${Math.floor(
+        (duration / 1000 / 60) % 60
+    )}:${totalTimeSecond}`;
+
+    return {
+        min,
+        second,
+        totalTime,
+    };
+};
 const Player: React.FC<IPlayerProps> = ({ playList }) => {
-    console.log("player-rerender");
     const { isLooping, setIsLooping, isShuffle, setIsShuffle } =
         useSongContext();
 
@@ -39,25 +63,7 @@ const Player: React.FC<IPlayerProps> = ({ playList }) => {
 
     const currentSongIndex = playList.findIndex((s: Song) => s.key == song.key);
 
-    let second: string | number = React.useMemo(() => {
-        return Math.floor((musicState.position / 1000) % 60);
-    }, [musicState.position]);
-
-    if (second < 10) {
-        second = "0" + second;
-    }
-    const min = React.useMemo(
-        () => Math.floor((musicState.position / 1000 / 60) % 60),
-        [musicState.position]
-    );
-
-    const totalTime = React.useMemo(
-        () =>
-            `${Math.floor((musicState.duration / 1000 / 60) % 60)}:${Math.floor(
-                (musicState.duration / 1000) % 60
-            )}`,
-        [song.key]
-    );
+    const time = caculateTime(musicState.duration, musicState.position);
 
     const handleNextSong = () => {
         if (!isShuffle) {
@@ -83,10 +89,10 @@ const Player: React.FC<IPlayerProps> = ({ playList }) => {
         currentSongIndex != 0 &&
             dispatch(setCurrentSong(playList[currentSongIndex - 1]));
     };
-
     return (
         <View className="items-center mt-[15px]">
             <Slider
+                step={0.15}
                 style={{
                     width: SCREEN_WIDTH - 40,
                 }}
@@ -96,25 +102,19 @@ const Player: React.FC<IPlayerProps> = ({ playList }) => {
                 minimumTrackTintColor="#ffffff"
                 maximumTrackTintColor="rgba(255,255,255,0.5)"
                 onSlidingComplete={(value) => {
-                    playFromPosition(
-                        Math.floor(musicState.duration * value) / 100
-                    );
+                    playFromPosition((musicState.duration * value) / 100);
                 }}
-                value={
-                    Math.floor(
-                        (musicState.position / musicState.duration) * 100
-                    ) || 0
-                }
+                value={(musicState.position / musicState.duration) * 100 || 0}
             />
             <View
                 style={{ width: SCREEN_WIDTH - 70 }}
                 className={`flex-row justify-between`}
             >
                 <Text className="text-stone-300 font-semibold text-[12px]">
-                    {min}:{second}
+                    {time.min}:{time.second}
                 </Text>
                 <Text className="text-white font-semibold text-[12px]">
-                    {totalTime}
+                    {time.totalTime}
                 </Text>
             </View>
             <View
