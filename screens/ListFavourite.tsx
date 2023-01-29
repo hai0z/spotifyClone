@@ -24,7 +24,7 @@ import { db } from "../firebase";
 
 const { width: SCREEN_WITH } = Dimensions.get("screen");
 
-const AlbumAndArtist = ({ route }: { route: route<"ListFavourite"> }) => {
+const ListFavourite = ({ route }: { route: route<"ListFavourite"> }) => {
     const { type, playlistName } = route.params;
 
     const scrollY = React.useRef(new Animated.Value(0)).current;
@@ -90,7 +90,15 @@ const AlbumAndArtist = ({ route }: { route: route<"ListFavourite"> }) => {
 
     const playSong = React.useCallback((song: Song) => {
         dispatch(setCurrentSong(song));
-        dispatch(setPlaying({ isPlaying: true, playFrom: "likedList" }));
+        dispatch(
+            setPlaying({
+                isPlaying: true,
+                playFrom: {
+                    name: "Bài hát đã thích",
+                    from: "library",
+                },
+            })
+        );
     }, []);
 
     const onSearch = (songName: string) => {
@@ -116,21 +124,10 @@ const AlbumAndArtist = ({ route }: { route: route<"ListFavourite"> }) => {
         : data[Math.floor(Math.random() * data.length)].images.coverart;
 
     return (
-        <View
-            style={{
-                flex: 1,
-                justifyContent: "center",
-                backgroundColor: "#121212",
-                position: "relative",
-            }}
-        >
+        <View className="relative bg-[#121212] flex-1 justify-center">
             <View
+                className="pt-[50px] px-[15px] pb-[20px] flex-row items-center "
                 style={{
-                    paddingTop: 50,
-                    paddingHorizontal: 15,
-                    paddingBottom: 20,
-                    flexDirection: "row",
-                    alignItems: "center",
                     backgroundColor: `#${
                         currentSong?.images?.joecolor?.split(":")[5]
                     }CE`,
@@ -148,19 +145,12 @@ const AlbumAndArtist = ({ route }: { route: route<"ListFavourite"> }) => {
                         <AntDesign name="arrowleft" color={"#fff"} size={24} />
                     </TouchableOpacity>
                 )}
-                <Animated.View
-                    style={{
-                        width: "100%",
-                    }}
-                >
+                <Animated.View className="w-full">
                     <TextInput
                         placeholder="Tìm bài hát"
                         placeholderTextColor={"#fff"}
+                        className="bg-[#ffffff30] p-[5px] text-white rounded-md "
                         style={{
-                            backgroundColor: "rgba(255,255,255,0.3)",
-                            padding: 5,
-                            color: "#fff",
-                            borderRadius: 4,
                             marginLeft: isSearching ? 20 : 0,
                             width: isSearching ? "80%" : "100%",
                         }}
@@ -197,22 +187,15 @@ const AlbumAndArtist = ({ route }: { route: route<"ListFavourite"> }) => {
                     style={{ width: SCREEN_WITH }}
                 >
                     <Animated.View
-                        style={{
-                            justifyContent: "center",
-                            alignItems: "center",
-                            transform: [{ scale }],
-                        }}
+                        style={{ transform: [{ scale }] }}
+                        className="justify-center items-center"
                     >
                         {!isSearching && (
                             <Animated.Image
-                                source={{
-                                    uri: songImg,
-                                }}
+                                source={{ uri: songImg }}
+                                className="w-[300px] h-[300px] pb-[20px] "
                                 style={{
-                                    width: 300,
-                                    height: 300,
                                     resizeMode: "cover",
-                                    marginBottom: 20,
                                     opacity,
                                 }}
                             />
@@ -221,30 +204,13 @@ const AlbumAndArtist = ({ route }: { route: route<"ListFavourite"> }) => {
                 </LinearGradient>
 
                 <Animated.View
-                    style={{
-                        flex: 1,
-                        minHeight: "100%",
-                        transform: [{ translateY }],
-                    }}
+                    style={{ transform: [{ translateY }] }}
+                    className="min-h-screen"
                 >
                     {!isSearching && (
-                        <Text
-                            style={{
-                                color: "#fff",
-                                fontSize: 22,
-                                fontWeight: "bold",
-                                paddingLeft: 15,
-                            }}
-                        >
+                        <Text className="text-white text-[22px] font-bold pl-[15px]">
                             Bài hát đã thích{" "}
-                            <Text
-                                style={{
-                                    color: "#fff",
-                                    fontSize: 18,
-                                    fontWeight: "bold",
-                                    paddingLeft: 15,
-                                }}
-                            >
+                            <Text className="text-white text-[18px] font-bold pl-[15px]">
                                 ({data.length})
                             </Text>
                         </Text>
@@ -260,4 +226,4 @@ const AlbumAndArtist = ({ route }: { route: route<"ListFavourite"> }) => {
     );
 };
 
-export default AlbumAndArtist;
+export default ListFavourite;

@@ -16,6 +16,7 @@ const SongList: React.FC<ISongListProps> = ({
     console.log("re-render-songlist");
     return (
         <FlashList
+            nestedScrollEnabled
             removeClippedSubviews
             data={searchResult}
             keyExtractor={(item) => item.key}

@@ -160,7 +160,7 @@ const MusicPlayerScreens: React.FC<IMusicPlayerScreenProps> = ({
                     <Player />
                 </View>
                 <View
-                    className="mx-[20px] h-[350px] pb-[50px] mt-[40px] rounded-lg w-11/12 p-[10px]"
+                    className="mx-[20px] h-[350px]  mt-[40px] rounded-lg w-11/12 p-[10px]"
                     style={{
                         backgroundColor: `#${lyricBgColor}70`,
                     }}
