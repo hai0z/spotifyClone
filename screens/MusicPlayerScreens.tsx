@@ -23,6 +23,7 @@ import { navigation } from "../types/RootStackParamList";
 import Player from "../components/MusicPlayer/Player";
 import AddToPlaylist from "../components/Modal/AddToPlaylist";
 import { addToLikedList } from "../services/firebaseService";
+import randomColor from "../utils/randomColor";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("screen");
 const SCROLL_VIEW_HEIGHT = 350;
@@ -85,6 +86,10 @@ const MusicPlayerScreens: React.FC<IMusicPlayerScreenProps> = ({
         pageNum - 1 != currentSongIndex &&
             dispatch(setCurrentSong(ListFavourite[pageNum - 1]));
     };
+
+    React.useEffect(() => {
+        setIsLiked(ListFavourite.some((s: Song) => s.key == song.key));
+    }, [song.key, isLiked]);
 
     return (
         <LinearGradient
@@ -156,9 +161,7 @@ const MusicPlayerScreens: React.FC<IMusicPlayerScreenProps> = ({
                         nestedScrollEnabled
                         contentContainerStyle={{
                             ...styles.scrollView,
-                            backgroundColor: `#${
-                                song?.images?.joecolor?.split(":")[5]
-                            }`,
+                            backgroundColor: `#${randomColor()}`,
                         }}
                     >
                         {song.sections?.[1].text?.map(
