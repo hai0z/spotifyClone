@@ -60,12 +60,7 @@ const PlayListCard: React.FC<IPlayListProp> = ({
             <View className="w-[150px] mt-2">
                 <Text
                     numberOfLines={2}
-                    style={{
-                        fontWeight: "bold",
-                        color: "#fff",
-                        fontSize: 12,
-                        marginTop: 3,
-                    }}
+                    className="font-semibold text-white text-[12px] mt-[3px]"
                 >
                     {type == "artist" ? playList.subtitle : playList.title}
                 </Text>

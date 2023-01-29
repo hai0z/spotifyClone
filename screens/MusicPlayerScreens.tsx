@@ -11,7 +11,6 @@ import {
 import { Entypo, AntDesign } from "@expo/vector-icons";
 import React, { useEffect, useState } from "react";
 import { LinearGradient } from "expo-linear-gradient";
-
 import { RootState } from "../redux/store";
 import { useSelector } from "react-redux";
 import { useSongContext } from "../context/SongProvider";
@@ -24,6 +23,7 @@ import { navigation } from "../types/RootStackParamList";
 import Player from "../components/MusicPlayer/Player";
 import AddToPlaylist from "../components/Modal/AddToPlaylist";
 import { addToLikedList } from "../services/firebaseService";
+
 const { width: SCREEN_WIDTH } = Dimensions.get("screen");
 const SCROLL_VIEW_HEIGHT = 350;
 interface IMusicPlayerScreenProps {
@@ -151,7 +151,7 @@ const MusicPlayerScreens: React.FC<IMusicPlayerScreenProps> = ({
                     </TouchableOpacity>
                 </View>
                 <View className="items-center mt-[15px]">
-                    <Player playList={playList} />
+                    <Player />
                     <ScrollView
                         nestedScrollEnabled
                         contentContainerStyle={{
