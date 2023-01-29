@@ -1,9 +1,9 @@
 import { Text, View, Image, TouchableOpacity } from "react-native";
 import React from "react";
-import { navigation } from "../types/RootStackParamList";
-import { Song } from "../types/song";
+import { navigation } from "../../types/RootStackParamList";
+import { Song } from "../../types/song";
 import { useDispatch } from "react-redux";
-import { IPlayFrom, setCurrentSong, setPlaying } from "../redux/songSlice";
+import { IPlayFrom, setCurrentSong, setPlaying } from "../../redux/songSlice";
 
 interface IPlayListProp {
     playList: Song;

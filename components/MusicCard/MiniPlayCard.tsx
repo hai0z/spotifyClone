@@ -6,9 +6,9 @@ import {
     TouchableOpacity,
 } from "react-native";
 import React from "react";
-import { Song } from "../types/song";
+import { Song } from "../../types/song";
 import { useDispatch } from "react-redux";
-import { setCurrentSong, setPlaying } from "../redux/songSlice";
+import { setCurrentSong, setPlaying } from "../../redux/songSlice";
 const { width: SCREEN_WITH } = Dimensions.get("screen");
 
 interface IMiniCardProps {
@@ -25,7 +25,10 @@ const MiniPlayCard: React.FC<IMiniCardProps> = ({ song, displayAnimation }) => {
         dispatch(
             setPlaying({
                 isPlaying: true,
-                playFrom: "likedList",
+                playFrom: {
+                    from: "library",
+                    name: "Bài hát đã thích",
+                },
             })
         );
     };

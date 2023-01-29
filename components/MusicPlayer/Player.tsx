@@ -5,7 +5,7 @@ import {
     TouchableOpacity,
     StyleSheet,
 } from "react-native";
-import React, { useCallback, useMemo } from "react";
+import React from "react";
 import Slider from "@react-native-community/slider";
 import {
     Entypo,
@@ -19,36 +19,14 @@ import { RootState } from "../../redux/store";
 import { Song } from "../../types/song";
 import { useSongContext } from "../../context/SongProvider";
 import { setCurrentSong } from "../../redux/songSlice";
+import caculateTime from "../../utils/caculateMusicTime";
+
 const { width: SCREEN_WIDTH } = Dimensions.get("screen");
 
 interface IPlayerProps {
     playList: Song[];
 }
 
-const caculateTime = (duration: number, position: number) => {
-    let second: string | number = Math.floor((position / 1000) % 60);
-
-    if (second < 10) {
-        second = "0" + second;
-    }
-    const min = Math.floor((position / 1000 / 60) % 60);
-
-    let totalTimeSecond: string | number | any =
-        Math.floor(duration / 1000) % 60;
-
-    if (totalTimeSecond < 10) {
-        totalTimeSecond = "0" + totalTimeSecond;
-    }
-    const totalTime = `${Math.floor(
-        (duration / 1000 / 60) % 60
-    )}:${totalTimeSecond}`;
-
-    return {
-        min,
-        second,
-        totalTime,
-    };
-};
 const Player: React.FC<IPlayerProps> = ({ playList }) => {
     const { isLooping, setIsLooping, isShuffle, setIsShuffle } =
         useSongContext();
@@ -111,7 +89,7 @@ const Player: React.FC<IPlayerProps> = ({ playList }) => {
                 className={`flex-row justify-between`}
             >
                 <Text className="text-stone-300 font-semibold text-[12px]">
-                    {time.min}:{time.second}
+                    {time.currentMin}:{time.currentSecond}
                 </Text>
                 <Text className="text-white font-semibold text-[12px]">
                     {time.totalTime}

@@ -9,7 +9,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { navigation, RootStackParamList } from "../types/RootStackParamList";
 import MusicPlayerScreens from "../screens/MusicPlayerScreens";
 import AlbumAndArtist from "../screens/AlbumAndArtist";
-import MusicPlayer from "../components/MusicPlayer";
+import MusicPlayer from "../components/MusicPlayer/MusicPlayer";
 import Search from "../screens/Search";
 import LibraryScreeens from "../screens/LibraryScreeens";
 import ListFavourite from "../screens/ListFavourite";

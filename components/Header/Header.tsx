@@ -2,7 +2,7 @@ import { Text, TouchableOpacity, View } from "react-native";
 import React from "react";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
-import { navigation } from "../types/RootStackParamList";
+import { navigation } from "../../types/RootStackParamList";
 import { useNavigation } from "@react-navigation/native";
 
 interface IHeaderProps {

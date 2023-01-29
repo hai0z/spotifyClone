@@ -8,14 +8,14 @@ import {
 import React, { useState } from "react";
 import { Entypo } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
-import { useSongContext } from "../context/SongProvider";
-import { navigation } from "../types/RootStackParamList";
+import { useSongContext } from "../../context/SongProvider";
+import { navigation } from "../../types/RootStackParamList";
 import { useSelector } from "react-redux";
-import { RootState } from "../redux/store";
-import useSound from "../hooks/useSound";
-import { Song } from "../types/song";
-import usePlayerAnimation from "../hooks/usePlayerAnimation";
-import { addToLikedList } from "../services/firebaseService";
+import { RootState } from "../../redux/store";
+import useSound from "../../hooks/useSound";
+import { Song } from "../../types/song";
+import usePlayerAnimation from "../../hooks/usePlayerAnimation";
+import { addToLikedList } from "../../services/firebaseService";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("screen");
 interface IMusciPayerProp {

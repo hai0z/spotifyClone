@@ -7,10 +7,10 @@ import {
     ActivityIndicator,
 } from "react-native";
 import React, { useState } from "react";
-import PlayListCard from "../components/PlayListCard";
-import Header from "../components/Header";
+import PlayListCard from "../components/MusicCard/PlayListCard";
+import Header from "../components/Header/Header";
 import { navigation } from "../types/RootStackParamList";
-import MiniPlayCard from "../components/MiniPlayCard";
+import MiniPlayCard from "../components/MusicCard/MiniPlayCard";
 import { Song } from "../types/song";
 import usePlayerAnimation from "../hooks/usePlayerAnimation";
 import { LinearGradient } from "expo-linear-gradient";

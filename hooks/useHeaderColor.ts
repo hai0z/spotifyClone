@@ -2,7 +2,7 @@ import { useMemo } from "react";
 
 enum COLOR {
     WHITE = "#3cb37160",
-    CORAL = "#ff7f5080",
+    CORAL = "#6667AB95",
     INDIGO = "#33009970",
 }
 const useHeaderColor = () => {
