@@ -1,18 +1,22 @@
 import axios, { AxiosResponse } from "axios";
 import { db } from "../firebase";
 import { Song } from "../types/song";
+import {
+    REACT_APP_API,
+    REACT_APP_X_RapidAPI_Key,
+    REACT_APP_X_RapidAPI_Host,
+} from "@env";
 
 export const searchingSong = async (
     searchParams: string
 ): Promise<Song[] | undefined> => {
     const options = {
         method: "GET",
-        url: "https://shazam-core.p.rapidapi.com/v1/search/multi",
+        url: REACT_APP_API,
         params: { query: `${searchParams}`, search_type: "SONGS" },
         headers: {
-            "X-RapidAPI-Key":
-                "25afd00c31msh690f22c6a3516c0p1799adjsn0eade0e56e0b",
-            "X-RapidAPI-Host": "shazam-core.p.rapidapi.com",
+            "X-RapidAPI-Key": REACT_APP_X_RapidAPI_Key,
+            "X-RapidAPI-Host": REACT_APP_X_RapidAPI_Host,
         },
     };
     try {
