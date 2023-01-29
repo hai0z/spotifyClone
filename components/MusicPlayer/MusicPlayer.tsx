@@ -39,11 +39,8 @@ const MusicPlayer: React.FC<IMusciPayerProp> = ({ navigation }) => {
         ListFavourite.some((s: Song) => s.key == currentSong.key)
     );
 
-    React.useEffect(() => {
-        setIsLiked(ListFavourite.some((s: Song) => s.key == currentSong.key));
-    }, [currentSong.key, isLiked]);
-
     const handleAddToLikedList = async (likedSong: Song) => {
+        console.log("likeee");
         setIsLiked(!isLiked);
         try {
             await addToLikedList(likedSong, currentSong, ListFavourite);
@@ -62,6 +59,10 @@ const MusicPlayer: React.FC<IMusciPayerProp> = ({ navigation }) => {
         }
         return (musicState.position / musicState.duration) * 100;
     };
+
+    React.useEffect(() => {
+        setIsLiked(ListFavourite.some((s: Song) => s.key == currentSong.key));
+    }, [ListFavourite]);
 
     React.useEffect(() => {
         setJoeColor(`#${currentSong?.images?.joecolor?.split(":")?.[5]}`);

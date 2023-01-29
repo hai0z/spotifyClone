@@ -6,10 +6,9 @@ import {
     TouchableOpacity,
     NativeSyntheticEvent,
     NativeScrollEvent,
-    StyleSheet,
 } from "react-native";
 import { Entypo, AntDesign } from "@expo/vector-icons";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import { RootState } from "../redux/store";
 import { useSelector } from "react-redux";
@@ -24,9 +23,8 @@ import Player from "../components/MusicPlayer/Player";
 import AddToPlaylist from "../components/Modal/AddToPlaylist";
 import { addToLikedList } from "../services/firebaseService";
 import randomColor from "../utils/randomColor";
-
+import getLyric from "../hooks/lyric";
 const { width: SCREEN_WIDTH } = Dimensions.get("screen");
-const SCROLL_VIEW_HEIGHT = 350;
 interface IMusicPlayerScreenProps {
     navigation: navigation<"HomeTab">;
 }
@@ -46,6 +44,8 @@ const MusicPlayerScreens: React.FC<IMusicPlayerScreenProps> = ({
         () => playList.findIndex((s: Song) => s.key == song.key),
         [song.key]
     );
+
+    const lyric: string[] = getLyric(song.key);
 
     const [isLiked, setIsLiked] = useState(
         ListFavourite.some((s: Song) => s.key == song.key)
@@ -89,8 +89,9 @@ const MusicPlayerScreens: React.FC<IMusicPlayerScreenProps> = ({
 
     React.useEffect(() => {
         setIsLiked(ListFavourite.some((s: Song) => s.key == song.key));
-    }, [song.key, isLiked]);
+    }, [ListFavourite]);
 
+    const lyricBgColor = useMemo(() => randomColor(), [song.key]);
     return (
         <LinearGradient
             colors={[`#${song?.images?.joecolor?.split(":")[5]}`, "#000000"]}
@@ -157,24 +158,27 @@ const MusicPlayerScreens: React.FC<IMusicPlayerScreenProps> = ({
                 </View>
                 <View className="items-center mt-[15px]">
                     <Player />
-                    <ScrollView
+                </View>
+                <View
+                    className="mx-[20px] h-[350px] pb-[50px] mt-[40px] rounded-lg w-11/12 p-[10px]"
+                    style={{
+                        backgroundColor: `#${lyricBgColor}70`,
+                    }}
+                >
+                    <Text className="text-[20px] text-white font-semibold mb-2">
+                        Lời bài hát
+                    </Text>
+                    <FlashList
+                        estimatedItemSize={30}
+                        showsVerticalScrollIndicator
                         nestedScrollEnabled
-                        contentContainerStyle={{
-                            ...styles.scrollView,
-                            backgroundColor: `#${randomColor()}`,
-                        }}
-                    >
-                        {song.sections?.[1].text?.map(
-                            (l: string, i: number) => (
-                                <Text
-                                    className="text-white text-[30px] font-semibold"
-                                    key={i}
-                                >
-                                    {l}
-                                </Text>
-                            )
+                        data={lyric}
+                        renderItem={({ item }) => (
+                            <Text className="text-white text-[30px] font-semibold">
+                                {item}
+                            </Text>
                         )}
-                    </ScrollView>
+                    />
                 </View>
                 <AddToPlaylist />
             </ScrollView>
@@ -183,15 +187,3 @@ const MusicPlayerScreens: React.FC<IMusicPlayerScreenProps> = ({
 };
 
 export default MusicPlayerScreens;
-
-const styles = StyleSheet.create({
-    scrollView: {
-        marginHorizontal: 20,
-        borderRadius: 10,
-        marginTop: 40,
-        height: SCROLL_VIEW_HEIGHT,
-        width: SCREEN_WIDTH * 0.9,
-        paddingBottom: 50,
-        padding: 10,
-    },
-});
