@@ -16,19 +16,23 @@ export const searchingSong = async (
         },
     };
     try {
-        const { data }: AxiosResponse = await axios.request(options);
-        return data.tracks.hits.map((d: Song & { track: Song }) => ({
-            title: d.track.title,
-            subtitle: d.track.subtitle,
-            joecolor: d.track.images.joecolor,
-            key: d.track.key,
-            images: {
-                background: d.track.images.background,
-                coverart: d.track.images.coverart,
-                joecolor: d.track.images.joecolor,
-            },
-            hub: d.track.hub,
-        }));
+        const { data }: AxiosResponse<Song[] & { tracks: { hits: [] } }> =
+            await axios.request(options);
+
+        return data.tracks.hits.map(
+            (respone: Song & { track: Required<Song> }) => ({
+                title: respone.track.title,
+                subtitle: respone.track.subtitle,
+                joecolor: respone.track.images.joecolor,
+                key: respone.track.key,
+                images: {
+                    background: respone.track.images.background,
+                    coverart: respone.track.images.coverart,
+                    joecolor: respone.track.images.joecolor,
+                },
+                hub: respone.track.hub,
+            })
+        );
     } catch (err: any) {
         console.log(err.message);
     }
@@ -62,13 +66,18 @@ export const addToLikedList = async (
 };
 
 export const getPlayHistory = async (): Promise<Song[]> => {
+    const NUMBER_SONG_TO_TAKE = 6;
+
     const song: Song[] = [];
+
     const q = db.query(
         db.collection(db.getFirestore(), "playHistory"),
         db.orderBy("time", "desc"),
-        db.limit(6)
+        db.limit(NUMBER_SONG_TO_TAKE)
     );
+
     const querySnapshot = await db.getDocs(q);
+
     querySnapshot.forEach((doc) => {
         song.push(doc.data() as Song);
     });

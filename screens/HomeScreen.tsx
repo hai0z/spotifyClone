@@ -34,7 +34,6 @@ export default function App({ navigation }: IHomeProps) {
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
         getData();
-        getHistory();
         setRefreshing(false);
     }, []);
 

@@ -105,7 +105,7 @@ function PlayerProvider({ children }: { children: React.ReactNode }) {
     async function playFromPosition(position: number) {
         if (!sound) return;
         if (musicState.isPlaying) {
-            await sound.playFromPositionAsync(position);
+            await sound.playFromPositionAsync(Math.floor(position));
         } else {
             await sound
                 .setPositionAsync(position)

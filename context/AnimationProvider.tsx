@@ -1,4 +1,4 @@
-import React, { useRef, createContext, ReactNode, ComponentProps } from "react";
+import React, { useRef, createContext, ReactNode } from "react";
 import { Animated } from "react-native";
 
 export interface IAnimationContext {
