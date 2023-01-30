@@ -15,6 +15,7 @@ import LibraryScreeens from "../screens/LibraryScreeens";
 import ListFavourite from "../screens/ListFavourite";
 import PlayHistoryScreen from "../screens/PlayHistory";
 import { tabBarItemStyle, tabBarStyle } from "./style";
+import SplashScreens from "../screens/SplashScreens";
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const Tab = createBottomTabNavigator();
@@ -133,11 +134,21 @@ export default function App() {
     return (
         <NavigationContainer>
             <Stack.Navigator
+                initialRouteName="Splash"
                 screenOptions={{
                     headerShown: false,
                 }}
             >
-                <Stack.Screen name="HomeTab" component={HomeTabWrapper} />
+                <Stack.Screen name="Splash" component={SplashScreens} />
+
+                <Stack.Screen
+                    name="HomeTab"
+                    component={HomeTabWrapper}
+                    options={{
+                        animation: "none",
+                        customAnimationOnGesture: true,
+                    }}
+                />
                 <Stack.Screen
                     name="MusicPlayer"
                     options={{

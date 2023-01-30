@@ -11,6 +11,7 @@ export type RootStackParamList = {
     };
     Lib: undefined;
     History: undefined;
+    Splash: undefined;
 };
 
 export type RootStackProps<T extends keyof RootStackParamList> = {
