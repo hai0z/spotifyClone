@@ -6,11 +6,13 @@ interface ISongComponentProps {
     song: Song;
     playSong: (song: Song) => void;
     displayAnimation: () => void;
+    index: number;
 }
 const SongComponent: React.FC<ISongComponentProps> = ({
     song,
     playSong,
     displayAnimation,
+    index,
 }) => {
     console.log("re-render-Songcomp1");
 
@@ -28,7 +30,7 @@ const SongComponent: React.FC<ISongComponentProps> = ({
             />
             <View className="justify-center ml-[10px] max-w-[80%]">
                 <Text className="text-white" numberOfLines={1}>
-                    {song.title}
+                    {index}-{song.title}
                 </Text>
 
                 <Text className="text-white">{song.subtitle}</Text>

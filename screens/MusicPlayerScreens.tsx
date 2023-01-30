@@ -159,27 +159,29 @@ const MusicPlayerScreens: React.FC<IMusicPlayerScreenProps> = ({
                 <View className="items-center mt-[15px]">
                     <Player />
                 </View>
-                <View
-                    className="mx-[20px] h-[350px]  mt-[40px] rounded-lg w-11/12 p-[10px]"
-                    style={{
-                        backgroundColor: `#${lyricBgColor}70`,
-                    }}
-                >
-                    <Text className="text-[20px] text-white font-semibold mb-2">
-                        Lời bài hát
-                    </Text>
-                    <FlashList
-                        estimatedItemSize={30}
-                        showsVerticalScrollIndicator
-                        nestedScrollEnabled
-                        data={lyric}
-                        renderItem={({ item }) => (
-                            <Text className="text-white text-[30px] font-semibold">
-                                {item}
-                            </Text>
-                        )}
-                    />
-                </View>
+                {!!song.sections?.[1].text && (
+                    <View
+                        className="mx-[20px] h-[350px]  mt-[40px] rounded-lg w-11/12 p-[10px]"
+                        style={{
+                            backgroundColor: `#${lyricBgColor}70`,
+                        }}
+                    >
+                        <Text className="text-[18px] text-white font-semibold pb-4">
+                            Lời bài hát
+                        </Text>
+                        <FlashList
+                            estimatedItemSize={30}
+                            showsVerticalScrollIndicator
+                            nestedScrollEnabled
+                            data={song.sections?.[1].text}
+                            renderItem={({ item }: { item: string }) => (
+                                <Text className="text-white text-[24px] font-semibold">
+                                    {item}
+                                </Text>
+                            )}
+                        />
+                    </View>
+                )}
                 <AddToPlaylist />
             </ScrollView>
         </LinearGradient>

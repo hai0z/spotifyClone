@@ -40,7 +40,7 @@ const ListFavourite = ({ route }: { route: route<"ListFavourite"> }) => {
 
     const [searchValue, setSearchValue] = useState("");
 
-    const [searchResult, setSearchResult] = useState<Song[]>([]);
+    const [searchResult, setSearchResult] = useState<Song[]>(data);
 
     const [isSearching, setIsSearching] = useState(false);
 

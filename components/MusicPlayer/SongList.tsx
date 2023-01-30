@@ -21,9 +21,10 @@ const SongList: React.FC<ISongListProps> = ({
             data={searchResult}
             keyExtractor={(item) => item.key}
             estimatedItemSize={65}
-            renderItem={({ item }) => (
+            renderItem={({ item, index }) => (
                 <SongComponent
                     song={item}
+                    index={index}
                     playSong={playSong}
                     displayAnimation={displayAnimation}
                 />
