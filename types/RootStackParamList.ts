@@ -1,5 +1,6 @@
 import { RouteProp } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { Song } from "./song";
 
 export type RootStackParamList = {
     HomeTab: undefined;
@@ -12,6 +13,10 @@ export type RootStackParamList = {
     Lib: undefined;
     History: undefined;
     Splash: undefined;
+    Lyric: {
+        song: Song & { sections?: any };
+        bgColor: string;
+    };
 };
 
 export type RootStackProps<T extends keyof RootStackParamList> = {
