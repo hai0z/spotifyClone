@@ -13,6 +13,7 @@ import { setCurrentSong } from "../../../redux/songSlice";
 import SongImage from "./SongImage";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("screen");
+
 const ImageSlider = () => {
     const { ListFavourite, isShuffle } = useSongContext();
     const [playList] = React.useState<Song[]>(ListFavourite);

@@ -1,6 +1,6 @@
-import React from "react";
+import React, { Fragment } from "react";
 import { View } from "react-native";
-import { NavigationContainer } from "@react-navigation/native";
+import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import HomeScreen from "../screens/HomeScreen";
 import { Entypo, MaterialIcons } from "@expo/vector-icons";
@@ -17,6 +17,7 @@ import PlayHistoryScreen from "../screens/PlayHistory";
 import { tabBarItemStyle, tabBarStyle } from "./style";
 import SplashScreens from "../screens/SplashScreens";
 import LyricScreens from "../screens/LyricScreens";
+
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const Tab = createBottomTabNavigator();
@@ -119,16 +120,13 @@ const HomeTab = () => {
         </Tab.Navigator>
     );
 };
-const HomeTabWrapper = ({
-    navigation,
-}: {
-    navigation: navigation<"HomeTab">;
-}) => {
+const HomeTabWrapper = () => {
+    const navigation = useNavigation<navigation<"HomeTab">>();
     return (
-        <View style={{ flex: 1 }}>
+        <Fragment>
             <HomeTab />
             <MusicPlayer navigation={navigation} />
-        </View>
+        </Fragment>
     );
 };
 export default function App() {

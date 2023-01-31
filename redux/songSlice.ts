@@ -26,7 +26,7 @@ const songSlice = createSlice({
         } as IPlayFrom,
     },
     reducers: {
-        updateSongState: (state, action: PayloadAction<ISongSlice>) => {
+        updateSongState: (state, action) => {
             state.musicState = {
                 isPlaying: action.payload.isPlaying,
                 position: action.payload.position,

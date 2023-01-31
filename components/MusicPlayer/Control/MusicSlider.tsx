@@ -35,7 +35,7 @@ const MusicSlider = () => {
                 style={{ width: SCREEN_WIDTH - 70 }}
                 className={`flex-row justify-between`}
             >
-                <Text className="text-stone-300 font-semibold text-[12px]">
+                <Text className="text-white font-semibold text-[12px]">
                     {time.currentMin}:{time.currentSecond}
                 </Text>
                 <Text className="text-white font-semibold text-[12px]">

@@ -62,7 +62,7 @@ const MusicPlayer: React.FC<IMusciPayerProp> = ({ navigation }) => {
 
     React.useEffect(() => {
         setIsLiked(ListFavourite.some((s: Song) => s.key == currentSong.key));
-    }, [ListFavourite]);
+    }, [ListFavourite, currentSong.key]);
 
     React.useEffect(() => {
         setJoeColor(`#${currentSong?.images?.joecolor?.split(":")?.[5]}`);

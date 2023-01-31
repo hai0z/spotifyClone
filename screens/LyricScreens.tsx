@@ -7,6 +7,7 @@ import { useNavigation } from "@react-navigation/native";
 import PlayControl from "../components/MusicPlayer/Control/PlayControl";
 import MusicSlider from "../components/MusicPlayer/Control/MusicSlider";
 const { width: SCREEN_WIDTH } = Dimensions.get("screen");
+
 const LyricScreens = ({ route }: { route: route<"Lyric"> }) => {
     const { song, bgColor } = route.params;
     const navigation = useNavigation();
@@ -14,7 +15,7 @@ const LyricScreens = ({ route }: { route: route<"Lyric"> }) => {
     return (
         <View
             className="flex-1 pt-[35px] "
-            style={{ backgroundColor: `#${bgColor}90` }}
+            style={{ backgroundColor: `#${bgColor}` }}
         >
             <View className="px-4 h-24 flex-row">
                 <TouchableOpacity
@@ -44,7 +45,7 @@ const LyricScreens = ({ route }: { route: route<"Lyric"> }) => {
                 nestedScrollEnabled
                 data={song.sections?.[1].text}
                 renderItem={({ item }: { item: string }) => (
-                    <Text className="text-gray-800 text-[24px] font-semibold px-4">
+                    <Text className="text-white text-[24px] font-semibold px-4">
                         {item}
                     </Text>
                 )}

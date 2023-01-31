@@ -1,6 +1,6 @@
 import { Text, View, ScrollView, TouchableOpacity } from "react-native";
 import { Entypo, AntDesign } from "@expo/vector-icons";
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import { RootState } from "../redux/store";
 import { useSelector } from "react-redux";
@@ -11,7 +11,6 @@ import { navigation } from "../types/RootStackParamList";
 import Player from "../components/MusicPlayer/Player";
 import AddToPlaylist from "../components/Modal/AddToPlaylist";
 import { addToLikedList } from "../services/firebaseService";
-import randomColor from "../utils/randomColor";
 import getLyric from "../hooks/lyric";
 import ImageSlider from "../components/MusicPlayer/ImageSilder/ImageSlider";
 interface IMusicPlayerScreenProps {
@@ -31,10 +30,6 @@ const MusicPlayerScreens: React.FC<IMusicPlayerScreenProps> = ({
         ListFavourite.some((s: Song) => s.key == song.key)
     );
 
-    const songTitle = React.useMemo(() => song.title, [song.key]);
-
-    const subTitle = React.useMemo(() => song.subtitle, [song.key]);
-
     const handleAddToLikedList = async (likedSong: Song) => {
         setIsLiked(!isLiked);
         try {
@@ -48,7 +43,6 @@ const MusicPlayerScreens: React.FC<IMusicPlayerScreenProps> = ({
         setIsLiked(ListFavourite.some((s: Song) => s.key == song.key));
     }, [ListFavourite, song.key]);
 
-    const lyricBgColor = useMemo(() => randomColor(), [song.key]);
     return (
         <LinearGradient
             colors={[`#${song?.images?.joecolor?.split(":")[5]}`, "#000000"]}
@@ -83,10 +77,10 @@ const MusicPlayerScreens: React.FC<IMusicPlayerScreenProps> = ({
                 <View className="flex-row justify-between items-center pt-[70px] mx-[30px]">
                     <View>
                         <Text className="text-[20px] font-bold text-white">
-                            {songTitle}
+                            {song.title}
                         </Text>
                         <Text className="text-[13px] font-semibold text-white">
-                            {subTitle}
+                            {song.subtitle}
                         </Text>
                     </View>
                     <TouchableOpacity
@@ -108,13 +102,17 @@ const MusicPlayerScreens: React.FC<IMusicPlayerScreenProps> = ({
                         onPress={() =>
                             navigation.navigate("Lyric", {
                                 song,
-                                bgColor: lyricBgColor,
+                                bgColor: `${
+                                    song?.images?.joecolor?.split(":")[5]
+                                }`,
                             })
                         }
                         activeOpacity={1}
                         className="mx-[20px] h-[350px]  mt-[40px] rounded-lg w-11/12 p-[10px]"
                         style={{
-                            backgroundColor: `#${lyricBgColor}70`,
+                            backgroundColor: `#${
+                                song?.images?.joecolor?.split(":")[5]
+                            }`,
                         }}
                     >
                         <Text className="text-[18px] text-white font-semibold pb-4">
