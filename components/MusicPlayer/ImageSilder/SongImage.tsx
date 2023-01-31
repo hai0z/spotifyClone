@@ -1,6 +1,6 @@
 import { Dimensions, Image } from "react-native";
 import React, { memo } from "react";
-import { Song } from "../../types/song";
+import { Song } from "../../../types/song";
 const { width: SCREEN_WITH } = Dimensions.get("screen");
 
 interface ISongImageProps {

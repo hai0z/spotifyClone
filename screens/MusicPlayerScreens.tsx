@@ -1,22 +1,11 @@
-import {
-    Text,
-    View,
-    Dimensions,
-    ScrollView,
-    TouchableOpacity,
-    NativeSyntheticEvent,
-    NativeScrollEvent,
-} from "react-native";
+import { Text, View, ScrollView, TouchableOpacity } from "react-native";
 import { Entypo, AntDesign } from "@expo/vector-icons";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import { RootState } from "../redux/store";
 import { useSelector } from "react-redux";
 import { useSongContext } from "../context/SongProvider";
 import { Song } from "../types/song";
-import { useDispatch } from "react-redux";
-import { setCurrentSong } from "../redux/songSlice";
-import SongImage from "../components/MusicPlayer//SongImage";
 import { FlashList } from "@shopify/flash-list";
 import { navigation } from "../types/RootStackParamList";
 import Player from "../components/MusicPlayer/Player";
@@ -24,7 +13,7 @@ import AddToPlaylist from "../components/Modal/AddToPlaylist";
 import { addToLikedList } from "../services/firebaseService";
 import randomColor from "../utils/randomColor";
 import getLyric from "../hooks/lyric";
-const { width: SCREEN_WIDTH } = Dimensions.get("screen");
+import ImageSlider from "../components/MusicPlayer/ImageSilder/ImageSlider";
 interface IMusicPlayerScreenProps {
     navigation: navigation<"HomeTab">;
 }
@@ -32,18 +21,9 @@ interface IMusicPlayerScreenProps {
 const MusicPlayerScreens: React.FC<IMusicPlayerScreenProps> = ({
     navigation,
 }) => {
-    const { ListFavourite, isShuffle } = useSongContext();
-
-    const [playList] = React.useState<Song[]>(ListFavourite);
-
-    const dispatch = useDispatch();
+    const { ListFavourite } = useSongContext();
 
     const song = useSelector((state: RootState) => state.song.currentSong);
-
-    const currentSongIndex = React.useMemo(
-        () => playList.findIndex((s: Song) => s.key == song.key),
-        [song.key]
-    );
 
     const lyric: string[] = getLyric(song.key);
 
@@ -63,33 +43,10 @@ const MusicPlayerScreens: React.FC<IMusicPlayerScreenProps> = ({
             console.log(err.message);
         }
     };
-    const flatListRef = React.createRef<FlashList<Song>>();
-
-    useEffect(() => {
-        flatListRef.current?.scrollToIndex({
-            index: currentSongIndex == -1 ? 0 : currentSongIndex,
-            animated: isShuffle ? false : true,
-        });
-    }, [song.key]);
-
-    const swpipeToChangeSong = (
-        e: NativeSyntheticEvent<NativeScrollEvent>
-    ): void => {
-        const pageNum = Math.min(
-            Math.max(
-                Math.floor(e.nativeEvent.contentOffset.x / SCREEN_WIDTH + 0.5) +
-                    1,
-                0
-            ),
-            ListFavourite.length
-        );
-        pageNum - 1 != currentSongIndex &&
-            dispatch(setCurrentSong(ListFavourite[pageNum - 1]));
-    };
 
     React.useEffect(() => {
         setIsLiked(ListFavourite.some((s: Song) => s.key == song.key));
-    }, [ListFavourite]);
+    }, [ListFavourite, song.key]);
 
     const lyricBgColor = useMemo(() => randomColor(), [song.key]);
     return (
@@ -121,20 +78,7 @@ const MusicPlayerScreens: React.FC<IMusicPlayerScreenProps> = ({
                     <Entypo name="dots-three-vertical" size={18} color="#fff" />
                 </View>
                 <View>
-                    <FlashList
-                        keyExtractor={(item) => item.key}
-                        scrollEventThrottle={32}
-                        onMomentumScrollEnd={swpipeToChangeSong}
-                        ref={flatListRef}
-                        showsHorizontalScrollIndicator={false}
-                        contentContainerStyle={{ paddingTop: 65 }}
-                        initialScrollIndex={currentSongIndex}
-                        horizontal
-                        estimatedItemSize={SCREEN_WIDTH}
-                        pagingEnabled
-                        data={playList}
-                        renderItem={({ item }) => <SongImage item={item} />}
-                    />
+                    <ImageSlider />
                 </View>
                 <View className="flex-row justify-between items-center pt-[70px] mx-[30px]">
                     <View>
