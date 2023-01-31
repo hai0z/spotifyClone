@@ -4,25 +4,13 @@ import { route } from "../types/RootStackParamList";
 import { FlashList } from "@shopify/flash-list";
 import { AntDesign } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import Slider from "@react-native-community/slider";
 import PlayControl from "../components/MusicPlayer/Control/PlayControl";
-import { useSelector } from "react-redux";
-import { RootState } from "../redux/store";
-import useSound from "../hooks/useSound";
-import caculateTime from "../utils/caculateMusicTime";
-
+import MusicSlider from "../components/MusicPlayer/Control/MusicSlider";
 const { width: SCREEN_WIDTH } = Dimensions.get("screen");
 const LyricScreens = ({ route }: { route: route<"Lyric"> }) => {
     const { song, bgColor } = route.params;
     const navigation = useNavigation();
 
-    const musicState = useSelector((state: RootState) => state.song.musicState);
-    const { playFromPosition } = useSound();
-
-    const { currentMin, currentSecond, totalTime } = caculateTime(
-        musicState.duration,
-        musicState.position
-    );
     return (
         <View
             className="flex-1 pt-[35px] "
@@ -62,28 +50,7 @@ const LyricScreens = ({ route }: { route: route<"Lyric"> }) => {
                 )}
             />
             <View className="flex py-8 w-full items-center">
-                <Slider
-                    style={{ width: "100%" }}
-                    minimumValue={0}
-                    maximumValue={100}
-                    thumbTintColor="#ffffff"
-                    minimumTrackTintColor="#ffffff"
-                    maximumTrackTintColor="rgba(255,255,255,0.5)"
-                    onSlidingComplete={(value) => {
-                        playFromPosition((musicState.duration * value) / 100);
-                    }}
-                    value={
-                        (musicState.position / musicState.duration) * 100 || 0
-                    }
-                />
-                <View className="flex flex-row justify-between w-full px-4">
-                    <Text className="text-white font-semibold">
-                        {currentMin}:{currentSecond}
-                    </Text>
-                    <Text className="text-white font-semibold">
-                        {totalTime}
-                    </Text>
-                </View>
+                <MusicSlider />
                 <PlayControl />
             </View>
         </View>
