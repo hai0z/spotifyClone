@@ -160,7 +160,14 @@ const MusicPlayerScreens: React.FC<IMusicPlayerScreenProps> = ({
                     <Player />
                 </View>
                 {!!song.sections?.[1].text && (
-                    <View
+                    <TouchableOpacity
+                        onPress={() =>
+                            navigation.navigate("Lyric", {
+                                song,
+                                bgColor: lyricBgColor,
+                            })
+                        }
+                        activeOpacity={1}
                         className="mx-[20px] h-[350px]  mt-[40px] rounded-lg w-11/12 p-[10px]"
                         style={{
                             backgroundColor: `#${lyricBgColor}70`,
@@ -170,6 +177,7 @@ const MusicPlayerScreens: React.FC<IMusicPlayerScreenProps> = ({
                             Lời bài hát
                         </Text>
                         <FlashList
+                            scrollEnabled={false}
                             estimatedItemSize={30}
                             showsVerticalScrollIndicator
                             nestedScrollEnabled
@@ -180,7 +188,7 @@ const MusicPlayerScreens: React.FC<IMusicPlayerScreenProps> = ({
                                 </Text>
                             )}
                         />
-                    </View>
+                    </TouchableOpacity>
                 )}
                 <AddToPlaylist />
             </ScrollView>

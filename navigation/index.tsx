@@ -16,6 +16,7 @@ import ListFavourite from "../screens/ListFavourite";
 import PlayHistoryScreen from "../screens/PlayHistory";
 import { tabBarItemStyle, tabBarStyle } from "./style";
 import SplashScreens from "../screens/SplashScreens";
+import LyricScreens from "../screens/LyricScreens";
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const Tab = createBottomTabNavigator();
@@ -158,6 +159,14 @@ export default function App() {
                     component={MusicPlayerScreens}
                 />
                 <Stack.Screen name="Album" component={AlbumAndArtist} />
+                <Stack.Screen
+                    name="Lyric"
+                    component={LyricScreens}
+                    options={{
+                        statusBarHidden: true,
+                        statusBarTranslucent: true,
+                    }}
+                />
             </Stack.Navigator>
         </NavigationContainer>
     );

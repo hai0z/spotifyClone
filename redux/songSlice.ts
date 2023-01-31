@@ -2,9 +2,9 @@ import { Song } from "./../types/song";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface ISongSlice {
-    isPlaying: boolean | undefined;
-    position: number | null | undefined;
-    duration: number | null | undefined;
+    isPlaying: boolean;
+    position: number;
+    duration: number;
 }
 export interface IPlayFrom {
     from: "album" | "library" | "search" | "related";
