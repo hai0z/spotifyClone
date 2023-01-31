@@ -136,11 +136,7 @@ const MusicPlayer: React.FC<IMusciPayerProp> = ({ navigation }) => {
                                 style={{ marginRight: 15 }}
                             />
                         </TouchableOpacity>
-                        <TouchableOpacity
-                            onPress={() => {
-                                onPlayPause();
-                            }}
-                        >
+                        <TouchableOpacity onPress={onPlayPause}>
                             <Entypo
                                 name={
                                     !musicState.isPlaying
