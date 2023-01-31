@@ -38,6 +38,12 @@ const MusicPlayerScreens: React.FC<IMusicPlayerScreenProps> = ({
             console.log(err.message);
         }
     };
+    const goToLyricScreen = () => {
+        navigation.navigate("Lyric", {
+            song,
+            bgColor: `${song?.images?.joecolor?.split(":")[5]}`,
+        });
+    };
 
     React.useEffect(() => {
         setIsLiked(ListFavourite.some((s: Song) => s.key == song.key));
@@ -99,16 +105,9 @@ const MusicPlayerScreens: React.FC<IMusicPlayerScreenProps> = ({
                 </View>
                 {!!song.sections?.[1].text && (
                     <TouchableOpacity
-                        onPress={() =>
-                            navigation.navigate("Lyric", {
-                                song,
-                                bgColor: `${
-                                    song?.images?.joecolor?.split(":")[5]
-                                }`,
-                            })
-                        }
+                        onPress={goToLyricScreen}
                         activeOpacity={1}
-                        className="mx-[20px] h-[350px]  mt-[40px] rounded-lg w-11/12 p-[10px]"
+                        className="mx-[20px] h-[360px]  mt-[40px] rounded-lg w-11/12 p-[10px] overflow-hidden pb-4"
                         style={{
                             backgroundColor: `#${
                                 song?.images?.joecolor?.split(":")[5]
@@ -125,9 +124,11 @@ const MusicPlayerScreens: React.FC<IMusicPlayerScreenProps> = ({
                             nestedScrollEnabled
                             data={song.sections?.[1].text}
                             renderItem={({ item }: { item: string }) => (
-                                <Text className="text-white text-[24px] font-semibold">
-                                    {item}
-                                </Text>
+                                <View className="h-8">
+                                    <Text className="text-white text-[24px] font-semibold ">
+                                        {item}
+                                    </Text>
+                                </View>
                             )}
                         />
                     </TouchableOpacity>

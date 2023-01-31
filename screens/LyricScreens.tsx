@@ -10,6 +10,7 @@ const { width: SCREEN_WIDTH } = Dimensions.get("screen");
 
 const LyricScreens = ({ route }: { route: route<"Lyric"> }) => {
     const { song, bgColor } = route.params;
+
     const navigation = useNavigation();
 
     return (
@@ -17,7 +18,7 @@ const LyricScreens = ({ route }: { route: route<"Lyric"> }) => {
             className="flex-1 pt-[35px] "
             style={{ backgroundColor: `#${bgColor}` }}
         >
-            <View className="px-4 h-24 flex-row">
+            <View className="px-8 h-24 flex-row">
                 <TouchableOpacity
                     className="justify-center items-center"
                     onPress={() => navigation.goBack()}
@@ -41,11 +42,11 @@ const LyricScreens = ({ route }: { route: route<"Lyric"> }) => {
             </View>
             <FlashList
                 estimatedItemSize={30}
-                showsVerticalScrollIndicator
+                showsVerticalScrollIndicator={false}
                 nestedScrollEnabled
                 data={song.sections?.[1].text}
                 renderItem={({ item }: { item: string }) => (
-                    <Text className="text-white text-[24px] font-semibold px-4">
+                    <Text className="text-white text-[24px] font-semibold px-8">
                         {item}
                     </Text>
                 )}
