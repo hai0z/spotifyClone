@@ -159,14 +159,7 @@ export default function App() {
                     component={MusicPlayerScreens}
                 />
                 <Stack.Screen name="Album" component={AlbumAndArtist} />
-                <Stack.Screen
-                    name="Lyric"
-                    component={LyricScreens}
-                    options={{
-                        statusBarHidden: true,
-                        statusBarTranslucent: true,
-                    }}
-                />
+                <Stack.Screen name="Lyric" component={LyricScreens} />
             </Stack.Navigator>
         </NavigationContainer>
     );
