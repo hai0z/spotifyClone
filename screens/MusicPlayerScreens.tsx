@@ -179,7 +179,7 @@ const MusicPlayerScreens: React.FC<IMusicPlayerScreenProps> = ({
                         <FlashList
                             scrollEnabled={false}
                             estimatedItemSize={30}
-                            showsVerticalScrollIndicator
+                            showsVerticalScrollIndicator={false}
                             nestedScrollEnabled
                             data={song.sections?.[1].text}
                             renderItem={({ item }: { item: string }) => (
