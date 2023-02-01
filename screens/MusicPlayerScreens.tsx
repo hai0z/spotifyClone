@@ -24,7 +24,7 @@ const MusicPlayerScreens: React.FC<IMusicPlayerScreenProps> = ({
     const song = useSelector((state: RootState) => state.song.currentSong);
 
     const [isLiked, setIsLiked] = useState(
-        ListFavourite.some((s: Song) => s.key == song.key)
+        ListFavourite.some((s: Song) => s.key == song?.key)
     );
 
     const handleAddToLikedList = async (likedSong: Song) => {
@@ -44,7 +44,7 @@ const MusicPlayerScreens: React.FC<IMusicPlayerScreenProps> = ({
 
     React.useEffect(() => {
         setIsLiked(ListFavourite.some((s: Song) => s.key == song.key));
-    }, [ListFavourite, song.key]);
+    }, [ListFavourite, song?.key]);
 
     return (
         <LinearGradient

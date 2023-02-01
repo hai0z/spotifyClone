@@ -125,7 +125,7 @@ const SongProvider: FC<ISongProviderProp> = ({ children }) => {
     React.useEffect(() => {
         storeData();
         // getRelatedTrack();
-    }, [currentSong.key]);
+    }, [currentSong]);
 
     const storeLooping = async () => {
         try {
@@ -168,7 +168,7 @@ const SongProvider: FC<ISongProviderProp> = ({ children }) => {
             }
         };
         pushToHistory();
-    }, [currentSong.key]);
+    }, [currentSong]);
 
     if (loading) return null;
 

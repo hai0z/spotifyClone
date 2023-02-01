@@ -1,5 +1,4 @@
 import React, { Fragment } from "react";
-import { View } from "react-native";
 import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import HomeScreen from "../screens/HomeScreen";
@@ -151,13 +150,19 @@ export default function App() {
                 <Stack.Screen
                     name="MusicPlayer"
                     options={{
-                        animation: "slide_from_bottom",
+                        animation: "fade_from_bottom",
                         customAnimationOnGesture: true,
                     }}
                     component={MusicPlayerScreens}
                 />
                 <Stack.Screen name="Album" component={AlbumAndArtist} />
-                <Stack.Screen name="Lyric" component={LyricScreens} />
+                <Stack.Screen
+                    name="Lyric"
+                    component={LyricScreens}
+                    options={{
+                        animation: "fade_from_bottom",
+                    }}
+                />
             </Stack.Navigator>
         </NavigationContainer>
     );

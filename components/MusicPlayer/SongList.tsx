@@ -19,7 +19,6 @@ const SongList: React.FC<ISongListProps> = ({
             nestedScrollEnabled
             removeClippedSubviews
             data={searchResult}
-            keyExtractor={(item) => item.key}
             estimatedItemSize={65}
             renderItem={({ item, index }) => (
                 <SongComponent
