@@ -109,7 +109,7 @@ export default function App({ navigation }: IHomeProps) {
                     </View>
                     <View className="mt-8">
                         <Text className="text-white font-bold text-[22px] ml-[15px] mb-[10px]">
-                            Thịnh hành
+                            Đề xuất cho bạn
                         </Text>
                         <ScrollView
                             horizontal

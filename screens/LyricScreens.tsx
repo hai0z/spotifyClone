@@ -8,7 +8,7 @@ import PlayControl from "../components/MusicPlayer/Control/PlayControl";
 import MusicSlider from "../components/MusicPlayer/Control/MusicSlider";
 const { width: SCREEN_WIDTH } = Dimensions.get("screen");
 
-const LyricScreens = ({ route }: { route: route<"Lyric"> }) => {
+const LyricScreens: React.FC<{ route: route<"Lyric"> }> = ({ route }) => {
     const { song, bgColor } = route.params;
 
     const navigation = useNavigation();
@@ -18,7 +18,7 @@ const LyricScreens = ({ route }: { route: route<"Lyric"> }) => {
             className="flex-1 pt-[35px] "
             style={{ backgroundColor: `#${bgColor}` }}
         >
-            <View className="px-8 h-24 flex-row">
+            <View className="px-8 h-24 flex-row relative w-full">
                 <TouchableOpacity
                     className="justify-center items-center"
                     onPress={() => navigation.goBack()}

@@ -151,12 +151,7 @@ const MusicPlayer: React.FC<IMusciPayerProp> = ({ navigation }) => {
                     </View>
                 </View>
             </TouchableOpacity>
-            <View
-                style={{
-                    backgroundColor: "rgba(255,255,255,0.5)",
-                }}
-                className="h-[2px] max-w-[100%] relative mx-[8px] bottom-1 rounded-[2px]"
-            >
+            <View className="h-[2px] max-w-[100%] relative mx-[8px] bottom-1 rounded-[2px] bg-[#ffffff50]">
                 <View
                     style={{ width: `${getProgress()}%` }}
                     className="h-[2px] bg-[#fff] max-w-[100%] absolute rounded-l-[2px]"

@@ -11,7 +11,6 @@ import { navigation } from "../types/RootStackParamList";
 import Player from "../components/MusicPlayer/Player";
 import AddToPlaylist from "../components/Modal/AddToPlaylist";
 import { addToLikedList } from "../services/firebaseService";
-import getLyric from "../hooks/lyric";
 import ImageSlider from "../components/MusicPlayer/ImageSilder/ImageSlider";
 interface IMusicPlayerScreenProps {
     navigation: navigation<"HomeTab">;
@@ -23,8 +22,6 @@ const MusicPlayerScreens: React.FC<IMusicPlayerScreenProps> = ({
     const { ListFavourite } = useSongContext();
 
     const song = useSelector((state: RootState) => state.song.currentSong);
-
-    const lyric: string[] = getLyric(song.key);
 
     const [isLiked, setIsLiked] = useState(
         ListFavourite.some((s: Song) => s.key == song.key)
@@ -125,7 +122,7 @@ const MusicPlayerScreens: React.FC<IMusicPlayerScreenProps> = ({
                             data={song.sections?.[1].text}
                             renderItem={({ item }: { item: string }) => (
                                 <View className="h-8">
-                                    <Text className="text-white text-[24px] font-semibold ">
+                                    <Text className="text-white text-[22px] font-semibold ">
                                         {item}
                                     </Text>
                                 </View>

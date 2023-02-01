@@ -27,6 +27,7 @@ const ImageSlider = () => {
         [song.key]
     );
     const flatListRef = React.createRef<FlashList<Song>>();
+
     const swpipeToChangeSong = (
         e: NativeSyntheticEvent<NativeScrollEvent>
     ): void => {
@@ -41,12 +42,14 @@ const ImageSlider = () => {
         pageNum - 1 != currentSongIndex &&
             dispatch(setCurrentSong(ListFavourite[pageNum - 1]));
     };
+
     useEffect(() => {
         flatListRef.current?.scrollToIndex({
             index: currentSongIndex == -1 ? 0 : currentSongIndex,
             animated: isShuffle ? false : true,
         });
     }, [song.key]);
+
     return (
         <FlashList
             keyExtractor={(item) => item.key}
