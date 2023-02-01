@@ -1,7 +1,6 @@
 import React, { FC, useContext, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Song } from "../types/song";
-import axios from "axios";
 import { useSelector } from "react-redux";
 import { setCurrentSong } from "../redux/songSlice";
 import { db } from "../firebase";
@@ -29,8 +28,6 @@ const SongProvider: FC<ISongProviderProp> = ({ children }) => {
         (state: RootState) => state.song.currentSong
     );
     const [nextSong, setNextSong] = useState<Song[]>([]);
-
-    const [loading, setLoading] = useState<boolean>(false);
 
     const [ListFavourite, setListFavourite] = useState<Song[]>([]);
 
@@ -70,41 +67,6 @@ const SongProvider: FC<ISongProviderProp> = ({ children }) => {
             setIsShuffle(JSON.parse(isShuffle));
         } else {
             setIsShuffle(false);
-        }
-    };
-
-    const getRelatedTrack = async () => {
-        console.log(`get releated`);
-        const options = {
-            method: "GET",
-            url: "https://shazam-core.p.rapidapi.com/v1/tracks/related",
-            params: { track_id: `${currentSong.key}` },
-            headers: {
-                "X-RapidAPI-Key":
-                    "25afd00c31msh690f22c6a3516c0p1799adjsn0eade0e56e0b",
-                "X-RapidAPI-Host": "shazam-core.p.rapidapi.com",
-            },
-        };
-
-        try {
-            let { data: relatedId } = await axios.request(options);
-            relatedId = relatedId.map((r: any) => r.key)[0];
-            const options2 = {
-                method: "GET",
-                url: "https://shazam-core.p.rapidapi.com/v1/tracks/details",
-                params: { track_id: `${relatedId}` },
-                headers: {
-                    "X-RapidAPI-Key":
-                        "25afd00c31msh690f22c6a3516c0p1799adjsn0eade0e56e0b",
-                    "X-RapidAPI-Host": "shazam-core.p.rapidapi.com",
-                },
-            };
-            const { data: nextS } = await axios.request(options2);
-            setNextSong(nextS);
-            setLoading(false);
-        } catch (err: any) {
-            console.error(err);
-            setLoading(false);
         }
     };
 
@@ -169,8 +131,6 @@ const SongProvider: FC<ISongProviderProp> = ({ children }) => {
         };
         pushToHistory();
     }, [currentSong]);
-
-    if (loading) return null;
 
     return (
         <SongContext.Provider

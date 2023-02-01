@@ -20,6 +20,7 @@ import useHeaderColor from "../hooks/useHeaderColor";
 interface IHomeProps {
     navigation: navigation<"HomeTab">;
 }
+
 export default function App({ navigation }: IHomeProps) {
     const [playList, setPlayList] = useState<Song[]>([]);
 
@@ -40,7 +41,7 @@ export default function App({ navigation }: IHomeProps) {
     const getData = async () => {
         const data = await getSong();
         setTrack(data.sort(() => 0.5 - Math.random()).slice(0, 10));
-        setPlayList(data.sort(() => 0.5 - Math.random()).slice(0, 10));
+        setPlayList(data.sort(() => 0.5 - Math.random()));
     };
 
     const getHistory = async () => {
@@ -116,15 +117,17 @@ export default function App({ navigation }: IHomeProps) {
                             showsHorizontalScrollIndicator={false}
                             contentContainerStyle={{ marginVertical: 10 }}
                         >
-                            {playList?.map((pl: any, index: number) => {
-                                return (
-                                    <PlayListCard
-                                        playList={pl}
-                                        key={index}
-                                        displayAnimation={displayAnimation}
-                                    />
-                                );
-                            })}
+                            {playList
+                                .slice(0, 10)
+                                ?.map((pl: any, index: number) => {
+                                    return (
+                                        <PlayListCard
+                                            playList={pl}
+                                            key={index}
+                                            displayAnimation={displayAnimation}
+                                        />
+                                    );
+                                })}
                         </ScrollView>
                     </View>
 
@@ -160,15 +163,17 @@ export default function App({ navigation }: IHomeProps) {
                             showsHorizontalScrollIndicator={false}
                             contentContainerStyle={{ marginVertical: 10 }}
                         >
-                            {playList?.map((pl: any, index: number) => {
-                                return (
-                                    <PlayListCard
-                                        playList={pl}
-                                        key={index}
-                                        displayAnimation={displayAnimation}
-                                    />
-                                );
-                            })}
+                            {playList
+                                .slice(10, 20)
+                                ?.map((pl: any, index: number) => {
+                                    return (
+                                        <PlayListCard
+                                            playList={pl}
+                                            key={index}
+                                            displayAnimation={displayAnimation}
+                                        />
+                                    );
+                                })}
                         </ScrollView>
                     </View>
                     <View className="my-2">
@@ -180,15 +185,17 @@ export default function App({ navigation }: IHomeProps) {
                             horizontal
                             contentContainerStyle={{ marginVertical: 10 }}
                         >
-                            {playList?.map((pl: any, index: number) => {
-                                return (
-                                    <PlayListCard
-                                        playList={pl}
-                                        key={index}
-                                        displayAnimation={displayAnimation}
-                                    />
-                                );
-                            })}
+                            {playList
+                                .slice(20, 30)
+                                ?.map((pl: any, index: number) => {
+                                    return (
+                                        <PlayListCard
+                                            playList={pl}
+                                            key={index}
+                                            displayAnimation={displayAnimation}
+                                        />
+                                    );
+                                })}
                         </ScrollView>
                     </View>
                 </ScrollView>
