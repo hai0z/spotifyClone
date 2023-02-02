@@ -86,7 +86,6 @@ const SongProvider: FC<ISongProviderProp> = ({ children }) => {
 
     React.useEffect(() => {
         storeData();
-        // getRelatedTrack();
     }, [currentSong]);
 
     const storeLooping = async () => {

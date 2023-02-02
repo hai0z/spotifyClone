@@ -32,7 +32,7 @@ const LyricScreens: React.FC<{ route: route<"Lyric"> }> = ({ route }) => {
             toValue: 0,
             duration: 300,
             useNativeDriver: true,
-            delay: 200,
+            delay: 300,
         }).start();
     }, []);
     return (
