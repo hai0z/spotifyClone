@@ -49,8 +49,8 @@ const MusicPlayerScreens: React.FC<IMusicPlayerScreenProps> = ({
     return (
         <LinearGradient
             colors={[`#${song?.images?.joecolor?.split(":")[5]}`, "#000000"]}
-            start={{ x: 0.5, y: 0 }}
-            end={{ x: 0.5, y: 1 }}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 0, y: 1 }}
             className="flex-1"
         >
             <ScrollView

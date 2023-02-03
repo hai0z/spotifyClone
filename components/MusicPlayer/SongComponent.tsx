@@ -1,25 +1,33 @@
 import { Text, View, Image, TouchableOpacity } from "react-native";
-import React, { memo } from "react";
+import React, { memo, useMemo } from "react";
 import { Song } from "../../types/song";
 
 interface ISongComponentProps {
-    song: Song;
+    song: Song & any;
     playSong: (song: Song) => void;
     displayAnimation: () => void;
-    index: number;
+    isSelected: boolean;
+    onSelected: (id: string) => void;
 }
 const SongComponent: React.FC<ISongComponentProps> = ({
     song,
     playSong,
     displayAnimation,
-    index,
+    isSelected,
+    onSelected,
 }) => {
     console.log("re-render-Songcomp1");
 
+    const bgColor = useMemo(
+        () => (isSelected ? "mediumseagreen" : "white"),
+        [isSelected]
+    );
+    console.log(isSelected);
     return (
         <TouchableOpacity
             className="flex-row items-center pt-[15px] pl-[15px]"
             onPress={() => {
+                onSelected(song.key);
                 displayAnimation();
                 playSong(song);
             }}
@@ -29,11 +37,26 @@ const SongComponent: React.FC<ISongComponentProps> = ({
                 className="h-[50px] w-[50px] "
             />
             <View className="justify-center ml-[10px] max-w-[80%]">
-                <Text className="text-white" numberOfLines={1}>
-                    {index}-{song.title}
+                <Text
+                    className="text-[15px] font-bold "
+                    numberOfLines={1}
+                    style={{ color: bgColor }}
+                >
+                    {song.title}
                 </Text>
 
-                <Text className="text-white">{song.subtitle}</Text>
+                <View className="flex-row items-center">
+                    {!!song?.sections?.[1].text && (
+                        <View className="w-8 bg-[#ffffff70] justify-center items-center  mr-1 flex rounded-md">
+                            <Text className="text-xs font-bold text-[10px]">
+                                Lyric
+                            </Text>
+                        </View>
+                    )}
+                    <Text className="text-[#ffffff70] text-[13px] font-medium">
+                        {song.subtitle}
+                    </Text>
+                </View>
             </View>
         </TouchableOpacity>
     );

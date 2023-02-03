@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback, useState } from "react";
 import { FlashList } from "@shopify/flash-list";
 import { Song } from "../../types/song";
 import SongComponent from "./SongComponent";
@@ -14,16 +14,23 @@ const SongList: React.FC<ISongListProps> = ({
     displayAnimation,
 }) => {
     console.log("re-render-songlist");
+    const [selectedId, setSelectedId] = useState<null | string>(null);
+
+    const handleSelected = useCallback((id: string) => {
+        return setSelectedId(id);
+    }, []);
+    console.log(selectedId);
     return (
         <FlashList
             nestedScrollEnabled
             removeClippedSubviews
             data={searchResult}
             estimatedItemSize={65}
-            renderItem={({ item, index }) => (
+            renderItem={({ item }) => (
                 <SongComponent
                     song={item}
-                    index={index}
+                    onSelected={handleSelected}
+                    isSelected={item.key == selectedId}
                     playSong={playSong}
                     displayAnimation={displayAnimation}
                 />

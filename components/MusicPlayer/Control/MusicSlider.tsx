@@ -10,7 +10,6 @@ const { width: SCREEN_WIDTH } = Dimensions.get("screen");
 
 const MusicSlider = () => {
     const { playFromPosition } = useSound();
-
     const musicState = useSelector((state: RootState) => state.song.musicState);
     const time = caculateTime(musicState.duration, musicState.position);
 
