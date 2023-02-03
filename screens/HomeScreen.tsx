@@ -83,7 +83,6 @@ export default function App({ navigation }: IHomeProps) {
                         colors={[headerColor, "#121212"]}
                         start={{ x: 0.4, y: 0.1 }}
                         end={{ x: 0.5, y: 0.75 }}
-                        style={{ zIndex: -1 }}
                     >
                         <Header />
                     </LinearGradient>

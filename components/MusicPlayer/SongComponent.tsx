@@ -6,28 +6,17 @@ interface ISongComponentProps {
     song: Song & any;
     playSong: (song: Song) => void;
     displayAnimation: () => void;
-    isSelected: boolean;
-    onSelected: (id: string) => void;
 }
 const SongComponent: React.FC<ISongComponentProps> = ({
     song,
     playSong,
     displayAnimation,
-    isSelected,
-    onSelected,
 }) => {
     console.log("re-render-Songcomp1");
-
-    const bgColor = useMemo(
-        () => (isSelected ? "mediumseagreen" : "white"),
-        [isSelected]
-    );
-    console.log(isSelected);
     return (
         <TouchableOpacity
             className="flex-row items-center pt-[15px] pl-[15px]"
             onPress={() => {
-                onSelected(song.key);
                 displayAnimation();
                 playSong(song);
             }}
@@ -38,9 +27,8 @@ const SongComponent: React.FC<ISongComponentProps> = ({
             />
             <View className="justify-center ml-[10px] max-w-[80%]">
                 <Text
-                    className="text-[15px] font-bold "
+                    className="text-[15px] text-white font-semibold "
                     numberOfLines={1}
-                    style={{ color: bgColor }}
                 >
                     {song.title}
                 </Text>
@@ -62,4 +50,4 @@ const SongComponent: React.FC<ISongComponentProps> = ({
     );
 };
 
-export default memo(SongComponent);
+export default SongComponent;

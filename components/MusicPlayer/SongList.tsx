@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React from "react";
 import { FlashList } from "@shopify/flash-list";
 import { Song } from "../../types/song";
 import SongComponent from "./SongComponent";
@@ -14,12 +14,7 @@ const SongList: React.FC<ISongListProps> = ({
     displayAnimation,
 }) => {
     console.log("re-render-songlist");
-    const [selectedId, setSelectedId] = useState<null | string>(null);
 
-    const handleSelected = useCallback((id: string) => {
-        return setSelectedId(id);
-    }, []);
-    console.log(selectedId);
     return (
         <FlashList
             nestedScrollEnabled
@@ -29,8 +24,6 @@ const SongList: React.FC<ISongListProps> = ({
             renderItem={({ item }) => (
                 <SongComponent
                     song={item}
-                    onSelected={handleSelected}
-                    isSelected={item.key == selectedId}
                     playSong={playSong}
                     displayAnimation={displayAnimation}
                 />
@@ -39,4 +32,4 @@ const SongList: React.FC<ISongListProps> = ({
     );
 };
 
-export default React.memo(SongList);
+export default SongList;
