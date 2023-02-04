@@ -11,8 +11,6 @@ interface ISongProviderProp {
     children: React.ReactNode;
 }
 interface ISongContext {
-    nextSong: Song[];
-    setNextSong: React.Dispatch<React.SetStateAction<Song[]>>;
     isLooping: boolean;
     setIsLooping: React.Dispatch<React.SetStateAction<boolean>>;
     ListFavourite: Song[];
@@ -28,7 +26,6 @@ const SongProvider: FC<ISongProviderProp> = ({ children }) => {
     const currentSong = useSelector(
         (state: RootState) => state.song.currentSong
     );
-    const [nextSong, setNextSong] = useState<Song[]>([]);
 
     const [ListFavourite, setListFavourite] = useState<Song[]>([]);
 
@@ -122,8 +119,6 @@ const SongProvider: FC<ISongProviderProp> = ({ children }) => {
     return (
         <SongContext.Provider
             value={{
-                nextSong,
-                setNextSong,
                 isLooping,
                 setIsLooping,
                 setListFavourite,
@@ -139,8 +134,6 @@ const SongProvider: FC<ISongProviderProp> = ({ children }) => {
 
 export const useSongContext = (): ISongContext => {
     const {
-        nextSong,
-        setNextSong,
         isLooping,
         setIsLooping,
         setListFavourite,
@@ -149,8 +142,6 @@ export const useSongContext = (): ISongContext => {
         isShuffle,
     } = useContext(SongContext);
     return {
-        nextSong,
-        setNextSong,
         isLooping,
         setIsLooping,
         setListFavourite,
