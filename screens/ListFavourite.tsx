@@ -4,8 +4,9 @@ import {
     TouchableOpacity,
     Dimensions,
     TextInput,
+    Image,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { Animated } from "react-native";
 import { useSongContext } from "../context/SongProvider";
 import { Song } from "../types/song";
@@ -27,7 +28,6 @@ const { width: SCREEN_WITH } = Dimensions.get("screen");
 const ListFavourite = ({ route }: { route: route<"ListFavourite"> }) => {
     const { type, playlistName } = route.params;
 
-    const scrollY = React.useRef(new Animated.Value(0)).current;
     const dispatch = useDispatch();
 
     const currentSong = useSelector(
@@ -43,24 +43,6 @@ const ListFavourite = ({ route }: { route: route<"ListFavourite"> }) => {
     const [searchResult, setSearchResult] = useState<Song[]>(data);
 
     const [isSearching, setIsSearching] = useState(false);
-
-    const inputRange = [-150, 0, 120, 140];
-
-    const scale = scrollY.interpolate({
-        inputRange,
-        outputRange: [1.5, 1, 0.3, 0],
-        extrapolate: "clamp",
-    });
-    const opacity = scrollY.interpolate({
-        inputRange: [-100, 0, 100, 120],
-        outputRange: [0, 1, 0.3, 0],
-        extrapolate: "clamp",
-    });
-    const translateY = scrollY.interpolate({
-        inputRange,
-        outputRange: [0, 0, -120, -120],
-        extrapolate: "clamp",
-    });
 
     React.useEffect(() => {
         if (type == "favourite") {
@@ -119,9 +101,10 @@ const ListFavourite = ({ route }: { route: route<"ListFavourite"> }) => {
 
     const memo = React.useCallback(() => displayAnimation(), []);
 
-    const songImg = data.some((song: Song) => song.key == currentSong.key)
-        ? currentSong.images.coverart
-        : data[Math.floor(Math.random() * data.length)].images.coverart;
+    const songImg = useCallback(
+        () => data[Math.floor(Math.random() * data.length)].images.coverart,
+        []
+    );
 
     return (
         <View className="relative bg-[#121212] flex-1 justify-center">
@@ -170,12 +153,6 @@ const ListFavourite = ({ route }: { route: route<"ListFavourite"> }) => {
                 contentContainerStyle={{
                     paddingBottom: 125,
                 }}
-                onScroll={Animated.event(
-                    [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-                    {
-                        useNativeDriver: false,
-                    }
-                )}
             >
                 <LinearGradient
                     colors={[
@@ -186,29 +163,47 @@ const ListFavourite = ({ route }: { route: route<"ListFavourite"> }) => {
                     end={{ x: 0.5, y: 1 }}
                     style={{ width: SCREEN_WITH }}
                 >
-                    <Animated.View
-                        style={{ transform: [{ scale }] }}
-                        className="justify-center items-center"
-                    >
-                        {!isSearching && (
-                            <Animated.Image
-                                source={{ uri: songImg }}
-                                className="w-[300px] h-[300px] pb-[20px] "
+                    {!isSearching && (
+                        <View className="flex-row flex-wrap justify-center items-center">
+                            <Image
+                                source={{ uri: songImg() }}
                                 style={{
                                     resizeMode: "cover",
-                                    opacity,
+                                    width: SCREEN_WITH / 2.2,
+                                    height: SCREEN_WITH / 2.2,
                                 }}
                             />
-                        )}
-                    </Animated.View>
+                            <Image
+                                source={{ uri: songImg() }}
+                                style={{
+                                    resizeMode: "cover",
+                                    width: SCREEN_WITH / 2.2,
+                                    height: SCREEN_WITH / 2.2,
+                                }}
+                            />
+                            <Image
+                                source={{ uri: songImg() }}
+                                style={{
+                                    resizeMode: "cover",
+                                    width: SCREEN_WITH / 2.2,
+                                    height: SCREEN_WITH / 2.2,
+                                }}
+                            />
+                            <Image
+                                source={{ uri: songImg() }}
+                                style={{
+                                    resizeMode: "cover",
+                                    width: SCREEN_WITH / 2.2,
+                                    height: SCREEN_WITH / 2.2,
+                                }}
+                            />
+                        </View>
+                    )}
                 </LinearGradient>
 
-                <Animated.View
-                    style={{ transform: [{ translateY }] }}
-                    className="min-h-screen"
-                >
+                <View className="min-h-screen">
                     {!isSearching && (
-                        <Text className="text-white text-[22px] font-bold pl-[15px]">
+                        <Text className="text-white text-[22px] font-bold pl-[15px] mt-8">
                             Bài hát đã thích{" "}
                             <Text className="text-white text-[18px] font-bold pl-[15px]">
                                 ({data.length})
@@ -220,7 +215,7 @@ const ListFavourite = ({ route }: { route: route<"ListFavourite"> }) => {
                         playSong={playSong}
                         displayAnimation={memo}
                     />
-                </Animated.View>
+                </View>
             </Animated.ScrollView>
         </View>
     );

@@ -108,6 +108,7 @@ export default function App({ navigation }: IHomeProps) {
                         ))}
                     </View>
                     <View className="mt-8">
+                        {/* <MusicWaves /> */}
                         <Text className="text-white font-bold text-[22px] ml-[15px] mb-[10px]">
                             Đề xuất cho bạn
                         </Text>

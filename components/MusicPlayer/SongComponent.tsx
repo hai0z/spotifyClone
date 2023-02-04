@@ -1,5 +1,5 @@
 import { Text, View, Image, TouchableOpacity } from "react-native";
-import React, { memo, useMemo } from "react";
+import React from "react";
 import { Song } from "../../types/song";
 
 interface ISongComponentProps {
