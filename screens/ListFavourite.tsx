@@ -89,7 +89,7 @@ const ListFavourite = ({ route }: { route: route<"ListFavourite"> }) => {
             setSearchResult(data);
         } else {
             setSearchResult(
-                data.filter((song: any) =>
+                data.filter((song: Song) =>
                     stringToSlug(song.title.toLowerCase()).includes(
                         stringToSlug(songName.toLowerCase())
                     )

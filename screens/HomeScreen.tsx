@@ -119,7 +119,7 @@ export default function App({ navigation }: IHomeProps) {
                         >
                             {playList
                                 .slice(0, 10)
-                                ?.map((pl: any, index: number) => {
+                                ?.map((pl: Song, index: number) => {
                                     return (
                                         <PlayListCard
                                             playList={pl}
@@ -140,7 +140,7 @@ export default function App({ navigation }: IHomeProps) {
                             showsHorizontalScrollIndicator={false}
                             contentContainerStyle={{ marginVertical: 10 }}
                         >
-                            {track?.map((pl: any, index: number) => {
+                            {track?.map((pl: Song, index: number) => {
                                 return (
                                     <PlayListCard
                                         playList={pl}
@@ -165,7 +165,7 @@ export default function App({ navigation }: IHomeProps) {
                         >
                             {playList
                                 .slice(10, 20)
-                                ?.map((pl: any, index: number) => {
+                                ?.map((pl: Song, index: number) => {
                                     return (
                                         <PlayListCard
                                             playList={pl}
@@ -187,7 +187,7 @@ export default function App({ navigation }: IHomeProps) {
                         >
                             {playList
                                 .slice(20, 30)
-                                ?.map((pl: any, index: number) => {
+                                ?.map((pl: Song, index: number) => {
                                     return (
                                         <PlayListCard
                                             playList={pl}
