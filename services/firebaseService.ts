@@ -87,3 +87,16 @@ export const getPlayHistory = async (): Promise<Song[]> => {
     });
     return song;
 };
+export const pushToHistory = async (currentSong: Song) => {
+    try {
+        await db.setDoc(
+            db.doc(db.getFirestore(), "playHistory", currentSong.key),
+            {
+                ...currentSong,
+                time: Date.now(),
+            }
+        );
+    } catch (err) {
+        console.log(err);
+    }
+};

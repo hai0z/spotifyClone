@@ -6,6 +6,7 @@ import { setCurrentSong } from "../redux/songSlice";
 import { db } from "../firebase";
 import { RootState } from "../redux/store";
 import { useDispatch } from "react-redux";
+import { pushToHistory } from "../services/firebaseService";
 interface ISongProviderProp {
     children: React.ReactNode;
 }
@@ -115,20 +116,7 @@ const SongProvider: FC<ISongProviderProp> = ({ children }) => {
     }, [isShuffle]);
 
     React.useEffect(() => {
-        const pushToHistory = async () => {
-            try {
-                await db.setDoc(
-                    db.doc(db.getFirestore(), "playHistory", currentSong.key),
-                    {
-                        ...currentSong,
-                        time: Date.now(),
-                    }
-                );
-            } catch (err) {
-                console.log(err);
-            }
-        };
-        pushToHistory();
+        pushToHistory(currentSong);
     }, [currentSong]);
 
     return (
