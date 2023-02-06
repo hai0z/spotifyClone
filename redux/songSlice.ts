@@ -24,6 +24,9 @@ const songSlice = createSlice({
             from: "library",
             name: "Bài hát đã thích",
         } as IPlayFrom,
+        isLooping: false,
+        isShuffle: false,
+        listFavorite: [] as Song[],
     },
     reducers: {
         updateSongState: (state, action) => {
@@ -49,8 +52,23 @@ const songSlice = createSlice({
         setCurrentSong: (state, action: PayloadAction<Song>) => {
             state.currentSong = action.payload;
         },
+        setLooping: (state, action: PayloadAction<boolean>) => {
+            state.isLooping = action.payload;
+        },
+        setShuffle: (state, action: PayloadAction<boolean>) => {
+            state.isShuffle = action.payload;
+        },
+        setListFavourite: (state, action: PayloadAction<Song[]>) => {
+            state.listFavorite = action.payload;
+        },
     },
 });
-export const { updateSongState, setPlaying, setCurrentSong } =
-    songSlice.actions;
+export const {
+    updateSongState,
+    setPlaying,
+    setCurrentSong,
+    setListFavourite,
+    setLooping,
+    setShuffle,
+} = songSlice.actions;
 export default songSlice.reducer;

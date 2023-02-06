@@ -3,14 +3,16 @@ import React from "react";
 import { SimpleLineIcons } from "@expo/vector-icons";
 import { useSongContext } from "../../../context/SongProvider";
 import useSound from "../../../hooks/useSound";
+import { useDispatch } from "react-redux";
+import { setLooping } from "../../../redux/songSlice";
 
 const LoopingControl = () => {
-    const { isLooping, setIsLooping } = useSongContext();
-
+    const { isLooping } = useSongContext();
+    const dispatch = useDispatch();
     const { updateLoopingStatus } = useSound();
 
     const handleLooping = () => {
-        setIsLooping(!isLooping);
+        dispatch(setLooping(!isLooping));
         updateLoopingStatus(!isLooping);
     };
     return (

@@ -1,21 +1,23 @@
-import React, { FC, useContext, useState } from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import React, { FC, useContext } from "react";
 import { Song } from "../types/song";
 import { useSelector } from "react-redux";
-import { setCurrentSong } from "../redux/songSlice";
+import {
+    setCurrentSong,
+    setListFavourite,
+    setLooping,
+    setShuffle,
+} from "../redux/songSlice";
 import { db } from "../firebase";
 import { RootState } from "../redux/store";
 import { useDispatch } from "react-redux";
 import { pushToHistory } from "../services/firebaseService";
+import { getData, storeData } from "../utils/localStorage";
 interface ISongProviderProp {
     children: React.ReactNode;
 }
 interface ISongContext {
     isLooping: boolean;
-    setIsLooping: React.Dispatch<React.SetStateAction<boolean>>;
     ListFavourite: Song[];
-    setListFavourite: React.Dispatch<React.SetStateAction<Song[]>>;
-    setIsShuffle: React.Dispatch<React.SetStateAction<boolean>>;
     isShuffle: boolean;
 }
 export const SongContext = React.createContext({} as ISongContext);
@@ -27,45 +29,37 @@ const SongProvider: FC<ISongProviderProp> = ({ children }) => {
         (state: RootState) => state.song.currentSong
     );
 
-    const [ListFavourite, setListFavourite] = useState<Song[]>([]);
+    const ListFavourite = useSelector(
+        (state: RootState) => state.song.listFavorite
+    );
+    const isLooping = useSelector((state: RootState) => state.song.isLooping);
+    const isShuffle = useSelector((state: RootState) => state.song.isShuffle);
 
-    const [isLooping, setIsLooping] = useState<boolean>(false);
-
-    const [isShuffle, setIsShuffle] = useState<boolean>(false);
-
-    const storeData = async () => {
-        try {
-            await AsyncStorage.setItem("song", JSON.stringify(currentSong));
-        } catch (err) {
-            console.log(err);
-        }
+    const getLatestSong = async () => {
+        const song = await getData("song");
+        dispatch(setCurrentSong(song as Song));
     };
 
-    const findLatestSong = async () => {
-        const song = await AsyncStorage.getItem("song");
-        if (song != null) {
-            dispatch(setCurrentSong(JSON.parse(song)));
-        } else {
-            dispatch(setCurrentSong({} as Song));
-        }
+    const getLooping = async () => {
+        const isLooping = await getData("isLooping");
+        dispatch(setLooping(isLooping));
     };
 
-    const getLoopingStatus = async () => {
-        const isLooping = await AsyncStorage.getItem("isLooping");
-        if (isLooping != null) {
-            setIsLooping(JSON.parse(isLooping));
-        } else {
-            setIsLooping(false);
-        }
+    const getShuffle = async () => {
+        const isShuffle = await getData("isShuffle");
+        dispatch(setShuffle(isShuffle));
     };
 
-    const getShuffleStatus = async () => {
-        const isShuffle = await AsyncStorage.getItem("isShuffle");
-        if (isShuffle != null) {
-            setIsShuffle(JSON.parse(isShuffle));
-        } else {
-            setIsShuffle(false);
-        }
+    const storeLooping = async () => {
+        await storeData<boolean>("isLooping", isLooping);
+    };
+
+    const storeShuffle = async () => {
+        await storeData<boolean>("isShuffle", isShuffle);
+    };
+
+    const storeCurentSong = async () => {
+        await storeData<Song>("song", currentSong);
     };
 
     React.useEffect(() => {
@@ -74,56 +68,29 @@ const SongProvider: FC<ISongProviderProp> = ({ children }) => {
             const data = querySnapshot.docs.map((doc) => {
                 return doc.data();
             });
-            setListFavourite(data as Song[]);
+            dispatch(setListFavourite(data as Song[]));
         });
-        findLatestSong();
-        getLoopingStatus();
-        getShuffleStatus();
+        getLatestSong();
+        getLooping();
+        getShuffle();
         return () => unsub();
     }, []);
 
     React.useEffect(() => {
-        storeData();
+        storeCurentSong();
+        pushToHistory(currentSong);
     }, [currentSong]);
-
-    const storeLooping = async () => {
-        try {
-            await AsyncStorage.setItem("isLooping", JSON.stringify(isLooping));
-        } catch (err) {
-            console.log(err);
-        }
-    };
 
     React.useEffect(() => {
         storeLooping();
-    }, [isLooping]);
-
-    React.useEffect(() => {
-        const changeShuffleStatus = async () => {
-            try {
-                await AsyncStorage.setItem(
-                    "isShuffle",
-                    JSON.stringify(isShuffle)
-                );
-            } catch (err) {
-                console.log(err);
-            }
-        };
-        changeShuffleStatus();
-    }, [isShuffle]);
-
-    React.useEffect(() => {
-        pushToHistory(currentSong);
-    }, [currentSong]);
+        storeShuffle();
+    }, [isLooping, isShuffle]);
 
     return (
         <SongContext.Provider
             value={{
                 isLooping,
-                setIsLooping,
-                setListFavourite,
                 ListFavourite,
-                setIsShuffle,
                 isShuffle,
             }}
         >
@@ -133,21 +100,11 @@ const SongProvider: FC<ISongProviderProp> = ({ children }) => {
 };
 
 export const useSongContext = (): ISongContext => {
-    const {
-        isLooping,
-        setIsLooping,
-        setListFavourite,
-        ListFavourite,
-        setIsShuffle,
-        isShuffle,
-    } = useContext(SongContext);
+    const { isLooping, ListFavourite, isShuffle } = useContext(SongContext);
     return {
         isLooping,
-        setIsLooping,
-        setListFavourite,
         ListFavourite,
         isShuffle,
-        setIsShuffle,
     };
 };
 export default SongProvider;
