@@ -10,24 +10,32 @@ export interface IPlayFrom {
     from: "album" | "library" | "search" | "related";
     name: string;
 }
-
+interface ISongState {
+    musicState: ISongSlice;
+    currentSong: Song & { sections?: string[] | any[] };
+    playFrom: IPlayFrom;
+    isLooping: boolean;
+    isShuffle: boolean;
+    listFavorite: Song[];
+}
+const initialState: ISongState = {
+    musicState: {
+        isPlaying: false,
+        position: 0,
+        duration: 0,
+    },
+    currentSong: {} as Song & { sections?: string[] | any[] },
+    playFrom: {
+        from: "library",
+        name: "Bài hát đã thích",
+    },
+    isLooping: false,
+    isShuffle: false,
+    listFavorite: [],
+};
 const songSlice = createSlice({
     name: "song",
-    initialState: {
-        musicState: {
-            isPlaying: false,
-            position: 0,
-            duration: 0,
-        } as ISongSlice,
-        currentSong: {} as Song & { sections?: string[] | any[] },
-        playFrom: {
-            from: "library",
-            name: "Bài hát đã thích",
-        } as IPlayFrom,
-        isLooping: false,
-        isShuffle: false,
-        listFavorite: [] as Song[],
-    },
+    initialState,
     reducers: {
         updateSongState: (state, action) => {
             state.musicState = {

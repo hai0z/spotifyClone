@@ -6,7 +6,7 @@ import {
     TextInput,
     Image,
 } from "react-native";
-import React, { useCallback, useState } from "react";
+import React, { useState } from "react";
 import { Animated } from "react-native";
 import { useSongContext } from "../context/SongProvider";
 import { Song } from "../types/song";
@@ -101,10 +101,8 @@ const ListFavourite = ({ route }: { route: route<"ListFavourite"> }) => {
 
     const memo = React.useCallback(() => displayAnimation(), []);
 
-    const songImg = useCallback(
-        () => data[Math.floor(Math.random() * data.length)].images.coverart,
-        []
-    );
+    const songImg = () =>
+        data[Math.floor(Math.random() * data.length)].images.coverart;
 
     return (
         <View className="relative bg-[#121212] flex-1 justify-center">
