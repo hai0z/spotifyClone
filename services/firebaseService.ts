@@ -71,17 +71,13 @@ export const addToLikedList = async (
 
 export const getPlayHistory = async (): Promise<Song[]> => {
     const NUMBER_SONG_TO_TAKE = 6;
-
     const song: Song[] = [];
-
     const q = db.query(
         db.collection(db.getFirestore(), "playHistory"),
         db.orderBy("time", "desc"),
         db.limit(NUMBER_SONG_TO_TAKE)
     );
-
     const querySnapshot = await db.getDocs(q);
-
     querySnapshot.forEach((doc) => {
         song.push(doc.data() as Song);
     });
