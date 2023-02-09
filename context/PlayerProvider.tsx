@@ -1,6 +1,7 @@
 import { useSelector, useDispatch } from "react-redux";
 import {
     Audio,
+    AVPlaybackStatusError,
     AVPlaybackStatusSuccess,
     InterruptionModeAndroid,
 } from "expo-av";
@@ -84,7 +85,8 @@ function PlayerProvider({ children }: { children: React.ReactNode }) {
                     isLooping,
                     progressUpdateIntervalMillis: 150,
                 },
-                onPlaybackStatusUpdate as any
+                onPlaybackStatusUpdate as AVPlaybackStatusSuccess &
+                    AVPlaybackStatusError
             );
             setSound(newSound);
         } catch (err) {
