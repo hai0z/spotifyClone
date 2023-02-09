@@ -110,7 +110,7 @@ const Search = () => {
                     paddingHorizontal: 15,
                 }}
             >
-                {searchData.map((song: any, index: number) => (
+                {searchData?.map((song: any, index: number) => (
                     <SearchResult
                         data={song}
                         key={index}
