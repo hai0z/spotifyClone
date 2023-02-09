@@ -16,12 +16,12 @@ import { searchingSong } from "../services/firebaseService";
 
 interface ISearchResultProps {
     data: Song;
-    onPress: () => void;
+    onPress: (data: Song) => void;
 }
 const SearchResult: React.FC<ISearchResultProps> = ({ data, onPress }) => {
     return (
         <TouchableOpacity
-            onPress={onPress}
+            onPress={() => onPress(data)}
             style={{
                 height: 50,
                 marginTop: 20,
@@ -56,7 +56,7 @@ const Search = () => {
 
     const dispatch = useDispatch();
 
-    const onPress = useCallback((song: Song) => {
+    const onPressSong = useCallback((song: Song) => {
         dispatch(setCurrentSong(song));
         dispatch(
             setPlaying({
@@ -110,11 +110,11 @@ const Search = () => {
                     paddingHorizontal: 15,
                 }}
             >
-                {searchData?.map((song: any, index: number) => (
+                {searchData?.map((song: Song, index: number) => (
                     <SearchResult
                         data={song}
                         key={index}
-                        onPress={() => onPress(song)}
+                        onPress={onPressSong}
                     />
                 ))}
             </ScrollView>
