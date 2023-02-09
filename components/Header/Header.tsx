@@ -27,15 +27,15 @@ const Header: React.FC<IHeaderProps> = () => {
     };
     return (
         <View className="flex-row justify-between items-center pt-20">
-            <Text className="text-white font-bold text-[22px] ml-[15px]">
+            <Text className="text-white font-bold text-[24px] ml-[15px]">
                 {greeting}
             </Text>
             <View className="ml-auto flex-row justify-around w-[150px]">
-                <FontAwesome5 name="bell" size={24} color="#fff" />
+                <FontAwesome5 name="bell" size={26} color="#fff" />
                 <TouchableOpacity onPress={handleClick}>
-                    <FontAwesome5 name="clock" size={24} color="#fff" />
+                    <FontAwesome5 name="clock" size={26} color="#fff" />
                 </TouchableOpacity>
-                <Feather name="settings" size={24} color="#fff" />
+                <Feather name="settings" size={26} color="#fff" />
             </View>
         </View>
     );
