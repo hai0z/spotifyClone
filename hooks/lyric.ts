@@ -20,9 +20,9 @@ const lyric = (songId: string) => {
     const getLyric = async () => {
         try {
             const { data } = await axios.request(options);
-            // await db.updateDoc(db.doc(db.getFirestore(), "likedList", songId), {
-            //     ...data,
-            // });
+            await db.updateDoc(db.doc(db.getFirestore(), "likedList", songId), {
+                ...data,
+            });
             setLyric(data.sections?.[1].text);
         } catch (err: any) {
             console.log(err.message);
