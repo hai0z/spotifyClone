@@ -6,7 +6,7 @@ import useSound from "../../../hooks/useSound";
 import { useDispatch } from "react-redux";
 import { setLooping } from "../../../redux/songSlice";
 
-const LoopingControl = () => {
+const LoopingControl = ({ size }: { size: number }) => {
     const { isLooping } = useSongContext();
     const dispatch = useDispatch();
     const { updateLoopingStatus } = useSound();
@@ -22,11 +22,11 @@ const LoopingControl = () => {
         >
             <SimpleLineIcons
                 name="loop"
-                size={24}
+                size={size}
                 color={isLooping ? "#13d670" : "white"}
             />
             {isLooping && (
-                <View className="absolute h-1 w-1 rounded-full bottom-[14]bg-[#13d670]" />
+                <View className="absolute h-1 w-1 rounded-full bottom-[14] bg-[#13d670]" />
             )}
         </TouchableOpacity>
     );

@@ -5,7 +5,7 @@ import { useSongContext } from "../../../context/SongProvider";
 import { useDispatch } from "react-redux";
 import { setShuffle } from "../../../redux/songSlice";
 
-const ShuffleConrol = () => {
+const ShuffleConrol = ({ size }: { size: number }) => {
     const { isShuffle } = useSongContext();
     const dispatch = useDispatch();
 
@@ -17,7 +17,7 @@ const ShuffleConrol = () => {
         >
             <Ionicons
                 name="shuffle"
-                size={28}
+                size={size}
                 color={isShuffle ? "#13d670" : "white"}
             />
             {isShuffle && (
