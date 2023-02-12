@@ -45,6 +45,7 @@ const MusicPlayerScreens: React.FC<IMusicPlayerScreenProps> = ({
     React.useEffect(() => {
         setIsLiked(ListFavourite.some((s: Song) => s.key == song.key));
     }, [ListFavourite, song?.key]);
+
     return (
         <LinearGradient
             colors={[`#${song?.images?.joecolor?.split(":")[5]}`, "#000000"]}
