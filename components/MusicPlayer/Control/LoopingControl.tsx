@@ -1,4 +1,4 @@
-import { TouchableOpacity } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 import React from "react";
 import { SimpleLineIcons } from "@expo/vector-icons";
 import { useSongContext } from "../../../context/SongProvider";
@@ -25,6 +25,9 @@ const LoopingControl = () => {
                 size={24}
                 color={isLooping ? "#13d670" : "white"}
             />
+            {isLooping && (
+                <View className="absolute h-1 w-1 rounded-full bottom-[14]bg-[#13d670]" />
+            )}
         </TouchableOpacity>
     );
 };

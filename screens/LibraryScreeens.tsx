@@ -68,7 +68,7 @@ const LibraryScreeens = ({
                             uri: "https://timanhdep.com/wp-content/uploads/2022/06/hinh-avatar-anime-nu-de-thuong-cuc-cute-06.jpg",
                         }}
                     />
-                    <Text style={styles.txt}>Your Library</Text>
+                    <Text style={styles.txt}>Thư viện</Text>
                 </View>
                 <TouchableOpacity onPress={handleOpenModal}>
                     <AntDesign name="plus" size={24} style={styles.plusIcon} />
@@ -162,7 +162,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: "#121212",
-        paddingTop: 40,
+        paddingTop: 60,
     },
     avatar: {
         width: 45,
@@ -182,9 +182,9 @@ const styles = StyleSheet.create({
     },
     txt: {
         fontWeight: "bold",
-        fontSize: 20,
+        fontSize: 24,
         color: "#fff",
-        marginLeft: 5,
+        marginLeft: 10,
     },
     plusIcon: {
         color: "#bdbdbd",

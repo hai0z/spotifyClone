@@ -35,13 +35,13 @@ const SongComponent: React.FC<ISongComponentProps> = ({
 
                 <View className="flex-row items-center">
                     {!!song?.sections?.[1].text && (
-                        <View className="w-8 bg-[#ffffff70] justify-center items-center  mr-1 flex rounded-md">
+                        <View className="w-8 bg-[#818181] justify-center items-center  mr-1 flex rounded-md">
                             <Text className="text-xs font-bold text-[10px]">
                                 Lyric
                             </Text>
                         </View>
                     )}
-                    <Text className="text-[#ffffff70] text-[13px] font-medium">
+                    <Text className="text-[#818181] text-[13px] font-medium">
                         {song.subtitle}
                     </Text>
                 </View>
