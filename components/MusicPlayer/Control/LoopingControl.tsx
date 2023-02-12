@@ -6,7 +6,7 @@ import useSound from "../../../hooks/useSound";
 import { useDispatch } from "react-redux";
 import { setLooping } from "../../../redux/songSlice";
 
-const LoopingControl = ({ size }: { size: number }) => {
+const LoopingControl = ({ size = 24 }: { size?: number }) => {
     const { isLooping } = useSongContext();
     const dispatch = useDispatch();
     const { updateLoopingStatus } = useSound();

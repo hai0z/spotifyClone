@@ -18,11 +18,11 @@ const Player = () => {
                 style={{ width: SCREEN_WIDTH - 40 }}
                 className="flex-row justify-between items-center mt-[5px]"
             >
-                <ShuffleConrol size={28} />
+                <ShuffleConrol />
                 <PreviousControl />
                 <PlayControl />
                 <NextControl />
-                <LoopingControl size={24} />
+                <LoopingControl />
             </View>
         </View>
     );

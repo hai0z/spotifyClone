@@ -5,7 +5,7 @@ import { useSongContext } from "../../../context/SongProvider";
 import { useDispatch } from "react-redux";
 import { setShuffle } from "../../../redux/songSlice";
 
-const ShuffleConrol = ({ size }: { size: number }) => {
+const ShuffleConrol = ({ size = 28 }: { size?: number }) => {
     const { isShuffle } = useSongContext();
     const dispatch = useDispatch();
 
