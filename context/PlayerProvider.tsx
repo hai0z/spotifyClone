@@ -26,7 +26,7 @@ export const PlayerContext = createContext<IPlayerContext>(
 );
 
 function PlayerProvider({ children }: { children: React.ReactNode }) {
-    const [sound, setSound] = React.useState<Sound | null | undefined>(null);
+    const [sound, setSound] = React.useState<Sound | null>(null);
 
     const { isLooping, ListFavourite } = useSongContext();
 
