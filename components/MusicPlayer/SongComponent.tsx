@@ -27,7 +27,7 @@ const SongComponent: React.FC<ISongComponentProps> = ({
             />
             <View className="justify-center ml-[10px] max-w-[80%]">
                 <Text
-                    className="text-[15px] text-white font-semibold "
+                    className="text-[15px] text-white font-normal "
                     numberOfLines={1}
                 >
                     {song.title}
@@ -41,7 +41,7 @@ const SongComponent: React.FC<ISongComponentProps> = ({
                             </Text>
                         </View>
                     )}
-                    <Text className="text-[#818181] text-[13px] font-medium">
+                    <Text className="text-[#818181] text-[13px] font-normal">
                         {song.subtitle}
                     </Text>
                 </View>

@@ -5,8 +5,9 @@ import {
     Dimensions,
     TextInput,
     Image,
+    ScrollView,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Animated } from "react-native";
 import { useSongContext } from "../context/SongProvider";
 import { Song } from "../types/song";
@@ -24,6 +25,10 @@ import { route } from "../types/RootStackParamList";
 import { db } from "../firebase";
 
 const { width: SCREEN_WITH } = Dimensions.get("screen");
+
+const Max_Header_Height = 80;
+const Min_Header_Height = 40;
+const Scroll_Distance = Max_Header_Height - Min_Header_Height;
 
 const ListFavourite = ({ route }: { route: route<"ListFavourite"> }) => {
     const { type, playlistName } = route.params;
@@ -101,121 +106,99 @@ const ListFavourite = ({ route }: { route: route<"ListFavourite"> }) => {
 
     const memo = React.useCallback(() => displayAnimation(), []);
 
-    const songImg = () =>
-        data[Math.floor(Math.random() * data.length)].images.coverart;
+    const scrollY = React.useRef(new Animated.Value(0)).current;
 
+    const animatedHeaderHeight = scrollY.interpolate({
+        inputRange: [0, Scroll_Distance * 5],
+        outputRange: [Max_Header_Height, Min_Header_Height],
+        extrapolate: "clamp",
+    });
+    const animateHeaderBackgroundColor = scrollY.interpolate({
+        inputRange: [0, Max_Header_Height * 2 - Min_Header_Height * 2],
+        outputRange: ["transparent", "indigo"],
+        extrapolate: "clamp",
+    });
+
+    const opacity = scrollY.interpolate({
+        inputRange: [0, 32],
+        outputRange: [1, 0],
+    });
+    const scrollViewRef = React.useRef<ScrollView>(null);
+
+    const heightAnim = scrollY.interpolate({
+        inputRange: [0, 16, 32],
+        outputRange: [160, 150, 130],
+        extrapolate: "clamp",
+    });
+    const lastOffsetY = React.useRef(0);
+    const scrollDirection = React.useRef("");
     return (
-        <View className="relative bg-[#121212] flex-1 justify-center">
-            <View
-                className="pt-[50px] px-[15px] pb-[20px] flex-row items-center "
-                style={{
-                    backgroundColor: `#${
-                        currentSong?.images?.joecolor?.split(":")[5]
-                    }CE`,
-                }}
-            >
-                {isSearching && (
-                    <TouchableOpacity
-                        onPress={() => {
-                            setIsSearching(false);
-                            inputRef.current?.blur();
-                            setSearchValue("");
-                            setSearchResult(data);
-                        }}
-                    >
-                        <AntDesign name="arrowleft" color={"#fff"} size={24} />
-                    </TouchableOpacity>
-                )}
-                <Animated.View className="w-full">
-                    <TextInput
-                        placeholder="Tìm bài hát"
-                        placeholderTextColor={"#fff"}
-                        className="bg-[#ffffff30] p-[5px] text-white rounded-md "
-                        style={{
-                            marginLeft: isSearching ? 20 : 0,
-                            width: isSearching ? "80%" : "100%",
-                        }}
-                        onFocus={() => {
-                            setIsSearching(true);
-                        }}
-                        value={searchValue}
-                        onChangeText={(e) => onSearch(e)}
-                        ref={inputRef}
-                    />
-                </Animated.View>
+        <ScrollView
+            ref={scrollViewRef}
+            stickyHeaderIndices={[0]}
+            className="relative bg-[#121212]"
+            onScroll={(event) => {
+                const offsetY = event.nativeEvent.contentOffset.y;
+                scrollDirection.current =
+                    offsetY - lastOffsetY.current > 0 ? "down" : "up";
+                lastOffsetY.current = offsetY;
+                scrollY.setValue(offsetY);
+            }}
+            onScrollEndDrag={() => {
+                scrollViewRef.current?.scrollTo({
+                    y: scrollDirection.current === "down" ? 100 : 0,
+                    animated: true,
+                });
+            }}
+        >
+            <View className="pl-2 pt-10 bg-transparent z-10 justify-center">
+                <AntDesign name="arrowleft" color={"#fff"} size={28} />
             </View>
-
-            <Animated.ScrollView
-                nestedScrollEnabled
-                bounces={false}
-                contentContainerStyle={{
-                    paddingBottom: 125,
-                }}
+            <LinearGradient
+                colors={["#0F52BA70", "#2554C760", "#121212"]}
+                className="w-full h-64 "
             >
-                <LinearGradient
-                    colors={[
-                        `#${currentSong?.images?.joecolor?.split(":")[5]}CE`,
-                        "#121212",
-                    ]}
-                    start={{ x: 0.5, y: 0 }}
-                    end={{ x: 0.5, y: 1 }}
-                    style={{ width: SCREEN_WITH }}
+                <Animated.View
+                    className="flex-row mx-3 my-4 justify-betweens"
+                    style={{
+                        height: heightAnim,
+                    }}
                 >
-                    {!isSearching && (
-                        <View className="flex-row flex-wrap justify-center items-center">
-                            <Image
-                                source={{ uri: songImg() }}
-                                style={{
-                                    resizeMode: "cover",
-                                    width: SCREEN_WITH / 2.2,
-                                    height: SCREEN_WITH / 2.2,
-                                }}
-                            />
-                            <Image
-                                source={{ uri: songImg() }}
-                                style={{
-                                    resizeMode: "cover",
-                                    width: SCREEN_WITH / 2.2,
-                                    height: SCREEN_WITH / 2.2,
-                                }}
-                            />
-                            <Image
-                                source={{ uri: songImg() }}
-                                style={{
-                                    resizeMode: "cover",
-                                    width: SCREEN_WITH / 2.2,
-                                    height: SCREEN_WITH / 2.2,
-                                }}
-                            />
-                            <Image
-                                source={{ uri: songImg() }}
-                                style={{
-                                    resizeMode: "cover",
-                                    width: SCREEN_WITH / 2.2,
-                                    height: SCREEN_WITH / 2.2,
-                                }}
-                            />
-                        </View>
-                    )}
-                </LinearGradient>
-
-                <View className="min-h-screen">
-                    {!isSearching && (
-                        <Text className="text-white text-[22px] font-bold pl-[15px] mt-8">
-                            Bài hát đã thích{" "}
-                            <Text className="text-white text-[18px] font-bold pl-[15px]">
-                                ({data.length})
-                            </Text>
+                    <Animated.View
+                        style={{ opacity }}
+                        className="w-9/12 h-10 rounded-sm bg-[#ffffff60] flex-row items-center px-2"
+                    >
+                        <AntDesign name="search1" size={24} color="#fff" />
+                        <Text className="text-white font-medium pl-1 text-[12px]">
+                            Tìm trong bài hát đã thích
                         </Text>
-                    )}
-                    <SongList
-                        searchResult={searchResult}
-                        playSong={playSong}
-                        displayAnimation={memo}
-                    />
+                    </Animated.View>
+                    <Animated.View
+                        style={{ opacity }}
+                        className="h-10 bg-[#ffffff50] items-center justify-center px-5 rounded-sm  "
+                    >
+                        <Text className="text-white font-medium text-[12px]">
+                            Sắp xếp
+                        </Text>
+                    </Animated.View>
+                </Animated.View>
+                <View className="mx-3">
+                    <Text className="text-white font-bold text-[24px]">
+                        Bài hát đã thích
+                    </Text>
+                    <Text className="text-gray-500 text-[12px]  pt-2">
+                        {data?.length} bài hát
+                    </Text>
                 </View>
-            </Animated.ScrollView>
-        </View>
+            </LinearGradient>
+            <View className="min-h-screen">
+                <SongList
+                    searchResult={searchResult}
+                    playSong={playSong}
+                    displayAnimation={memo}
+                />
+            </View>
+        </ScrollView>
     );
 };
 
