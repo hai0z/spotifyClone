@@ -6,6 +6,8 @@ import {
     TextInput,
     Image,
     ScrollView,
+    StatusBar,
+    SafeAreaView,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Animated } from "react-native";
@@ -23,12 +25,9 @@ import SongList from "../components/MusicPlayer/SongList";
 import usePlayerAnimation from "../hooks/usePlayerAnimation";
 import { route } from "../types/RootStackParamList";
 import { db } from "../firebase";
+import { useNavigation } from "@react-navigation/native";
 
 const { width: SCREEN_WITH } = Dimensions.get("screen");
-
-const Max_Header_Height = 80;
-const Min_Header_Height = 40;
-const Scroll_Distance = Max_Header_Height - Min_Header_Height;
 
 const ListFavourite = ({ route }: { route: route<"ListFavourite"> }) => {
     const { type, playlistName } = route.params;
@@ -39,6 +38,7 @@ const ListFavourite = ({ route }: { route: route<"ListFavourite"> }) => {
         (state: RootState) => state.song.currentSong
     );
 
+    const navigation = useNavigation();
     const { ListFavourite: data } = useSongContext();
 
     const inputRef = React.createRef<TextInput>();
@@ -108,39 +108,38 @@ const ListFavourite = ({ route }: { route: route<"ListFavourite"> }) => {
 
     const scrollY = React.useRef(new Animated.Value(0)).current;
 
-    const animatedHeaderHeight = scrollY.interpolate({
-        inputRange: [0, Scroll_Distance * 5],
-        outputRange: [Max_Header_Height, Min_Header_Height],
-        extrapolate: "clamp",
-    });
-
     const opacity = scrollY.interpolate({
-        inputRange: [0, 30, 32],
-        outputRange: [1, 0.4, 0],
+        inputRange: [0, 32],
+        outputRange: [1, 0],
     });
     const scrollViewRef = React.useRef<ScrollView>(null);
 
     const headerAnim = scrollY.interpolate({
-        inputRange: [120, 200],
+        inputRange: [160, 180],
         outputRange: [0, 1],
         extrapolate: "clamp",
     });
     const headerColorAnim = scrollY.interpolate({
-        inputRange: [100, 120],
-        outputRange: ["transparent", "#0F52BA"],
+        inputRange: [140, 180],
+        outputRange: ["transparent", "#122d5a"],
         extrapolate: "clamp",
     });
     const lastOffsetY = React.useRef(0);
     const scrollDirection = React.useRef("");
+
+    const statusBarColor = React.useState("#0F52BA");
     return (
-        <View className="bg-[#0F52BA]">
+        <SafeAreaView>
+            <StatusBar backgroundColor="#122d5a" />
             <Animated.View
-                className="pl-2 z-10 w-full h-12 flex-row items-center relative top-8"
+                className="pl-2 z-10 w-full h-14 flex-row items-center absolute top-[20px]"
                 style={{
                     backgroundColor: headerColorAnim,
                 }}
             >
-                <AntDesign name="arrowleft" color={"#fff"} size={28} />
+                <TouchableOpacity onPress={() => navigation.goBack()}>
+                    <AntDesign name="arrowleft" color={"#fff"} size={28} />
+                </TouchableOpacity>
                 <Animated.Text
                     className="text-white font-bold pl-2 text-[16px]"
                     style={{
@@ -151,7 +150,6 @@ const ListFavourite = ({ route }: { route: route<"ListFavourite"> }) => {
                 </Animated.Text>
             </Animated.View>
             <Animated.ScrollView
-                contentContainerStyle={{ zIndex: 1 }}
                 ref={scrollViewRef}
                 className="bg-[#121212]"
                 onScroll={Animated.event(
@@ -162,9 +160,9 @@ const ListFavourite = ({ route }: { route: route<"ListFavourite"> }) => {
             >
                 <LinearGradient
                     colors={["#0F52BA70", "#2554C760", "#121212"]}
-                    className="w-full h-80 -mt-24"
+                    className="w-full h-80"
                 >
-                    <Animated.View className="flex-row mx-3 mt-[150px] justify-center">
+                    <Animated.View className="flex-row mx-3 mt-[90px] justify-center">
                         <Animated.View
                             style={{ opacity }}
                             className="w-9/12 h-10 rounded-sm bg-[#ffffff60] flex-row items-center px-2"
@@ -183,7 +181,7 @@ const ListFavourite = ({ route }: { route: route<"ListFavourite"> }) => {
                             </Text>
                         </Animated.View>
                     </Animated.View>
-                    <View className="mx-3 mt-12">
+                    <View className="mx-3 mt-28">
                         <Text className="text-white font-bold text-[24px]">
                             Bài hát đã thích
                         </Text>
@@ -200,7 +198,7 @@ const ListFavourite = ({ route }: { route: route<"ListFavourite"> }) => {
                     />
                 </View>
             </Animated.ScrollView>
-        </View>
+        </SafeAreaView>
     );
 };
 

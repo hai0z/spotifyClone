@@ -40,6 +40,8 @@ const HomeTabScreen = () => {
     );
 };
 const LibraryStack = () => {
+    const navigation = useNavigation<navigation<"HomeTab">>();
+
     return (
         <Stack.Navigator
             screenOptions={{ headerShown: false }}
@@ -58,6 +60,7 @@ const LibraryStack = () => {
 };
 
 const HomeTab = () => {
+    const navigation = useNavigation<navigation<"HomeTab">>();
     return (
         <Tab.Navigator
             screenOptions={({ route }) => ({
@@ -115,6 +118,13 @@ const HomeTab = () => {
                 options={{
                     title: "Thư viện",
                 }}
+                listeners={() => ({
+                    tabPress: () => {
+                        // Prevent default action
+                        // navigation.navigate("Lib");
+                        // Do something with the `navigation` object
+                    },
+                })}
             />
         </Tab.Navigator>
     );
