@@ -72,7 +72,7 @@ const LyricScreens: React.FC<{ route: route<"Lyric"> }> = ({ route }) => {
                     nestedScrollEnabled
                     data={song.sections?.[1].text}
                     renderItem={({ item }: { item: string }) => (
-                        <Text className="text-white text-[24px] font-semibold px-8">
+                        <Text className="text-white text-[24px] font-bold px-8">
                             {item}
                         </Text>
                     )}

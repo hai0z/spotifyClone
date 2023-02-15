@@ -122,7 +122,7 @@ const MusicPlayerScreens: React.FC<IMusicPlayerScreenProps> = ({
                             data={song.sections?.[1].text}
                             renderItem={({ item }: { item: string }) => (
                                 <View className="h-8">
-                                    <Text className="text-white text-[22px] font-semibold ">
+                                    <Text className="text-white text-[22px] font-bold ">
                                         {item}
                                     </Text>
                                 </View>
