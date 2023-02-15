@@ -113,92 +113,94 @@ const ListFavourite = ({ route }: { route: route<"ListFavourite"> }) => {
         outputRange: [Max_Header_Height, Min_Header_Height],
         extrapolate: "clamp",
     });
-    const animateHeaderBackgroundColor = scrollY.interpolate({
-        inputRange: [0, Max_Header_Height * 2 - Min_Header_Height * 2],
-        outputRange: ["transparent", "indigo"],
-        extrapolate: "clamp",
-    });
 
     const opacity = scrollY.interpolate({
-        inputRange: [0, 32],
-        outputRange: [1, 0],
+        inputRange: [0, 30, 32],
+        outputRange: [1, 0.4, 0],
     });
     const scrollViewRef = React.useRef<ScrollView>(null);
 
-    const heightAnim = scrollY.interpolate({
-        inputRange: [0, 16, 32],
-        outputRange: [160, 150, 130],
+    const headerAnim = scrollY.interpolate({
+        inputRange: [120, 200],
+        outputRange: [0, 1],
+        extrapolate: "clamp",
+    });
+    const headerColorAnim = scrollY.interpolate({
+        inputRange: [100, 120],
+        outputRange: ["transparent", "#0F52BA"],
         extrapolate: "clamp",
     });
     const lastOffsetY = React.useRef(0);
     const scrollDirection = React.useRef("");
     return (
-        <ScrollView
-            ref={scrollViewRef}
-            stickyHeaderIndices={[0]}
-            className="relative bg-[#121212]"
-            onScroll={(event) => {
-                const offsetY = event.nativeEvent.contentOffset.y;
-                scrollDirection.current =
-                    offsetY - lastOffsetY.current > 0 ? "down" : "up";
-                lastOffsetY.current = offsetY;
-                scrollY.setValue(offsetY);
-            }}
-            onScrollEndDrag={() => {
-                scrollViewRef.current?.scrollTo({
-                    y: scrollDirection.current === "down" ? 100 : 0,
-                    animated: true,
-                });
-            }}
-        >
-            <View className="pl-2 pt-10 bg-transparent z-10 justify-center">
-                <AntDesign name="arrowleft" color={"#fff"} size={28} />
-            </View>
-            <LinearGradient
-                colors={["#0F52BA70", "#2554C760", "#121212"]}
-                className="w-full h-64 "
+        <View className="bg-[#0F52BA]">
+            <Animated.View
+                className="pl-2 z-10 w-full h-12 flex-row items-center relative top-8"
+                style={{
+                    backgroundColor: headerColorAnim,
+                }}
             >
-                <Animated.View
-                    className="flex-row mx-3 my-4 justify-betweens"
+                <AntDesign name="arrowleft" color={"#fff"} size={28} />
+                <Animated.Text
+                    className="text-white font-bold pl-2 text-[16px]"
                     style={{
-                        height: heightAnim,
+                        opacity: headerAnim,
                     }}
                 >
-                    <Animated.View
-                        style={{ opacity }}
-                        className="w-9/12 h-10 rounded-sm bg-[#ffffff60] flex-row items-center px-2"
-                    >
-                        <AntDesign name="search1" size={24} color="#fff" />
-                        <Text className="text-white font-medium pl-1 text-[12px]">
-                            Tìm trong bài hát đã thích
-                        </Text>
+                    Bài hát đã thích
+                </Animated.Text>
+            </Animated.View>
+            <Animated.ScrollView
+                contentContainerStyle={{ zIndex: 1 }}
+                ref={scrollViewRef}
+                className="bg-[#121212]"
+                onScroll={Animated.event(
+                    [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+                    { useNativeDriver: false }
+                )}
+                scrollEventThrottle={16}
+            >
+                <LinearGradient
+                    colors={["#0F52BA70", "#2554C760", "#121212"]}
+                    className="w-full h-80 -mt-24"
+                >
+                    <Animated.View className="flex-row mx-3 mt-[150px] justify-center">
+                        <Animated.View
+                            style={{ opacity }}
+                            className="w-9/12 h-10 rounded-sm bg-[#ffffff60] flex-row items-center px-2"
+                        >
+                            <AntDesign name="search1" size={24} color="#fff" />
+                            <Text className="text-white font-medium pl-1 text-[12px]">
+                                Tìm trong bài hát đã thích
+                            </Text>
+                        </Animated.View>
+                        <Animated.View
+                            style={{ opacity }}
+                            className="h-10 bg-[#ffffff50] items-center justify-center px-5 rounded-sm ml-2 "
+                        >
+                            <Text className="text-white font-medium text-[12px]">
+                                Sắp xếp
+                            </Text>
+                        </Animated.View>
                     </Animated.View>
-                    <Animated.View
-                        style={{ opacity }}
-                        className="h-10 bg-[#ffffff50] items-center justify-center px-5 rounded-sm  "
-                    >
-                        <Text className="text-white font-medium text-[12px]">
-                            Sắp xếp
+                    <View className="mx-3 mt-12">
+                        <Text className="text-white font-bold text-[24px]">
+                            Bài hát đã thích
                         </Text>
-                    </Animated.View>
-                </Animated.View>
-                <View className="mx-3">
-                    <Text className="text-white font-bold text-[24px]">
-                        Bài hát đã thích
-                    </Text>
-                    <Text className="text-gray-500 text-[12px]  pt-2">
-                        {data?.length} bài hát
-                    </Text>
+                        <Text className="text-gray-500 text-[12px]  pt-2">
+                            {data?.length} bài hát
+                        </Text>
+                    </View>
+                </LinearGradient>
+                <View className="min-h-screen">
+                    <SongList
+                        searchResult={searchResult}
+                        playSong={playSong}
+                        displayAnimation={memo}
+                    />
                 </View>
-            </LinearGradient>
-            <View className="min-h-screen">
-                <SongList
-                    searchResult={searchResult}
-                    playSong={playSong}
-                    displayAnimation={memo}
-                />
-            </View>
-        </ScrollView>
+            </Animated.ScrollView>
+        </View>
     );
 };
 
