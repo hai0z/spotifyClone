@@ -132,7 +132,7 @@ const ListFavourite = ({ route }: { route: route<"ListFavourite"> }) => {
         <SafeAreaView>
             <StatusBar backgroundColor="#122d5a" />
             <Animated.View
-                className="pl-2 z-10 w-full h-14 flex-row items-center absolute top-[20px]"
+                className="pl-4 z-10 w-full h-16 flex-row items-center absolute top-[20px]"
                 style={{
                     backgroundColor: headerColorAnim,
                 }}
@@ -141,7 +141,7 @@ const ListFavourite = ({ route }: { route: route<"ListFavourite"> }) => {
                     <AntDesign name="arrowleft" color={"#fff"} size={28} />
                 </TouchableOpacity>
                 <Animated.Text
-                    className="text-white font-bold pl-2 text-[16px]"
+                    className="text-white font-bold pl-6 text-[16px]"
                     style={{
                         opacity: headerAnim,
                     }}
