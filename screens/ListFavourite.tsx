@@ -4,7 +4,6 @@ import {
     TouchableOpacity,
     Dimensions,
     TextInput,
-    Image,
     ScrollView,
     StatusBar,
     SafeAreaView,
@@ -119,6 +118,7 @@ const ListFavourite = ({ route }: { route: route<"ListFavourite"> }) => {
         outputRange: [0, 1],
         extrapolate: "clamp",
     });
+
     const headerColorAnim = scrollY.interpolate({
         inputRange: [140, 180],
         outputRange: ["transparent", "#122d5a"],

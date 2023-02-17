@@ -40,8 +40,6 @@ const HomeTabScreen = () => {
     );
 };
 const LibraryStack = () => {
-    const navigation = useNavigation<navigation<"HomeTab">>();
-
     return (
         <Stack.Navigator
             screenOptions={{ headerShown: false }}

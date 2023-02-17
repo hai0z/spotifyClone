@@ -6,7 +6,6 @@ import {
     REACT_APP_X_RapidAPI_Key,
     REACT_APP_X_RapidAPI_Host,
 } from "@env";
-console.log(REACT_APP_X_RapidAPI_Key);
 export const searchingSong = async (
     searchParams: string
 ): Promise<Song[] | undefined> => {
