@@ -23,10 +23,7 @@ const Tab = createBottomTabNavigator();
 
 const HomeTabScreen = () => {
     return (
-        <Stack.Navigator
-            screenOptions={{ headerShown: false }}
-            initialRouteName="HomeTab"
-        >
+        <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="HomeTab">
             <Stack.Screen name="HomeTab" component={HomeScreen} />
             <Stack.Screen name="Album" component={AlbumAndArtist} />
             <Stack.Screen
@@ -41,10 +38,7 @@ const HomeTabScreen = () => {
 };
 const LibraryStack = () => {
     return (
-        <Stack.Navigator
-            screenOptions={{ headerShown: false }}
-            initialRouteName="Lib"
-        >
+        <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="Lib">
             <Stack.Screen name="Lib" component={LibraryScreeens} />
             <Stack.Screen
                 name="ListFavourite"
@@ -58,29 +52,17 @@ const LibraryStack = () => {
 };
 
 const HomeTab = () => {
-    const navigation = useNavigation<navigation<"HomeTab">>();
     return (
         <Tab.Navigator
             screenOptions={({ route }) => ({
                 tabBarIcon: ({ color, size }) => {
-                    if (route.name === "Home") {
-                        return <Entypo name="home" size={size} color={color} />;
-                    } else if (route.name === "Search") {
-                        return (
-                            <FontAwesome
-                                name="search"
-                                size={24}
-                                color={color}
-                            />
-                        );
-                    } else if (route.name === "Library") {
-                        return (
-                            <MaterialIcons
-                                name="library-music"
-                                size={24}
-                                color={color}
-                            />
-                        );
+                    switch (route.name) {
+                        case "Home":
+                            return <Entypo name="home" size={size} color={color} />;
+                        case "Search":
+                            return <FontAwesome name="search" size={24} color={color} />;
+                        case "Library":
+                            return <MaterialIcons name="library-music" size={24} color={color} />;
                     }
                 },
                 headerShown: false,

@@ -33,9 +33,7 @@ const ListFavourite = ({ route }: { route: route<"ListFavourite"> }) => {
 
     const dispatch = useDispatch();
 
-    const currentSong = useSelector(
-        (state: RootState) => state.song.currentSong
-    );
+    const currentSong = useSelector((state: RootState) => state.song.currentSong);
 
     const navigation = useNavigation();
     const { ListFavourite: data } = useSongContext();
@@ -56,11 +54,7 @@ const ListFavourite = ({ route }: { route: route<"ListFavourite"> }) => {
         if (type == "playlist") {
             const getPlayList = () => {
                 const q = db.query(
-                    db.collection(
-                        db.getFirestore(),
-                        "playlist",
-                        `${playlistName}/playlist`
-                    )
+                    db.collection(db.getFirestore(), "playlist", `${playlistName}/playlist`)
                 );
                 db.onSnapshot(q, (querySnapshot) => {
                     const pl: Song[] = [];
@@ -152,10 +146,9 @@ const ListFavourite = ({ route }: { route: route<"ListFavourite"> }) => {
             <Animated.ScrollView
                 ref={scrollViewRef}
                 className="bg-[#121212]"
-                onScroll={Animated.event(
-                    [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-                    { useNativeDriver: false }
-                )}
+                onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], {
+                    useNativeDriver: false,
+                })}
                 scrollEventThrottle={16}
             >
                 <LinearGradient
@@ -176,15 +169,11 @@ const ListFavourite = ({ route }: { route: route<"ListFavourite"> }) => {
                             style={{ opacity }}
                             className="h-10 bg-[#ffffff50] items-center justify-center px-5 rounded-sm ml-2 "
                         >
-                            <Text className="text-white font-medium text-[12px]">
-                                Sắp xếp
-                            </Text>
+                            <Text className="text-white font-medium text-[12px]">Sắp xếp</Text>
                         </Animated.View>
                     </Animated.View>
                     <View className="mx-3 mt-28">
-                        <Text className="text-white font-bold text-[24px]">
-                            Bài hát đã thích
-                        </Text>
+                        <Text className="text-white font-bold text-[24px]">Bài hát đã thích</Text>
                         <Text className="text-gray-500 text-[12px]  pt-2">
                             {data?.length} bài hát
                         </Text>
