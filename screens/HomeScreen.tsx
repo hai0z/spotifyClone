@@ -1,5 +1,11 @@
 import { StatusBar } from "expo-status-bar";
-import { Text, View, ScrollView, RefreshControl, ActivityIndicator } from "react-native";
+import {
+    Text,
+    View,
+    ScrollView,
+    RefreshControl,
+    ActivityIndicator,
+} from "react-native";
 import React, { useState } from "react";
 import PlayListCard from "../components/MusicCard/PlayListCard";
 import Header from "../components/Header/Header";
@@ -9,7 +15,6 @@ import { Song } from "../types/song";
 import usePlayerAnimation from "../hooks/usePlayerAnimation";
 import { LinearGradient } from "expo-linear-gradient";
 import { getPlayHistory, getSong } from "../services/firebaseService";
-
 import useHeaderColor from "../hooks/useHeaderColor";
 interface IHomeProps {
     navigation: navigation<"HomeTab">;
@@ -64,7 +69,12 @@ export default function App({ navigation }: IHomeProps) {
             <ScrollView
                 showsVerticalScrollIndicator={false}
                 className="flex-1 bg-[#121212] relative "
-                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+                refreshControl={
+                    <RefreshControl
+                        refreshing={refreshing}
+                        onRefresh={onRefresh}
+                    />
+                }
             >
                 <View className="relative -z-1">
                     <LinearGradient
@@ -106,15 +116,17 @@ export default function App({ navigation }: IHomeProps) {
                             showsHorizontalScrollIndicator={false}
                             contentContainerStyle={{ marginVertical: 10 }}
                         >
-                            {playList.slice(0, 10)?.map((pl: Song, index: number) => {
-                                return (
-                                    <PlayListCard
-                                        playList={pl}
-                                        key={index}
-                                        displayAnimation={displayAnimation}
-                                    />
-                                );
-                            })}
+                            {playList
+                                .slice(0, 10)
+                                ?.map((pl: Song, index: number) => {
+                                    return (
+                                        <PlayListCard
+                                            playList={pl}
+                                            key={index}
+                                            displayAnimation={displayAnimation}
+                                        />
+                                    );
+                                })}
                         </ScrollView>
                     </View>
 
@@ -150,15 +162,17 @@ export default function App({ navigation }: IHomeProps) {
                             showsHorizontalScrollIndicator={false}
                             contentContainerStyle={{ marginVertical: 10 }}
                         >
-                            {playList.slice(10, 20)?.map((pl: Song, index: number) => {
-                                return (
-                                    <PlayListCard
-                                        playList={pl}
-                                        key={index}
-                                        displayAnimation={displayAnimation}
-                                    />
-                                );
-                            })}
+                            {playList
+                                .slice(10, 20)
+                                ?.map((pl: Song, index: number) => {
+                                    return (
+                                        <PlayListCard
+                                            playList={pl}
+                                            key={index}
+                                            displayAnimation={displayAnimation}
+                                        />
+                                    );
+                                })}
                         </ScrollView>
                     </View>
                     <View className="my-2">
@@ -170,15 +184,17 @@ export default function App({ navigation }: IHomeProps) {
                             horizontal
                             contentContainerStyle={{ marginVertical: 10 }}
                         >
-                            {playList.slice(20, 30)?.map((pl: Song, index: number) => {
-                                return (
-                                    <PlayListCard
-                                        playList={pl}
-                                        key={index}
-                                        displayAnimation={displayAnimation}
-                                    />
-                                );
-                            })}
+                            {playList
+                                .slice(20, 30)
+                                ?.map((pl: Song, index: number) => {
+                                    return (
+                                        <PlayListCard
+                                            playList={pl}
+                                            key={index}
+                                            displayAnimation={displayAnimation}
+                                        />
+                                    );
+                                })}
                         </ScrollView>
                     </View>
                 </ScrollView>

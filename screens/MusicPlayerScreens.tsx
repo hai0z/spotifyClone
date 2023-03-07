@@ -16,16 +16,12 @@ interface IMusicPlayerScreenProps {
     navigation: navigation<"HomeTab">;
 }
 
-const MusicPlayerScreens: React.FC<IMusicPlayerScreenProps> = ({
-    navigation,
-}) => {
+const MusicPlayerScreens: React.FC<IMusicPlayerScreenProps> = ({ navigation }) => {
     const { ListFavourite } = useSongContext();
 
     const song = useSelector((state: RootState) => state.song.currentSong);
 
-    const [isLiked, setIsLiked] = useState(
-        ListFavourite.some((s: Song) => s.key == song?.key)
-    );
+    const [isLiked, setIsLiked] = useState(ListFavourite.some((s: Song) => s.key == song?.key));
 
     const handleAddToLikedList = async (likedSong: Song) => {
         setIsLiked(!isLiked);
@@ -68,9 +64,7 @@ const MusicPlayerScreens: React.FC<IMusicPlayerScreenProps> = ({
                         <Text className="text-white uppercase text-[12px]">
                             Đang phát từ thư viện
                         </Text>
-                        <Text className="text-white font-bold text-[12px]">
-                            Bài hát đã thích
-                        </Text>
+                        <Text className="text-white font-bold text-[12px]">Bài hát đã thích</Text>
                     </View>
                     <Entypo name="dots-three-vertical" size={18} color="#fff" />
                 </View>
@@ -79,16 +73,12 @@ const MusicPlayerScreens: React.FC<IMusicPlayerScreenProps> = ({
                 </View>
                 <View className="flex-row justify-between items-center pt-[70px] mx-[30px]">
                     <View>
-                        <Text className="text-[20px] font-bold text-white">
-                            {song.title}
-                        </Text>
+                        <Text className="text-[20px] font-bold text-white">{song.title}</Text>
                         <Text className="text-[13px] font-semibold text-white">
                             {song.subtitle}
                         </Text>
                     </View>
-                    <TouchableOpacity
-                        onPress={() => handleAddToLikedList(song)}
-                    >
+                    <TouchableOpacity onPress={() => handleAddToLikedList(song)}>
                         <AntDesign
                             name={isLiked ? "heart" : "hearto"}
                             size={24}
@@ -106,9 +96,7 @@ const MusicPlayerScreens: React.FC<IMusicPlayerScreenProps> = ({
                         activeOpacity={1}
                         className="mx-[20px] h-[360px]  mt-[40px] rounded-lg w-11/12 p-[10px] overflow-hidden pb-4"
                         style={{
-                            backgroundColor: `#${
-                                song?.images?.joecolor?.split(":")[5]
-                            }`,
+                            backgroundColor: `#${song?.images?.joecolor?.split(":")[5]}`,
                         }}
                     >
                         <Text className="text-[18px] text-white font-semibold pb-4">

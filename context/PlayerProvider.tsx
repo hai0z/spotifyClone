@@ -143,18 +143,17 @@ function PlayerProvider({ children }: { children: React.ReactNode }) {
         });
     }, []);
 
+    const defaultValue = {
+        sound,
+        onPlayPause,
+        onPlaybackStatusUpdate,
+        playSound,
+        setSound,
+        playFromPosition,
+        updateLoopingStatus,
+    };
     return (
-        <PlayerContext.Provider
-            value={{
-                sound,
-                onPlayPause,
-                onPlaybackStatusUpdate,
-                playSound,
-                setSound,
-                playFromPosition,
-                updateLoopingStatus,
-            }}
-        >
+        <PlayerContext.Provider value={defaultValue}>
             {children}
         </PlayerContext.Provider>
     );
