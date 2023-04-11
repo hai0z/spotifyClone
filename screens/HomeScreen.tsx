@@ -76,6 +76,7 @@ export default function App({ navigation }: IHomeProps) {
                     />
                 }
             >
+                
                 <View className="relative -z-1">
                     <LinearGradient
                         className="w-full h-40"

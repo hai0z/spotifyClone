@@ -1,7 +1,12 @@
 import React, { FC, useContext } from "react";
 import { Song } from "../types/song";
 import { useSelector } from "react-redux";
-import { setCurrentSong, setListFavourite, setLooping, setShuffle } from "../redux/songSlice";
+import {
+    setCurrentSong,
+    setListFavourite,
+    setLooping,
+    setShuffle,
+} from "../redux/songSlice";
 import { db } from "../firebase";
 import { RootState } from "../redux/store";
 import { useDispatch } from "react-redux";
@@ -20,9 +25,13 @@ export const SongContext = React.createContext({} as ISongContext);
 const SongProvider: FC<ISongProviderProp> = ({ children }) => {
     const dispatch = useDispatch();
 
-    const currentSong = useSelector((state: RootState) => state.song.currentSong);
+    const currentSong = useSelector(
+        (state: RootState) => state.song.currentSong
+    );
 
-    const ListFavourite = useSelector((state: RootState) => state.song.listFavorite);
+    const ListFavourite = useSelector(
+        (state: RootState) => state.song.listFavorite
+    );
     const isLooping = useSelector((state: RootState) => state.song.isLooping);
     const isShuffle = useSelector((state: RootState) => state.song.isShuffle);
 
