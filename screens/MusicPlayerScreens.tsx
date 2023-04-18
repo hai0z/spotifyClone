@@ -104,7 +104,7 @@ const MusicPlayerScreens: React.FC<IMusicPlayerScreenProps> = ({
                     <TouchableOpacity
                         onPress={goToLyricScreen}
                         activeOpacity={1}
-                        className="mx-[20px] h-[360px]  mt-[40px] rounded-lg w-11/12 p-[10px] overflow-hidden pb-4"
+                        className="mx-[20px] h-[360px] mt-[40px] rounded-lg w-11/12 p-[10px] overflow-hidden pb-4"
                         style={{
                             backgroundColor: `#${
                                 song?.images?.joecolor?.split(":")[5]
