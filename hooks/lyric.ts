@@ -14,7 +14,6 @@ const lyric = (songId: string) => {
             "X-RapidAPI-Host": REACT_APP_X_RapidAPI_Host,
         },
     };
-    console.log("1111");
     const [lyric, setLyric] = useState<string[]>([]);
 
     const getLyric = async () => {

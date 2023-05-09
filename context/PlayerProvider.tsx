@@ -122,7 +122,7 @@ function PlayerProvider({ children }: { children: React.ReactNode }) {
 
     React.useEffect(() => {
         playSound();
-    }, [currentSong]);
+    }, [currentSong?.key]);
 
     React.useEffect(() => {
         return sound

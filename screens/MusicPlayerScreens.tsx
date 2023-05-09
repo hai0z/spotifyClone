@@ -15,7 +15,6 @@ import ImageSlider from "../components/MusicPlayer/ImageSilder/ImageSlider";
 interface IMusicPlayerScreenProps {
     navigation: navigation<"HomeTab">;
 }
-
 const MusicPlayerScreens: React.FC<IMusicPlayerScreenProps> = ({
     navigation,
 }) => {
