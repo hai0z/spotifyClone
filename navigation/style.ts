@@ -8,7 +8,7 @@ export const tabBarStyle: StyleProp<ViewStyle> = {
     height: 65,
     width: "100%",
     zIndex: 2,
-    backgroundColor: "#00000050",
+    backgroundColor: "#000000",
     opacity: 0.95,
 };
 

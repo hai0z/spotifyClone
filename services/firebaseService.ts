@@ -1,9 +1,9 @@
 import axios, { AxiosResponse } from "axios";
 import { db } from "../firebase";
-import { Song } from "../types/song";
+import { ISong, Song } from "../types/song";
 import {
     REACT_APP_API,
-    REACT_APP_X_RapidAPI_Key,
+    // REACT_APP_X_RapidAPI_Key,
     REACT_APP_X_RapidAPI_Host,
 } from "@env";
 export const searchingSong = async (
@@ -69,9 +69,9 @@ export const addToLikedList = async (
     }
 };
 
-export const getPlayHistory = async (): Promise<Song[]> => {
+export const getPlayHistory = async (): Promise<ISong[]> => {
     const NUMBER_SONG_TO_TAKE = 6;
-    const song: Song[] = [];
+    const song: ISong[] = [];
     const q = db.query(
         db.collection(db.getFirestore(), "playHistory"),
         db.orderBy("time", "desc"),
@@ -79,14 +79,14 @@ export const getPlayHistory = async (): Promise<Song[]> => {
     );
     const querySnapshot = await db.getDocs(q);
     querySnapshot.forEach((doc) => {
-        song.push(doc.data() as Song);
+        song.push(doc.data() as ISong);
     });
     return song;
 };
-export const pushToHistory = async (currentSong: Song) => {
+export const pushToHistory = async (currentSong: ISong) => {
     try {
         await db.setDoc(
-            db.doc(db.getFirestore(), "playHistory", currentSong.key),
+            db.doc(db.getFirestore(), "playHistory", currentSong.videoId),
             {
                 ...currentSong,
                 time: Date.now(),

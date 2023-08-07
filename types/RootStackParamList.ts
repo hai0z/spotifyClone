@@ -1,6 +1,6 @@
 import { RouteProp } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { Song } from "./song";
+import { ISong } from "./song";
 
 export type RootStackParamList = {
     HomeTab: undefined;
@@ -14,8 +14,9 @@ export type RootStackParamList = {
     History: undefined;
     Splash: undefined;
     Lyric: {
-        song: Song & { sections?: any };
+        song: ISong & { sections?: any };
         bgColor: string;
+        previousLine: number | undefined;
     };
 };
 

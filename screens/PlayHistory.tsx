@@ -4,15 +4,15 @@ import { AntDesign } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { navigation } from "../types/RootStackParamList";
 import { db } from "../firebase";
-import { Song } from "../types/song";
+import { ISong, Song } from "../types/song";
 import { FlashList } from "@shopify/flash-list";
 import { useDispatch } from "react-redux";
 import usePlayerAnimation from "../hooks/usePlayerAnimation";
 import { setCurrentSong, setPlaying } from "../redux/songSlice";
 
 interface ISongCardProps {
-    item: Song;
-    onPress: (song: Song) => void;
+    item: ISong;
+    onPress: (song: ISong) => void;
 }
 
 const SongCard = ({ item, onPress }: ISongCardProps) => {
@@ -22,7 +22,7 @@ const SongCard = ({ item, onPress }: ISongCardProps) => {
             className="flex-row items-center pt-[15px] pl-[15px]"
         >
             <Image
-                source={{ uri: item.images.coverart }}
+                source={{ uri: item?.thumbnails?.[0]?.url }}
                 className="h-[50px] w-[50px] "
             />
             <View className="justify-center ml-[10px] max-w-[80%]">
@@ -30,7 +30,7 @@ const SongCard = ({ item, onPress }: ISongCardProps) => {
                     {item.title}
                 </Text>
 
-                <Text className="text-white">{item.subtitle}</Text>
+                <Text className="text-white">{item.artists?.[0]?.name}</Text>
             </View>
         </TouchableOpacity>
     );
@@ -42,20 +42,20 @@ const PlayHistory = () => {
         navigation.goBack();
     };
 
-    const [history, setHistory] = useState<Song[]>([]);
+    const [history, setHistory] = useState<ISong[]>([]);
 
     const { displayAnimation } = usePlayerAnimation();
     const dispatch = useDispatch();
 
     const getHistory = async () => {
-        const song: Song[] = [];
+        const song: ISong[] = [];
         const q = db.query(
             db.collection(db.getFirestore(), "playHistory"),
             db.orderBy("time", "desc")
         );
         const querySnapshot = await db.getDocs(q);
         querySnapshot.forEach((doc) => {
-            song.push(doc.data() as Song);
+            song.push(doc.data() as ISong);
         });
         setHistory(song);
     };
@@ -64,9 +64,17 @@ const PlayHistory = () => {
         getHistory();
     }, []);
 
-    const onPress = useCallback((song: Song) => {
+    const onPress = useCallback((song: ISong) => {
         displayAnimation();
-        dispatch(setPlaying({ isPlaying: true, playFrom: "likedList" }));
+        dispatch(
+            setPlaying({
+                isPlaying: true,
+                playFrom: {
+                    from: "library",
+                    name: "Lịch sử phát",
+                },
+            })
+        );
         dispatch(setCurrentSong(song));
     }, []);
 

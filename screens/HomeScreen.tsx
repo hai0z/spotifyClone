@@ -1,63 +1,55 @@
 import { StatusBar } from "expo-status-bar";
 import {
-    Text,
     View,
     ScrollView,
     RefreshControl,
     ActivityIndicator,
 } from "react-native";
 import React, { useState } from "react";
-import PlayListCard from "../components/MusicCard/PlayListCard";
 import Header from "../components/Header/Header";
 import { navigation } from "../types/RootStackParamList";
 import MiniPlayCard from "../components/MusicCard/MiniPlayCard";
-import { Song } from "../types/song";
+import { ISong } from "../types/song";
 import usePlayerAnimation from "../hooks/usePlayerAnimation";
 import { LinearGradient } from "expo-linear-gradient";
-import { getPlayHistory, getSong } from "../services/firebaseService";
+import { getPlayHistory } from "../services/firebaseService";
 import useHeaderColor from "../hooks/useHeaderColor";
+import QuickPick from "../components/Home/QuickPick";
+import { HomeData } from "../types/home";
+import musicService from "../services/musicService";
 interface IHomeProps {
     navigation: navigation<"HomeTab">;
 }
 
 export default function App({ navigation }: IHomeProps) {
-    const [playList, setPlayList] = useState<Song[]>([]);
-
-    const [track, setTrack] = useState<Song[]>([]);
-
-    const [playHistory, setPlayHistory] = useState<Song[]>([]);
-
     const [refreshing, setRefreshing] = React.useState(false);
 
-    const [loading, setLoading] = React.useState(true);
+    const [loading, setLoading] = React.useState(false);
+    const [playHistory, setPlayHistory] = useState<ISong[]>([]);
+    const [homeData, setHomeData] = useState<HomeData[]>([]);
 
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
-        getData();
+        getHistory();
         setRefreshing(false);
     }, []);
-
-    const getData = async () => {
-        const data = await getSong();
-        setTrack(data.sort(() => 0.5 - Math.random()).slice(0, 10));
-        setPlayList(data.sort(() => 0.5 - Math.random()));
-    };
+    React.useEffect(() => {
+        const getHomeData = async () => {
+            const res = await musicService.getHome();
+            setHomeData(res);
+            console.log(homeData);
+        };
+        getHomeData();
+        getHistory();
+    }, []);
 
     const getHistory = async () => {
         const data = await getPlayHistory();
         setPlayHistory(data);
         setLoading(false);
     };
-
-    React.useEffect(() => {
-        getHistory();
-        getData();
-    }, []);
-
-    const { displayAnimation } = usePlayerAnimation();
-
     const headerColor = useHeaderColor();
-
+    const { displayAnimation } = usePlayerAnimation();
     if (loading) {
         return (
             <View className="bg-black w-full h-full relative z-20 items-center justify-center">
@@ -76,6 +68,7 @@ export default function App({ navigation }: IHomeProps) {
                     />
                 }
             >
+                <StatusBar style="light" backgroundColor="#00000050" />
                 <View className="relative -z-1">
                     <LinearGradient
                         className="w-full h-40"
@@ -87,17 +80,12 @@ export default function App({ navigation }: IHomeProps) {
                     </LinearGradient>
                 </View>
                 <ScrollView
-                    className="z-10 -mt-12"
+                    className="z-10 -mt-12  flex-1"
                     contentContainerStyle={{
                         paddingBottom: 170,
                     }}
                 >
-                    <StatusBar style="light" backgroundColor="#00000050" />
-                    <View
-                        className="mt-[10px] flex-wrap 
-                flex-row justify-between ml-[10px] my-[10px]
-                mx-[10px]"
-                    >
+                    <View className="mt-[10px] flex-wrap flex-row justify-between my-[10px] w-full px-[10px]">
                         {playHistory.map((song, index) => (
                             <MiniPlayCard
                                 key={index}
@@ -107,95 +95,17 @@ export default function App({ navigation }: IHomeProps) {
                         ))}
                     </View>
                     <View className="mt-8">
-                        {/* <MusicWaves /> */}
-                        <Text className="text-white font-bold text-[22px] ml-[15px] mb-[10px]">
-                            Đề xuất cho bạn
-                        </Text>
-                        <ScrollView
-                            horizontal
-                            showsHorizontalScrollIndicator={false}
-                            contentContainerStyle={{ marginVertical: 10 }}
-                        >
-                            {playList
-                                .slice(0, 10)
-                                ?.map((pl: Song, index: number) => {
-                                    return (
-                                        <PlayListCard
-                                            playList={pl}
-                                            key={index}
-                                            displayAnimation={displayAnimation}
-                                        />
-                                    );
-                                })}
-                        </ScrollView>
+                        <QuickPick
+                            quickPickData={homeData[0]}
+                            title="Chọn nhanh đài phát"
+                            subTitle="bắt đầu một đài phát"
+                        />
                     </View>
-
-                    <View className="my-2">
-                        <Text className="text-white font-bold text-[22px] ml-[15px] mb-[10px]">
-                            Nghệ sĩ bạn thích
-                        </Text>
-                        <ScrollView
-                            horizontal
-                            showsHorizontalScrollIndicator={false}
-                            contentContainerStyle={{ marginVertical: 10 }}
-                        >
-                            {track?.map((pl: Song, index: number) => {
-                                return (
-                                    <PlayListCard
-                                        playList={pl}
-                                        type="artist"
-                                        key={index}
-                                        displayAnimation={displayAnimation}
-                                        navigation={navigation}
-                                    />
-                                );
-                            })}
-                        </ScrollView>
-                    </View>
-
-                    <View className="my-2">
-                        <Text className="text-white font-bold text-[22px] ml-[15px] mb-[10px] ">
-                            Hãy thử cách khác
-                        </Text>
-                        <ScrollView
-                            horizontal
-                            showsHorizontalScrollIndicator={false}
-                            contentContainerStyle={{ marginVertical: 10 }}
-                        >
-                            {playList
-                                .slice(10, 20)
-                                ?.map((pl: Song, index: number) => {
-                                    return (
-                                        <PlayListCard
-                                            playList={pl}
-                                            key={index}
-                                            displayAnimation={displayAnimation}
-                                        />
-                                    );
-                                })}
-                        </ScrollView>
-                    </View>
-                    <View className="my-2">
-                        <Text className="text-white font-bold text-[22px] ml-[15px] mb-[10px]">
-                            Dành cho bạn
-                        </Text>
-                        <ScrollView
-                            showsHorizontalScrollIndicator={false}
-                            horizontal
-                            contentContainerStyle={{ marginVertical: 10 }}
-                        >
-                            {playList
-                                .slice(20, 30)
-                                ?.map((pl: Song, index: number) => {
-                                    return (
-                                        <PlayListCard
-                                            playList={pl}
-                                            key={index}
-                                            displayAnimation={displayAnimation}
-                                        />
-                                    );
-                                })}
-                        </ScrollView>
+                    <View className="mt-4" style={{ height: 256 }}>
+                        <QuickPick
+                            quickPickData={homeData[1]}
+                            title="Đang thịnh hành"
+                        />
                     </View>
                 </ScrollView>
             </ScrollView>

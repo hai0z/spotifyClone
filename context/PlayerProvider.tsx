@@ -10,7 +10,7 @@ import { useSongContext } from "../context/SongProvider";
 import { RootState } from "../redux/store";
 import { setCurrentSong, updateSongState } from "../redux/songSlice";
 import React, { createContext } from "react";
-import { Song } from "../types/song";
+import { ISong } from "../types/song";
 interface IPlayerContext {
     sound: Sound | null;
     setSound: React.Dispatch<React.SetStateAction<Sound | null>>;
@@ -42,7 +42,7 @@ function PlayerProvider({ children }: { children: React.ReactNode }) {
         if (status.didJustFinish && !status.isLooping) {
             if (playFrom.from == "library") {
                 const currentSongIndex: number = ListFavourite.findIndex(
-                    (e: Song) => e.key == currentSong.key
+                    (e: ISong) => e.videoId == currentSong.videoId
                 );
                 if (currentSongIndex == ListFavourite.length - 1) {
                     dispatch(setCurrentSong(ListFavourite[0]));
@@ -78,12 +78,13 @@ function PlayerProvider({ children }: { children: React.ReactNode }) {
         try {
             const { sound: newSound } = await Audio.Sound.createAsync(
                 {
-                    uri: currentSong?.hub?.actions?.[1].uri,
+                    uri: currentSong.audioUrl,
                 },
                 {
                     shouldPlay: musicState.isPlaying,
                     isLooping,
-                    progressUpdateIntervalMillis: 150,
+                    progressUpdateIntervalMillis: 500,
+                    volume: 1,
                 },
                 onPlaybackStatusUpdate as AVPlaybackStatusSuccess &
                     AVPlaybackStatusError
@@ -122,7 +123,7 @@ function PlayerProvider({ children }: { children: React.ReactNode }) {
 
     React.useEffect(() => {
         playSound();
-    }, [currentSong?.key]);
+    }, [currentSong?.videoId]);
 
     React.useEffect(() => {
         return sound

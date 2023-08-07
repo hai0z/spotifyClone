@@ -6,18 +6,17 @@ import {
     TouchableOpacity,
 } from "react-native";
 import React from "react";
-import { Song } from "../../types/song";
+import { Song, ISong } from "../../types/song";
 import { useDispatch } from "react-redux";
 import { setCurrentSong, setPlaying } from "../../redux/songSlice";
 const { width: SCREEN_WITH } = Dimensions.get("screen");
 
 interface IMiniCardProps {
-    song: Song;
+    song: ISong;
     displayAnimation: () => void;
 }
 const MiniPlayCard: React.FC<IMiniCardProps> = ({ song, displayAnimation }) => {
     const dispatch = useDispatch();
-    console.log("playlistcardMini-rerender");
 
     const handleClick = () => {
         displayAnimation();
@@ -42,7 +41,7 @@ const MiniPlayCard: React.FC<IMiniCardProps> = ({ song, displayAnimation }) => {
             <Image
                 style={styles.songImg}
                 source={{
-                    uri: song?.images?.coverart,
+                    uri: song?.thumbnails?.[0]?.url,
                 }}
             />
             <Text style={styles?.songTitle} numberOfLines={2}>

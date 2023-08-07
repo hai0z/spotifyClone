@@ -4,6 +4,7 @@ import {
     TouchableOpacity,
     Dimensions,
     Animated,
+    ActivityIndicator,
 } from "react-native";
 import React, { useState } from "react";
 import { Entypo } from "@expo/vector-icons";
@@ -13,7 +14,7 @@ import { navigation } from "../../types/RootStackParamList";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import useSound from "../../hooks/useSound";
-import { Song } from "../../types/song";
+import { ISong, Song } from "../../types/song";
 import usePlayerAnimation from "../../hooks/usePlayerAnimation";
 import { addToLikedList } from "../../services/firebaseService";
 
@@ -25,8 +26,8 @@ interface IMusciPayerProp {
 const MusicPlayer: React.FC<IMusciPayerProp> = ({ navigation }) => {
     const musicState = useSelector((state: RootState) => state.song.musicState);
 
-    const currentSong = useSelector(
-        (state: RootState) => state.song.currentSong
+    const { currentSong, songLoaded } = useSelector(
+        (state: RootState) => state.song
     );
 
     const { ListFavourite } = useSongContext();
@@ -36,17 +37,17 @@ const MusicPlayer: React.FC<IMusciPayerProp> = ({ navigation }) => {
     const { sound, onPlayPause } = useSound();
 
     const [isLiked, setIsLiked] = useState(
-        ListFavourite.some((s: Song) => s.key == currentSong?.key)
+        ListFavourite.some((s: ISong) => s.videoId == currentSong?.videoId)
     );
 
     const handleAddToLikedList = async (likedSong: Song) => {
-        console.log("likeee");
-        setIsLiked(!isLiked);
-        try {
-            await addToLikedList(likedSong, currentSong, ListFavourite);
-        } catch (err: any) {
-            console.log(err);
-        }
+        // console.log("likeee");
+        // setIsLiked(!isLiked);
+        // try {
+        //     await addToLikedList(likedSong, currentSong, ListFavourite);
+        // } catch (err: any) {
+        //     console.log(err);
+        // }
     };
 
     const getProgress = () => {
@@ -61,11 +62,11 @@ const MusicPlayer: React.FC<IMusciPayerProp> = ({ navigation }) => {
     };
 
     React.useEffect(() => {
-        setIsLiked(ListFavourite.some((s: Song) => s.key == currentSong?.key));
-    }, [ListFavourite, currentSong?.key]);
+        // setIsLiked(ListFavourite.some((s: Song) => s.key == currentSong?.key));
+    }, [ListFavourite, currentSong?.videoId]);
 
     React.useEffect(() => {
-        setJoeColor(`#${currentSong?.images?.joecolor?.split(":")?.[5]}`);
+        setJoeColor(`#606060`);
     }, [currentSong]);
 
     const { playerAnimation } = usePlayerAnimation();
@@ -97,37 +98,54 @@ const MusicPlayer: React.FC<IMusciPayerProp> = ({ navigation }) => {
                 onPress={() => {
                     navigation.navigate("MusicPlayer");
                 }}
-                style={{ backgroundColor: `${joeColor}` }}
+                style={{ backgroundColor: `#ff0000` }}
                 className="flex-col rounded-md justify-center w-[100%] h-[100%]"
             >
                 <View className="flex-row justify-between items-center">
-                    <View>
-                        <Image
-                            source={{
-                                uri: currentSong?.images?.coverart,
-                            }}
-                            className="object-cover w-10 h-10 rounded-[5px] ml-[7px] z-50"
-                        />
-                    </View>
+                    {!songLoaded ? (
+                        <View className="bg-gray-600 w-10 h-10 rounded-[5px] ml-[7px] z-50 justify-center items-center">
+                            <ActivityIndicator
+                                size={"small"}
+                                animating={false}
+                            />
+                        </View>
+                    ) : (
+                        <View>
+                            <Image
+                                source={{
+                                    uri: currentSong?.thumbnails?.[0].url,
+                                }}
+                                className="object-cover w-10 h-10 rounded-[5px] ml-[7px] z-50"
+                            />
+                        </View>
+                    )}
                     <View style={{ marginLeft: 10, maxWidth: "60%" }}>
-                        <Animated.Text
-                            numberOfLines={1}
-                            style={{ transform: [{ translateX }], opacity }}
-                            className="text-white font-semibold text-[14px] "
-                        >
-                            {currentSong?.title}
-                        </Animated.Text>
-                        <Animated.Text
-                            style={{ transform: [{ translateX }], opacity }}
-                            numberOfLines={1}
-                            className="text-white text-[12px] font-normal"
-                        >
-                            {currentSong?.subtitle}
-                        </Animated.Text>
+                        {!songLoaded ? (
+                            <View className="h-2 bg-gray-400 w-32"></View>
+                        ) : (
+                            <Animated.Text
+                                numberOfLines={1}
+                                style={{ transform: [{ translateX }], opacity }}
+                                className="text-white font-semibold text-[14px]"
+                            >
+                                {currentSong?.title}
+                            </Animated.Text>
+                        )}
+                        {!songLoaded ? (
+                            <View className="h-2 bg-gray-400 w-16 mt-3"></View>
+                        ) : (
+                            <Animated.Text
+                                style={{ transform: [{ translateX }], opacity }}
+                                numberOfLines={1}
+                                className="text-white text-[12px] font-normal"
+                            >
+                                {currentSong?.artists?.[0]?.name}
+                            </Animated.Text>
+                        )}
                     </View>
                     <View className="ml-auto flex-row items-center justify-between">
                         <TouchableOpacity
-                            onPress={() => handleAddToLikedList(currentSong)}
+                        // onPress={() => handleAddToLikedList(currentSong)}
                         >
                             <AntDesign
                                 name={isLiked ? "heart" : "hearto"}
@@ -137,16 +155,24 @@ const MusicPlayer: React.FC<IMusciPayerProp> = ({ navigation }) => {
                             />
                         </TouchableOpacity>
                         <TouchableOpacity onPress={onPlayPause}>
-                            <Entypo
-                                name={
-                                    !musicState.isPlaying
-                                        ? "controller-play"
-                                        : "controller-paus"
-                                }
-                                size={30}
-                                color="#fff"
-                                style={{ marginRight: 15 }}
-                            />
+                            {songLoaded ? (
+                                <Entypo
+                                    name={
+                                        !musicState.isPlaying
+                                            ? "controller-play"
+                                            : "controller-paus"
+                                    }
+                                    size={30}
+                                    color="#fff"
+                                    style={{ marginRight: 15 }}
+                                />
+                            ) : (
+                                <ActivityIndicator
+                                    size={24}
+                                    style={{ marginRight: 15 }}
+                                    color={"#fff"}
+                                />
+                            )}
                         </TouchableOpacity>
                     </View>
                 </View>

@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { FlashList } from "@shopify/flash-list";
-import { Song } from "../../../types/song";
+import { ISong, Song } from "../../../types/song";
 import {
     NativeScrollEvent,
     NativeSyntheticEvent,
@@ -16,17 +16,16 @@ const { width: SCREEN_WIDTH } = Dimensions.get("screen");
 
 const ImageSlider = () => {
     const { ListFavourite, isShuffle } = useSongContext();
-    const [playList] = React.useState<Song[]>(ListFavourite);
 
     const dispatch = useDispatch();
 
     const song = useSelector((state: RootState) => state.song.currentSong);
-
+    const [playList] = React.useState<ISong[]>([{ ...song }]);
     const currentSongIndex = React.useMemo(
-        () => playList.findIndex((s: Song) => s.key == song.key),
-        [song.key]
+        () => playList.findIndex((s) => s.videoId == song.videoId),
+        [song.videoId]
     );
-    const flatListRef = React.createRef<FlashList<Song>>();
+    const flatListRef = React.createRef<FlashList<ISong>>();
 
     const swpipeToChangeSong = (
         e: NativeSyntheticEvent<NativeScrollEvent>
@@ -48,11 +47,11 @@ const ImageSlider = () => {
             index: currentSongIndex == -1 ? 0 : currentSongIndex,
             animated: isShuffle ? false : true,
         });
-    }, [song.key]);
+    }, [song.videoId]);
 
     return (
         <FlashList
-            keyExtractor={(item) => item.key}
+            keyExtractor={(item) => item.videoId}
             scrollEventThrottle={32}
             onMomentumScrollEnd={swpipeToChangeSong}
             ref={flatListRef}

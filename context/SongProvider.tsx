@@ -1,5 +1,5 @@
 import React, { FC, useContext } from "react";
-import { Song } from "../types/song";
+import { ISong, Song } from "../types/song";
 import { useSelector } from "react-redux";
 import {
     setCurrentSong,
@@ -17,7 +17,7 @@ interface ISongProviderProp {
 }
 interface ISongContext {
     isLooping: boolean;
-    ListFavourite: Song[];
+    ListFavourite: ISong[];
     isShuffle: boolean;
 }
 export const SongContext = React.createContext({} as ISongContext);
@@ -37,7 +37,7 @@ const SongProvider: FC<ISongProviderProp> = ({ children }) => {
 
     const getLatestSong = async () => {
         const song = await getData("song");
-        dispatch(setCurrentSong(song as Song));
+        dispatch(setCurrentSong(song));
     };
 
     const getLooping = async () => {
@@ -59,7 +59,7 @@ const SongProvider: FC<ISongProviderProp> = ({ children }) => {
     };
 
     const storeCurentSong = async () => {
-        await storeData<Song>("song", currentSong);
+        await storeData<ISong>("song", currentSong);
     };
 
     React.useEffect(() => {
@@ -68,7 +68,7 @@ const SongProvider: FC<ISongProviderProp> = ({ children }) => {
             const data = querySnapshot.docs.map((doc) => {
                 return doc.data();
             });
-            dispatch(setListFavourite(data as Song[]));
+            dispatch(setListFavourite(data as ISong[]));
         });
         getLatestSong();
         getLooping();
@@ -79,7 +79,7 @@ const SongProvider: FC<ISongProviderProp> = ({ children }) => {
     React.useEffect(() => {
         storeCurentSong();
         pushToHistory(currentSong);
-    }, [currentSong]);
+    }, [currentSong.videoId]);
 
     React.useEffect(() => {
         storeLooping();

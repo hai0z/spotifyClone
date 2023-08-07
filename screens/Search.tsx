@@ -9,14 +9,15 @@ import {
 } from "react-native";
 import React, { useCallback, useEffect, useState } from "react";
 import useDebounce from "../hooks/useDebounce";
-import { Song } from "../types/song";
+import { ISong } from "../types/song";
 import { useDispatch } from "react-redux";
-import { setCurrentSong, setPlaying } from "../redux/songSlice";
-import { searchingSong } from "../services/firebaseService";
-
+import { setCurrentSong, setPlaying, setSongLoaded } from "../redux/songSlice";
+import { FontAwesome } from "@expo/vector-icons";
+import musicService from "../services/musicService";
+import { getAudioUrl } from "../services/youtube";
 interface ISearchResultProps {
-    data: Song;
-    onPress: (data: Song) => void;
+    data: ISong;
+    onPress: (data: ISong) => void;
 }
 const SearchResult: React.FC<ISearchResultProps> = ({ data, onPress }) => {
     return (
@@ -29,7 +30,7 @@ const SearchResult: React.FC<ISearchResultProps> = ({ data, onPress }) => {
             }}
         >
             <Image
-                source={{ uri: data.images.coverart }}
+                source={{ uri: data?.thumbnails?.[0]?.url }}
                 className="w-[50px] h-[50px] object-cover"
             />
             <View className="flex flex-col justify-between ml-[10px] w-full">
@@ -37,10 +38,10 @@ const SearchResult: React.FC<ISearchResultProps> = ({ data, onPress }) => {
                     className="text-white font-semibold capitalize max-w-[70%]"
                     numberOfLines={1}
                 >
-                    {data.title}
+                    {data?.title}
                 </Text>
                 <Text style={{ color: "#bdbdbd", fontWeight: "500" }}>
-                    {data.subtitle}
+                    {data?.artists?.[0]?.name}
                 </Text>
             </View>
         </TouchableOpacity>
@@ -50,30 +51,37 @@ const SearchResult: React.FC<ISearchResultProps> = ({ data, onPress }) => {
 const Search = () => {
     const [search, setSearch] = useState<string>("");
 
-    const searchDebounce = useDebounce(search, 1500);
+    const searchDebounce = useDebounce(search, 300);
 
     const [searchData, setSearchData] = useState([] as any);
 
     const dispatch = useDispatch();
 
-    const onPressSong = useCallback((song: Song) => {
-        dispatch(setCurrentSong(song));
-        dispatch(
-            setPlaying({
-                isPlaying: true,
-                playFrom: {
-                    from: "search",
-                    name: `Nội dung: ${search}`,
-                },
-            })
-        );
+    const onPressSong = useCallback(async (song: ISong) => {
+        try {
+            dispatch(setSongLoaded(false));
+            const url = await getAudioUrl(song.videoId);
+            dispatch(setCurrentSong({ ...song, audioUrl: url }));
+            dispatch(
+                setPlaying({
+                    isPlaying: true,
+                    playFrom: {
+                        from: "search",
+                        name: `Nội dung: ${search}`,
+                    },
+                })
+            );
+        } catch (error) {
+            console.log(error);
+        } finally {
+            dispatch(setSongLoaded(true));
+        }
     }, []);
 
     useEffect(() => {
         const fetchSearch = async () => {
-            console.log(`searching...`);
             try {
-                const data = await searchingSong(search);
+                const data = await musicService.search(search);
                 setSearchData(data);
             } catch (err: any) {
                 console.log(err.message);
@@ -99,9 +107,9 @@ const Search = () => {
                 />
                 <TouchableOpacity
                     onPress={() => setSearch("")}
-                    className="absolute right-[20px] top-[10px]"
+                    className="absolute right-[20px] top-[10px] w-8 h-8 flex items-center justify-center"
                 >
-                    <Text className="text-white text-[18px]">X</Text>
+                    <FontAwesome name="remove" size={24} color="white" />
                 </TouchableOpacity>
             </View>
             <ScrollView
@@ -110,7 +118,7 @@ const Search = () => {
                     paddingHorizontal: 15,
                 }}
             >
-                {searchData?.map((song: Song, index: number) => (
+                {searchData?.map((song: ISong, index: number) => (
                     <SearchResult
                         data={song}
                         key={index}

@@ -1,12 +1,19 @@
 import { Text, View, Image, TouchableOpacity } from "react-native";
 import React from "react";
 import { navigation } from "../../types/RootStackParamList";
-import { Song } from "../../types/song";
+import { ISong } from "../../types/song";
 import { useDispatch } from "react-redux";
-import { IPlayFrom, setCurrentSong, setPlaying } from "../../redux/songSlice";
+import {
+    IPlayFrom,
+    setCurrentSong,
+    setPlaying,
+    setSongLoaded,
+} from "../../redux/songSlice";
+import { Content } from "../../types/home";
+import { getAudioUrl } from "../../services/youtube";
 
 interface IPlayListProp {
-    playList: Song;
+    playList: Content & ISong;
     type?: "song" | "artist";
     navigation?: navigation<"HomeTab">;
     displayAnimation: () => void;
@@ -17,8 +24,6 @@ const PlayListCard: React.FC<IPlayListProp> = ({
     type,
     displayAnimation,
 }) => {
-    console.log("playlistcard-rerender");
-
     const dispatch = useDispatch();
 
     const playFrom: IPlayFrom = {
@@ -26,30 +31,32 @@ const PlayListCard: React.FC<IPlayListProp> = ({
         name: "bài hát đã thích",
     };
 
-    const handleClick = () => {
+    const handleClick = async () => {
         if (type === "artist") return;
         displayAnimation();
-        dispatch(setCurrentSong(playList));
+        dispatch(setSongLoaded(false));
+        const url = await getAudioUrl(playList.videoId);
+        dispatch(setCurrentSong({ ...playList, audioUrl: url }));
         dispatch(
             setPlaying({
                 isPlaying: true,
                 playFrom,
             })
         );
+        dispatch(setSongLoaded(true));
     };
 
     return (
         <TouchableOpacity
             onPress={handleClick}
             activeOpacity={0.7}
-            className="flex-1 flex-col ml-[15px]"
+            className="flex-col mx-1"
         >
             <Image
                 source={{
-                    uri:
-                        type == "artist"
-                            ? playList.images?.background
-                            : playList.images?.coverart,
+                    uri: playList?.thumbnails?.[
+                        playList?.thumbnails?.length - 1
+                    ].url,
                 }}
                 style={{
                     width: 150,
@@ -62,7 +69,7 @@ const PlayListCard: React.FC<IPlayListProp> = ({
                     numberOfLines={2}
                     className="font-semibold text-white text-[12px] mt-[3px]"
                 >
-                    {type == "artist" ? playList.subtitle : playList.title}
+                    {type == "artist" ? playList?.title : playList?.title}
                 </Text>
             </View>
         </TouchableOpacity>

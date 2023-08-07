@@ -1,4 +1,4 @@
-import { Song } from "./../types/song";
+import { Song, ISong } from "./../types/song";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface ISongSlice {
@@ -12,11 +12,12 @@ export interface IPlayFrom {
 }
 interface ISongState {
     musicState: ISongSlice;
-    currentSong: Song & { sections?: string[] | any[] };
+    currentSong: ISong & { sections?: string[] | any[] };
     playFrom: IPlayFrom;
     isLooping: boolean;
     isShuffle: boolean;
-    listFavorite: Song[];
+    listFavorite: ISong[];
+    songLoaded: boolean;
 }
 const initialState: ISongState = {
     musicState: {
@@ -24,7 +25,7 @@ const initialState: ISongState = {
         position: 0,
         duration: 0,
     },
-    currentSong: {} as Song & { sections?: string[] | any[] },
+    currentSong: {} as ISong & { sections?: string[] | any[] },
     playFrom: {
         from: "library",
         name: "Bài hát đã thích",
@@ -32,6 +33,7 @@ const initialState: ISongState = {
     isLooping: false,
     isShuffle: false,
     listFavorite: [],
+    songLoaded: true,
 };
 const songSlice = createSlice({
     name: "song",
@@ -57,7 +59,7 @@ const songSlice = createSlice({
             };
             state.playFrom = action.payload.playFrom;
         },
-        setCurrentSong: (state, action: PayloadAction<Song>) => {
+        setCurrentSong: (state, action: PayloadAction<ISong>) => {
             state.currentSong = action.payload;
         },
         setLooping: (state, action: PayloadAction<boolean>) => {
@@ -66,8 +68,11 @@ const songSlice = createSlice({
         setShuffle: (state, action: PayloadAction<boolean>) => {
             state.isShuffle = action.payload;
         },
-        setListFavourite: (state, action: PayloadAction<Song[]>) => {
+        setListFavourite: (state, action: PayloadAction<ISong[]>) => {
             state.listFavorite = action.payload;
+        },
+        setSongLoaded: (state, action: PayloadAction<boolean>) => {
+            state.songLoaded = action.payload;
         },
     },
 });
@@ -78,5 +83,6 @@ export const {
     setListFavourite,
     setLooping,
     setShuffle,
+    setSongLoaded,
 } = songSlice.actions;
 export default songSlice.reducer;
