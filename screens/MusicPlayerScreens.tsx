@@ -16,7 +16,6 @@ import ImageSlider from "../components/MusicPlayer/ImageSilder/ImageSlider";
 import musicService from "../services/musicService";
 import { setCurrentSong } from "../redux/songSlice";
 import useSyncLyric from "../hooks/useSyncLyric";
-import randomCoolColorHex from "../utils/randomColor";
 interface IMusicPlayerScreenProps {
     navigation: navigation<"HomeTab">;
 }
@@ -25,9 +24,9 @@ const MusicPlayerScreens: React.FC<IMusicPlayerScreenProps> = ({
 }) => {
     const { ListFavourite } = useSongContext();
 
-    const [loading, setLoading] = useState(true);
-
-    const song = useSelector((state: RootState) => state.song.currentSong);
+    const { currentSong: song } = useSelector((state: RootState) => state.song);
+    const { joeColor, lyrics, currentLine, getCurrentLyricLine } =
+        useSongContext();
 
     const [isLiked, setIsLiked] = useState();
     // ListFavourite.some((s: Song) => s.key == song?.key)
@@ -44,37 +43,26 @@ const MusicPlayerScreens: React.FC<IMusicPlayerScreenProps> = ({
         navigation.navigate("Lyric", {
             song,
             bgColor: `yellow`,
-            previousLine: 7,
+            previousLine: currentLine,
         });
     };
-    const lyricsRef = useRef<any>(null);
+    const lyricsRef = useRef<FlashList<Line>>(null);
 
-    const dispatch = useDispatch();
     React.useEffect(() => {
         // setIsLiked(ListFavourite.some((s: Song) => s.key == song.key));
     }, [ListFavourite, song?.videoId]);
 
-    const { currentLine, getCurrentLyricLine } = useSyncLyric(song);
-
-    React.useEffect(() => {
-        const getMusicMetadata = async () => {
-            const respone = await musicService.getLyric(song.title);
-            dispatch(setCurrentSong({ ...song, lyrics: respone }));
-            setLoading(false);
-        };
-        getMusicMetadata();
-    }, []);
-
     useEffect(() => {
         lyricsRef.current?.scrollToIndex({
-            index: currentLine,
+            index: currentLine as number,
             animated: true,
+            viewOffset: 50,
         });
     }, [currentLine]);
 
     return (
         <LinearGradient
-            colors={[`#121212`, "#000000"]}
+            colors={[joeColor?.colors?.dominant?.hex, "#000000"]}
             start={{ x: 0, y: 0 }}
             end={{ x: 0, y: 1 }}
             className="flex-1"
@@ -126,85 +114,72 @@ const MusicPlayerScreens: React.FC<IMusicPlayerScreenProps> = ({
                 <View className="items-center mt-[15px]">
                     <Player />
                 </View>
-                {!song?.lyrics?.error && (
-                    <>
-                        {loading ? (
-                            <></>
-                        ) : (
-                            <TouchableOpacity
-                                disabled={loading}
-                                activeOpacity={0.9}
-                                onPress={goToLyricScreen}
-                                className="mx-[20px] h-[360px] flex-1 mt-[40px] rounded-lg w-11/12 p-[10px] bg-red-700"
-                            >
-                                <Text className="text-[18px] text-white font-semibold pb-4">
-                                    Lời bài hát
-                                </Text>
+                {!lyrics?.error && (
+                    <TouchableOpacity
+                        activeOpacity={0.9}
+                        onPress={goToLyricScreen}
+                        style={{
+                            backgroundColor: joeColor?.colors?.dominant?.hex,
+                        }}
+                        className="mx-[20px] h-[360px] flex-1 mt-[40px] rounded-lg w-11/12 p-[10px] "
+                    >
+                        <Text className="text-[18px] text-white font-semibold pb-4">
+                            Lời bài hát
+                        </Text>
+                        <View className="flex-1">
+                            {lyrics?.syncType !== "NOT_FOUND" && (
                                 <View className="flex-1">
-                                    {song?.lyrics?.syncType !== "NOT_FOUND" && (
-                                        <View className="flex-1">
-                                            <FlashList
-                                                ref={lyricsRef}
-                                                scrollEnabled={false}
-                                                estimatedItemSize={61}
-                                                nestedScrollEnabled
-                                                showsVerticalScrollIndicator={
-                                                    false
-                                                }
-                                                extraData={currentLine}
-                                                data={song?.lyrics?.lines}
-                                                renderItem={({
-                                                    item,
-                                                    index,
-                                                }: {
-                                                    item: Line;
-                                                    index: number;
-                                                }) => (
-                                                    <Text
-                                                        style={{
-                                                            opacity:
-                                                                getCurrentLyricLine! >=
-                                                                    index &&
-                                                                song?.lyrics
-                                                                    ?.syncType ===
-                                                                    "LINE_SYNCED"
-                                                                    ? 1
-                                                                    : 0.4,
-                                                            color:
-                                                                getCurrentLyricLine! >=
-                                                                    index &&
-                                                                song?.lyrics
-                                                                    ?.syncType ===
-                                                                    "LINE_SYNCED"
-                                                                    ? "yellow"
-                                                                    : "white",
-                                                            fontSize:
-                                                                getCurrentLyricLine! >=
-                                                                    index &&
-                                                                song?.lyrics
-                                                                    ?.syncType ===
-                                                                    "LINE_SYNCED"
-                                                                    ? 24
-                                                                    : 22,
-                                                        }}
-                                                        className="text-white  font-bold "
-                                                    >
-                                                        {item.words}
-                                                    </Text>
-                                                )}
-                                            />
-                                            <Text className="self-end text-white pt-5">
-                                                {song?.lyrics?.syncType ===
-                                                "LINE_SYNCED"
-                                                    ? "Lời bài hát đã được đồng bộ"
-                                                    : "Lời bài hát chưa được đồng bộ"}
-                                            </Text>
-                                        </View>
-                                    )}
+                                    <FlashList
+                                        initialScrollIndex={currentLine}
+                                        ref={lyricsRef}
+                                        scrollEnabled={false}
+                                        estimatedItemSize={64}
+                                        nestedScrollEnabled
+                                        showsVerticalScrollIndicator={false}
+                                        data={lyrics?.lines}
+                                        extraData={currentLine || lyrics}
+                                        renderItem={({
+                                            item,
+                                            index,
+                                        }: {
+                                            item: Line;
+                                            index: number;
+                                        }) => {
+                                            console.log("vai db");
+                                            return (
+                                                <Text
+                                                    style={{
+                                                        color:
+                                                            getCurrentLyricLine! >=
+                                                                index &&
+                                                            lyrics?.syncType ===
+                                                                "LINE_SYNCED"
+                                                                ? "white"
+                                                                : "black",
+                                                        fontSize:
+                                                            getCurrentLyricLine! >=
+                                                                index &&
+                                                            lyrics?.syncType ===
+                                                                "LINE_SYNCED"
+                                                                ? 24
+                                                                : 22,
+                                                    }}
+                                                    className="text-white  font-bold "
+                                                >
+                                                    {item.words}
+                                                </Text>
+                                            );
+                                        }}
+                                    />
+                                    <Text className="self-end text-white pt-5">
+                                        {lyrics.syncType === "LINE_SYNCED"
+                                            ? "Lời bài hát đã được đồng bộ"
+                                            : "Lời bài hát chưa được đồng bộ"}
+                                    </Text>
                                 </View>
-                            </TouchableOpacity>
-                        )}
-                    </>
+                            )}
+                        </View>
+                    </TouchableOpacity>
                 )}
 
                 <AddToPlaylist />

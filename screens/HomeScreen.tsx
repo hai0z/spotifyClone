@@ -17,13 +17,14 @@ import useHeaderColor from "../hooks/useHeaderColor";
 import QuickPick from "../components/Home/QuickPick";
 import { HomeData } from "../types/home";
 import musicService from "../services/musicService";
+import axios from "axios";
 interface IHomeProps {
     navigation: navigation<"HomeTab">;
 }
 
 export default function App({ navigation }: IHomeProps) {
     const [refreshing, setRefreshing] = React.useState(false);
-
+    console.log("homer render");
     const [loading, setLoading] = React.useState(false);
     const [playHistory, setPlayHistory] = useState<ISong[]>([]);
     const [homeData, setHomeData] = useState<HomeData[]>([]);
@@ -37,7 +38,7 @@ export default function App({ navigation }: IHomeProps) {
         const getHomeData = async () => {
             const res = await musicService.getHome();
             setHomeData(res);
-            console.log(homeData);
+            setLoading(false);
         };
         getHomeData();
         getHistory();
@@ -46,7 +47,6 @@ export default function App({ navigation }: IHomeProps) {
     const getHistory = async () => {
         const data = await getPlayHistory();
         setPlayHistory(data);
-        setLoading(false);
     };
     const headerColor = useHeaderColor();
     const { displayAnimation } = usePlayerAnimation();
@@ -79,6 +79,7 @@ export default function App({ navigation }: IHomeProps) {
                         <Header />
                     </LinearGradient>
                 </View>
+
                 <ScrollView
                     className="z-10 -mt-12  flex-1"
                     contentContainerStyle={{
@@ -94,14 +95,14 @@ export default function App({ navigation }: IHomeProps) {
                             />
                         ))}
                     </View>
-                    <View className="mt-8">
+                    <View className="mt-8" style={{ minHeight: 264 }}>
                         <QuickPick
                             quickPickData={homeData[0]}
                             title="Chọn nhanh đài phát"
                             subTitle="bắt đầu một đài phát"
                         />
                     </View>
-                    <View className="mt-4" style={{ height: 256 }}>
+                    <View className="mt-4" style={{ minHeight: 256 }}>
                         <QuickPick
                             quickPickData={homeData[1]}
                             title="Đang thịnh hành"

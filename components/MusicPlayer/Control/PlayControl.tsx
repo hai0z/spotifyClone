@@ -1,5 +1,5 @@
 import { TouchableOpacity } from "react-native";
-import React from "react";
+import React, { useMemo } from "react";
 import useSound from "../../../hooks/useSound";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
@@ -8,6 +8,7 @@ import { Entypo } from "@expo/vector-icons";
 const PlayControl = () => {
     const { onPlayPause } = useSound();
     const musicState = useSelector((state: RootState) => state.song.musicState);
+
     return (
         <TouchableOpacity
             onPress={onPlayPause}
@@ -26,4 +27,4 @@ const PlayControl = () => {
     );
 };
 
-export default PlayControl;
+export default React.memo(PlayControl);

@@ -23,7 +23,10 @@ const Tab = createBottomTabNavigator();
 
 const HomeTabScreen = () => {
     return (
-        <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="HomeTab">
+        <Stack.Navigator
+            screenOptions={{ headerShown: false }}
+            initialRouteName="HomeTab"
+        >
             <Stack.Screen name="HomeTab" component={HomeScreen} />
             <Stack.Screen name="Album" component={AlbumAndArtist} />
             <Stack.Screen
@@ -38,7 +41,10 @@ const HomeTabScreen = () => {
 };
 const LibraryStack = () => {
     return (
-        <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="Lib">
+        <Stack.Navigator
+            screenOptions={{ headerShown: false }}
+            initialRouteName="Lib"
+        >
             <Stack.Screen name="Lib" component={LibraryScreeens} />
             <Stack.Screen
                 name="ListFavourite"
@@ -58,11 +64,25 @@ const HomeTab = () => {
                 tabBarIcon: ({ color, size }) => {
                     switch (route.name) {
                         case "Home":
-                            return <Entypo name="home" size={size} color={color} />;
+                            return (
+                                <Entypo name="home" size={size} color={color} />
+                            );
                         case "Search":
-                            return <FontAwesome name="search" size={24} color={color} />;
+                            return (
+                                <FontAwesome
+                                    name="search"
+                                    size={24}
+                                    color={color}
+                                />
+                            );
                         case "Library":
-                            return <MaterialIcons name="library-music" size={24} color={color} />;
+                            return (
+                                <MaterialIcons
+                                    name="library-music"
+                                    size={24}
+                                    color={color}
+                                />
+                            );
                     }
                 },
                 headerShown: false,
@@ -98,23 +118,15 @@ const HomeTab = () => {
                 options={{
                     title: "Thư viện",
                 }}
-                listeners={() => ({
-                    tabPress: () => {
-                        // Prevent default action
-                        // navigation.navigate("Lib");
-                        // Do something with the `navigation` object
-                    },
-                })}
             />
         </Tab.Navigator>
     );
 };
 const HomeTabWrapper = () => {
-    const navigation = useNavigation<navigation<"HomeTab">>();
     return (
         <Fragment>
             <HomeTab />
-            <MusicPlayer navigation={navigation} />
+            <MusicPlayer />
         </Fragment>
     );
 };
@@ -133,7 +145,7 @@ export default function App() {
                     name="HomeTab"
                     component={HomeTabWrapper}
                     options={{
-                        animation: "none",
+                        animation: "slide_from_bottom",
                         customAnimationOnGesture: true,
                     }}
                 />

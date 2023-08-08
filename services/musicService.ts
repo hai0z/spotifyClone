@@ -31,13 +31,6 @@ class MusicService {
         const data = await respone.json();
         return data;
     }
-    async getLyric(keyword: string) {
-        const respone = await fetch(
-            `${this.BASE_URL}/songs/lyrics?q=${keyword}`
-        );
-        const data = await respone.json();
-        return data;
-    }
 }
 const musicService = new MusicService();
 

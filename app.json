@@ -16,16 +16,14 @@
         },
         "assetBundlePatterns": ["**/*"],
         "ios": {
-            "supportsTablet": true,
-            "backgroundModes": ["audio"]
+            "supportsTablet": true
         },
         "android": {
             "adaptiveIcon": {
                 "foregroundImage": "./assets/adaptive-icon.png",
                 "backgroundColor": "#FFFFFF"
             },
-            "package": "com.haivip001234.music",
-            "backgroundModes": ["audio"]
+            "package": "com.haivip001234.music"
         },
         "web": {
             "favicon": "./assets/favicon.png"

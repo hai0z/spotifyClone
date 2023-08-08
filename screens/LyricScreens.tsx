@@ -16,18 +16,20 @@ import { Line } from "../types/song";
 
 import useSound from "../hooks/useSound";
 import { FlashList } from "@shopify/flash-list";
+import { useSongContext } from "../context/SongProvider";
 import useSyncLyric from "../hooks/useSyncLyric";
 
-const { width: SCREEN_WIDTH } = Dimensions.get("screen");
+const { width: SCREEN_WIDTH, height } = Dimensions.get("screen");
 
 const LyricScreens: React.FC<{ route: route<"Lyric"> }> = ({ route }) => {
-    const { song, previousLine } = route.params;
+    const { song } = route.params;
+
+    const { joeColor, lyrics, currentLine, getCurrentLyricLine } =
+        useSongContext();
 
     const navigation = useNavigation();
 
     const topAnimation = React.useRef(new Animated.Value(-100)).current;
-
-    const { currentLine, getCurrentLyricLine } = useSyncLyric(song);
 
     const opacity = topAnimation.interpolate({
         inputRange: [-100, -50, 0],
@@ -38,20 +40,13 @@ const LyricScreens: React.FC<{ route: route<"Lyric"> }> = ({ route }) => {
 
     useEffect(() => {
         lyricsRef.current?.scrollToIndex({
-            index: 10,
+            index: currentLine as number,
             animated: true,
-        });
-        console.log("lakak");
-    }, []);
-
-    useEffect(() => {
-        lyricsRef.current?.scrollToIndex({
-            index: currentLine,
-            animated: true,
+            viewOffset: height * 0.3,
         });
     }, [currentLine]);
-
-    React.useEffect(() => {
+    //  const {currentLine,getCurrentLyricLine} = useSyncLyric()
+    React.useLayoutEffect(() => {
         Animated.timing(topAnimation, {
             toValue: 0,
             duration: 300,
@@ -60,12 +55,12 @@ const LyricScreens: React.FC<{ route: route<"Lyric"> }> = ({ route }) => {
         }).start();
     }, []);
 
-    const lyricsRef = useRef<any>(null);
+    const lyricsRef = React.useRef<FlashList<Line>>(null);
 
     return (
         <View
             className="flex-1 pt-[35px] "
-            style={{ backgroundColor: `#121212` }}
+            style={{ backgroundColor: joeColor?.colors?.dominant?.hex }}
         >
             <Animated.View
                 className="px-8 h-24 flex-row relative w-full"
@@ -95,14 +90,15 @@ const LyricScreens: React.FC<{ route: route<"Lyric"> }> = ({ route }) => {
             <View className="flex-1">
                 <FlashList
                     ref={lyricsRef}
-                    estimatedItemSize={90}
+                    estimatedItemSize={64}
                     showsVerticalScrollIndicator={false}
                     nestedScrollEnabled
                     keyExtractor={(item, index) =>
                         `${item.startTimeMs}-${index}`
                     }
                     extraData={currentLine}
-                    data={song?.lyrics?.lines}
+                    data={lyrics.lines}
+                    initialScrollIndex={currentLine}
                     renderItem={({
                         item,
                         index,
@@ -119,9 +115,10 @@ const LyricScreens: React.FC<{ route: route<"Lyric"> }> = ({ route }) => {
                                 <Text
                                     style={{
                                         color:
-                                            getCurrentLyricLine! >= index
-                                                ? "yellow"
-                                                : "white",
+                                            (getCurrentLyricLine as number) >=
+                                            index
+                                                ? "white"
+                                                : "black",
                                     }}
                                     className="text-[24px] font-bold px-8 "
                                 >

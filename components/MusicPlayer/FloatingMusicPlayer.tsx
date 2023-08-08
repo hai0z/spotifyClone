@@ -6,7 +6,7 @@ import {
     Animated,
     ActivityIndicator,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Entypo } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
 import { useSongContext } from "../../context/SongProvider";
@@ -17,22 +17,19 @@ import useSound from "../../hooks/useSound";
 import { ISong, Song } from "../../types/song";
 import usePlayerAnimation from "../../hooks/usePlayerAnimation";
 import { addToLikedList } from "../../services/firebaseService";
-
+import { useNavigation } from "@react-navigation/native";
 const { width: SCREEN_WIDTH } = Dimensions.get("screen");
-interface IMusciPayerProp {
-    navigation: navigation<"HomeTab">;
-}
-
-const MusicPlayer: React.FC<IMusciPayerProp> = ({ navigation }) => {
+import useImageColors from "../../hooks/useImageColor";
+const MusicPlayer: React.FC = () => {
+    const navigation = useNavigation<navigation<"MusicPlayer">>();
     const musicState = useSelector((state: RootState) => state.song.musicState);
 
     const { currentSong, songLoaded } = useSelector(
         (state: RootState) => state.song
     );
-
     const { ListFavourite } = useSongContext();
 
-    const [joeColor, setJoeColor] = useState("#cccccc");
+    const { joeColor } = useSongContext();
 
     const { sound, onPlayPause } = useSound();
 
@@ -65,10 +62,6 @@ const MusicPlayer: React.FC<IMusciPayerProp> = ({ navigation }) => {
         // setIsLiked(ListFavourite.some((s: Song) => s.key == currentSong?.key));
     }, [ListFavourite, currentSong?.videoId]);
 
-    React.useEffect(() => {
-        setJoeColor(`#606060`);
-    }, [currentSong]);
-
     const { playerAnimation } = usePlayerAnimation();
 
     const translateX = playerAnimation.interpolate({
@@ -98,7 +91,7 @@ const MusicPlayer: React.FC<IMusciPayerProp> = ({ navigation }) => {
                 onPress={() => {
                     navigation.navigate("MusicPlayer");
                 }}
-                style={{ backgroundColor: `#ff0000` }}
+                style={{ backgroundColor: joeColor?.colors?.dominant?.hex }}
                 className="flex-col rounded-md justify-center w-[100%] h-[100%]"
             >
                 <View className="flex-row justify-between items-center">

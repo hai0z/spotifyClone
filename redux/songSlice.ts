@@ -1,4 +1,4 @@
-import { Song, ISong } from "./../types/song";
+import { ISong } from "./../types/song";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface ISongSlice {
@@ -18,6 +18,7 @@ interface ISongState {
     isShuffle: boolean;
     listFavorite: ISong[];
     songLoaded: boolean;
+    currenLineLyricSynced: number;
 }
 const initialState: ISongState = {
     musicState: {
@@ -34,6 +35,7 @@ const initialState: ISongState = {
     isShuffle: false,
     listFavorite: [],
     songLoaded: true,
+    currenLineLyricSynced: 0.1,
 };
 const songSlice = createSlice({
     name: "song",
@@ -74,6 +76,9 @@ const songSlice = createSlice({
         setSongLoaded: (state, action: PayloadAction<boolean>) => {
             state.songLoaded = action.payload;
         },
+        setCurrentLineLyricSynced: (state, action: PayloadAction<number>) => {
+            state.currenLineLyricSynced = action.payload;
+        },
     },
 });
 export const {
@@ -84,5 +89,6 @@ export const {
     setLooping,
     setShuffle,
     setSongLoaded,
+    setCurrentLineLyricSynced,
 } = songSlice.actions;
 export default songSlice.reducer;

@@ -1,10 +1,11 @@
-import { Text, View } from "react-native";
+import { Text, View, FlatList } from "react-native";
 import React from "react";
 import { Content, HomeData } from "../../types/home";
 import { FlashList } from "@shopify/flash-list";
 import PlayListCard from "../MusicCard/PlayListCard";
 import usePlayerAnimation from "../../hooks/usePlayerAnimation";
 import { ISong } from "../../types/song";
+import Color from "color-thief-react/lib/Color/Color.component";
 
 interface IProps {
     quickPickData: HomeData;
@@ -13,18 +14,16 @@ interface IProps {
 }
 
 const QuickPick: React.FC<IProps> = ({ quickPickData, title, subTitle }) => {
-    console.log("hehe", quickPickData);
     const { displayAnimation } = usePlayerAnimation();
     return (
-        <View style={{ height: 256 }}>
+        <View style={{ height: 300 }}>
             <Text className="text-white uppercase font-semibold mb-2">
                 {subTitle}
             </Text>
             <Text className="text-white font-bold text-2xl mb-4">{title}</Text>
-            <View style={{ height: 256 }}>
-                <FlashList
+            <View style={{ flex: 1 }}>
+                <FlatList
                     horizontal
-                    estimatedItemSize={200}
                     data={quickPickData?.contents}
                     renderItem={({ item }) => (
                         <PlayListCard

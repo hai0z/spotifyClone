@@ -1,22 +1,22 @@
 import { useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
-import { ISong } from "../types/song";
+import { useSongContext } from "../context/SongProvider";
 
-const useSyncLyric = (song: ISong) => {
+const useSyncLyric = () => {
     const [currentLine, setCurretLine] = useState<number | undefined>();
-
+    const { lyrics } = useSongContext();
     const { musicState } = useSelector((state: RootState) => state.song);
 
     const getCurrentLyricLine = useMemo(() => {
-        if (song?.lyrics) {
+        if (lyrics) {
             let low = 0;
-            let high = song?.lyrics?.lines?.length - 1;
+            let high = lyrics?.lines?.length - 1;
             let result = -1;
 
             while (low <= high) {
                 const mid = Math.floor((low + high) / 2);
-                const midTime = +song.lyrics.lines[mid].startTimeMs - 750;
+                const midTime = +lyrics.lines[mid].startTimeMs - 500;
                 if (midTime <= +musicState.position) {
                     result = mid;
                     low = mid + 1;
@@ -26,8 +26,9 @@ const useSyncLyric = (song: ISong) => {
             }
 
             if (result !== -1 && currentLine !== result) {
-                setCurretLine(result);
                 console.log(1);
+
+                setCurretLine(result);
             }
 
             return result;

@@ -6,9 +6,14 @@ import {
     TouchableOpacity,
 } from "react-native";
 import React from "react";
-import { Song, ISong } from "../../types/song";
+import { ISong } from "../../types/song";
 import { useDispatch } from "react-redux";
-import { setCurrentSong, setPlaying } from "../../redux/songSlice";
+import {
+    setCurrentSong,
+    setPlaying,
+    setSongLoaded,
+} from "../../redux/songSlice";
+import { getAudioUrl } from "../../services/youtube";
 const { width: SCREEN_WITH } = Dimensions.get("screen");
 
 interface IMiniCardProps {
@@ -18,9 +23,11 @@ interface IMiniCardProps {
 const MiniPlayCard: React.FC<IMiniCardProps> = ({ song, displayAnimation }) => {
     const dispatch = useDispatch();
 
-    const handleClick = () => {
+    const handleClick = async () => {
         displayAnimation();
-        dispatch(setCurrentSong(song));
+        dispatch(setSongLoaded(false));
+        const url = await getAudioUrl(song.videoId);
+        dispatch(setCurrentSong({ ...song, audioUrl: url }));
         dispatch(
             setPlaying({
                 isPlaying: true,
@@ -30,6 +37,7 @@ const MiniPlayCard: React.FC<IMiniCardProps> = ({ song, displayAnimation }) => {
                 },
             })
         );
+        dispatch(setSongLoaded(true));
     };
 
     return (

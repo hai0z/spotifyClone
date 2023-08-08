@@ -36,7 +36,7 @@ interface Artist {
     name: string;
     id: string;
 }
-interface Lyrics {
+export interface Lyrics {
     error: boolean;
     syncType: "LINE_SYNCED" | "UNSYNCED" | "NOT_FOUND";
     lines: Line[];

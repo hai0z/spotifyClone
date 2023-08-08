@@ -18,7 +18,7 @@ const MusicSlider = () => {
     return (
         <Fragment>
             <Slider
-                step={0.15}
+                step={0.5}
                 style={{
                     width: SCREEN_WIDTH - 40,
                 }}

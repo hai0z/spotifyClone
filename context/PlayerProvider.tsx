@@ -98,22 +98,16 @@ function PlayerProvider({ children }: { children: React.ReactNode }) {
     async function onPlayPause() {
         if (!sound) return;
         if (musicState.isPlaying) {
-            await sound.pauseAsync().catch((err) => console.log(err));
+            dispatch(updateSongState({ ...musicState, isPlaying: false }));
+            await sound.pauseAsync();
         } else {
-            await sound
-                .playFromPositionAsync(musicState.position ?? 0)
-                .catch((err) => console.log(err));
+            await sound.playFromPositionAsync(musicState.position ?? 0);
         }
     }
     async function playFromPosition(position: number) {
         if (!sound) return;
-        if (musicState.isPlaying) {
-            await sound.setPositionAsync(Math.floor(position));
-        } else {
-            await sound
-                .setPositionAsync(position)
-                .catch((err) => console.log(err));
-        }
+
+        await sound.setPositionAsync(Math.floor(position));
     }
     async function updateLoopingStatus(isLooping: boolean) {
         await sound?.setStatusAsync({
@@ -124,14 +118,6 @@ function PlayerProvider({ children }: { children: React.ReactNode }) {
     React.useEffect(() => {
         playSound();
     }, [currentSong?.videoId]);
-
-    React.useEffect(() => {
-        return sound
-            ? () => {
-                  sound.unloadAsync();
-              }
-            : undefined;
-    }, [sound]);
 
     React.useEffect(() => {
         Audio.setAudioModeAsync({
