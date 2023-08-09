@@ -2,7 +2,6 @@ import { ISong } from "./../types/song";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface ISongSlice {
-    isPlaying: boolean;
     position: number;
     duration: number;
 }
@@ -12,21 +11,21 @@ export interface IPlayFrom {
 }
 interface ISongState {
     musicState: ISongSlice;
-    currentSong: ISong & { sections?: string[] | any[] };
+    currentSong: ISong;
     playFrom: IPlayFrom;
     isLooping: boolean;
     isShuffle: boolean;
     listFavorite: ISong[];
     songLoaded: boolean;
     currenLineLyricSynced: number;
+    isPlay: boolean;
 }
 const initialState: ISongState = {
     musicState: {
-        isPlaying: false,
         position: 0,
         duration: 0,
     },
-    currentSong: {} as ISong & { sections?: string[] | any[] },
+    currentSong: {} as ISong,
     playFrom: {
         from: "library",
         name: "Bài hát đã thích",
@@ -36,6 +35,7 @@ const initialState: ISongState = {
     listFavorite: [],
     songLoaded: true,
     currenLineLyricSynced: 0.1,
+    isPlay: false,
 };
 const songSlice = createSlice({
     name: "song",
@@ -43,23 +43,9 @@ const songSlice = createSlice({
     reducers: {
         updateSongState: (state, action) => {
             state.musicState = {
-                isPlaying: action.payload.isPlaying,
                 position: action.payload.position,
                 duration: action.payload.duration,
             };
-        },
-        setPlaying: (
-            state,
-            action: PayloadAction<{
-                isPlaying: boolean;
-                playFrom: IPlayFrom;
-            }>
-        ) => {
-            state.musicState = {
-                ...state.musicState,
-                isPlaying: action.payload.isPlaying,
-            };
-            state.playFrom = action.payload.playFrom;
         },
         setCurrentSong: (state, action: PayloadAction<ISong>) => {
             state.currentSong = action.payload;
@@ -79,16 +65,19 @@ const songSlice = createSlice({
         setCurrentLineLyricSynced: (state, action: PayloadAction<number>) => {
             state.currenLineLyricSynced = action.payload;
         },
+        setIsPlay: (state, action: PayloadAction<boolean>) => {
+            state.isPlay = action.payload;
+        },
     },
 });
 export const {
     updateSongState,
-    setPlaying,
     setCurrentSong,
     setListFavourite,
     setLooping,
     setShuffle,
     setSongLoaded,
     setCurrentLineLyricSynced,
+    setIsPlay,
 } = songSlice.actions;
 export default songSlice.reducer;

@@ -6,7 +6,7 @@ import { useDispatch } from "react-redux";
 import {
     IPlayFrom,
     setCurrentSong,
-    setPlaying,
+    setIsPlay,
     setSongLoaded,
 } from "../../redux/songSlice";
 import { Content } from "../../types/home";
@@ -33,17 +33,12 @@ const PlayListCard: React.FC<IPlayListProp> = ({
 
     const handleClick = async () => {
         if (type === "artist") return;
-        displayAnimation();
         dispatch(setSongLoaded(false));
+        dispatch(setIsPlay(true));
         const url = await getAudioUrl(playList.videoId);
         dispatch(setCurrentSong({ ...playList, audioUrl: url }));
-        dispatch(
-            setPlaying({
-                isPlaying: true,
-                playFrom,
-            })
-        );
         dispatch(setSongLoaded(true));
+        displayAnimation();
     };
 
     return (

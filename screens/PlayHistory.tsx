@@ -8,7 +8,7 @@ import { ISong, Song } from "../types/song";
 import { FlashList } from "@shopify/flash-list";
 import { useDispatch } from "react-redux";
 import usePlayerAnimation from "../hooks/usePlayerAnimation";
-import { setCurrentSong, setPlaying } from "../redux/songSlice";
+import { setCurrentSong, setIsPlay } from "../redux/songSlice";
 
 interface ISongCardProps {
     item: ISong;
@@ -51,7 +51,8 @@ const PlayHistory = () => {
         const song: ISong[] = [];
         const q = db.query(
             db.collection(db.getFirestore(), "playHistory"),
-            db.orderBy("time", "desc")
+            db.orderBy("time", "desc"),
+            db.limit(30)
         );
         const querySnapshot = await db.getDocs(q);
         querySnapshot.forEach((doc) => {
@@ -66,15 +67,7 @@ const PlayHistory = () => {
 
     const onPress = useCallback((song: ISong) => {
         displayAnimation();
-        dispatch(
-            setPlaying({
-                isPlaying: true,
-                playFrom: {
-                    from: "library",
-                    name: "Lịch sử phát",
-                },
-            })
-        );
+        dispatch(setIsPlay(true));
         dispatch(setCurrentSong(song));
     }, []);
 

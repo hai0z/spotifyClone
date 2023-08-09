@@ -10,7 +10,7 @@ import { ISong } from "../../types/song";
 import { useDispatch } from "react-redux";
 import {
     setCurrentSong,
-    setPlaying,
+    setIsPlay,
     setSongLoaded,
 } from "../../redux/songSlice";
 import { getAudioUrl } from "../../services/youtube";
@@ -24,20 +24,12 @@ const MiniPlayCard: React.FC<IMiniCardProps> = ({ song, displayAnimation }) => {
     const dispatch = useDispatch();
 
     const handleClick = async () => {
-        displayAnimation();
+        dispatch(setIsPlay(true));
         dispatch(setSongLoaded(false));
         const url = await getAudioUrl(song.videoId);
         dispatch(setCurrentSong({ ...song, audioUrl: url }));
-        dispatch(
-            setPlaying({
-                isPlaying: true,
-                playFrom: {
-                    from: "library",
-                    name: "Bài hát đã thích",
-                },
-            })
-        );
         dispatch(setSongLoaded(true));
+        displayAnimation();
     };
 
     return (

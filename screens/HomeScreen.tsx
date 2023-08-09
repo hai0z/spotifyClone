@@ -18,6 +18,7 @@ import QuickPick from "../components/Home/QuickPick";
 import { HomeData } from "../types/home";
 import musicService from "../services/musicService";
 import axios from "axios";
+import SkeletonLoading from "../components/Animations/SkeletonLoading";
 interface IHomeProps {
     navigation: navigation<"HomeTab">;
 }

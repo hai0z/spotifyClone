@@ -8,7 +8,7 @@ import {
 import { Sound } from "expo-av/build/Audio";
 import { useSongContext } from "../context/SongProvider";
 import { RootState } from "../redux/store";
-import { setCurrentSong, updateSongState } from "../redux/songSlice";
+import { setCurrentSong, setIsPlay, updateSongState } from "../redux/songSlice";
 import React, { createContext } from "react";
 import { ISong } from "../types/song";
 interface IPlayerContext {
@@ -32,7 +32,9 @@ function PlayerProvider({ children }: { children: React.ReactNode }) {
 
     const dispatch = useDispatch();
 
-    const musicState = useSelector((state: RootState) => state.song.musicState);
+    const { musicState, isPlay } = useSelector(
+        (state: RootState) => state.song
+    );
     const playFrom = useSelector((state: RootState) => state.song.playFrom);
 
     const currentSong = useSelector(
@@ -56,15 +58,13 @@ function PlayerProvider({ children }: { children: React.ReactNode }) {
         if (status.isPlaying == null) {
             dispatch(
                 updateSongState({
-                    isPlaying: false,
-                    position: null,
-                    duration: null,
+                    position: 0,
+                    duration: 0,
                 })
             );
         } else {
             dispatch(
                 updateSongState({
-                    isPlaying: status.isPlaying,
                     duration: status.durationMillis,
                     position: status.positionMillis,
                 })
@@ -72,6 +72,7 @@ function PlayerProvider({ children }: { children: React.ReactNode }) {
         }
     };
     async function playSound() {
+        console.log("is play", isPlay);
         if (sound) {
             sound.unloadAsync();
         }
@@ -81,7 +82,7 @@ function PlayerProvider({ children }: { children: React.ReactNode }) {
                     uri: currentSong.audioUrl,
                 },
                 {
-                    shouldPlay: musicState.isPlaying,
+                    shouldPlay: isPlay,
                     isLooping,
                     progressUpdateIntervalMillis: 500,
                     volume: 1,
@@ -97,10 +98,11 @@ function PlayerProvider({ children }: { children: React.ReactNode }) {
 
     async function onPlayPause() {
         if (!sound) return;
-        if (musicState.isPlaying) {
-            dispatch(updateSongState({ ...musicState, isPlaying: false }));
+        if (isPlay) {
+            dispatch(setIsPlay(false));
             await sound.pauseAsync();
         } else {
+            dispatch(setIsPlay(true));
             await sound.playFromPositionAsync(musicState.position ?? 0);
         }
     }
@@ -117,7 +119,7 @@ function PlayerProvider({ children }: { children: React.ReactNode }) {
 
     React.useEffect(() => {
         playSound();
-    }, [currentSong?.videoId]);
+    }, [currentSong]);
 
     React.useEffect(() => {
         Audio.setAudioModeAsync({

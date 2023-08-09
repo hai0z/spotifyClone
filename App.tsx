@@ -8,13 +8,13 @@ import AnimationProvider from "./context/AnimationProvider";
 const App = () => {
     return (
         <Provider store={store}>
-            <SongProvider>
-                <PlayerProvider>
+            <PlayerProvider>
+                <SongProvider>
                     <AnimationProvider>
                         <AppNavigator />
                     </AnimationProvider>
-                </PlayerProvider>
-            </SongProvider>
+                </SongProvider>
+            </PlayerProvider>
         </Provider>
     );
 };

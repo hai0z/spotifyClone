@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { Text, View, ScrollView, TouchableOpacity } from "react-native";
 import { Entypo, AntDesign } from "@expo/vector-icons";
-import React, { useEffect, useRef, useState, useMemo } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import { RootState } from "../redux/store";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { useSongContext } from "../context/SongProvider";
 import { Line, Song } from "../types/song";
 import { FlashList } from "@shopify/flash-list";
@@ -13,9 +13,6 @@ import Player from "../components/MusicPlayer/Player";
 import AddToPlaylist from "../components/Modal/AddToPlaylist";
 import { addToLikedList } from "../services/firebaseService";
 import ImageSlider from "../components/MusicPlayer/ImageSilder/ImageSlider";
-import musicService from "../services/musicService";
-import { setCurrentSong } from "../redux/songSlice";
-import useSyncLyric from "../hooks/useSyncLyric";
 interface IMusicPlayerScreenProps {
     navigation: navigation<"HomeTab">;
 }

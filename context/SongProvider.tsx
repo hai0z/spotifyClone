@@ -143,7 +143,6 @@ const SongProvider: FC<ISongProviderProp> = ({ children }) => {
             try {
                 const res = await musicService.getLyrics(currentSong.title);
                 setLyrics(res);
-                console.log(res);
             } catch (error) {
                 setLyrics({ ...lyrics, error: true });
             }

@@ -5,7 +5,7 @@ import {
     Dimensions,
     Animated,
 } from "react-native";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect } from "react";
 import { route } from "../types/RootStackParamList";
 
 import { AntDesign } from "@expo/vector-icons";
@@ -17,7 +17,6 @@ import { Line } from "../types/song";
 import useSound from "../hooks/useSound";
 import { FlashList } from "@shopify/flash-list";
 import { useSongContext } from "../context/SongProvider";
-import useSyncLyric from "../hooks/useSyncLyric";
 
 const { width: SCREEN_WIDTH, height } = Dimensions.get("screen");
 
@@ -45,7 +44,6 @@ const LyricScreens: React.FC<{ route: route<"Lyric"> }> = ({ route }) => {
             viewOffset: height * 0.3,
         });
     }, [currentLine]);
-    //  const {currentLine,getCurrentLyricLine} = useSyncLyric()
     React.useLayoutEffect(() => {
         Animated.timing(topAnimation, {
             toValue: 0,

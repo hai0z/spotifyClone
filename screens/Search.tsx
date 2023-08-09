@@ -11,7 +11,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import useDebounce from "../hooks/useDebounce";
 import { ISong } from "../types/song";
 import { useDispatch } from "react-redux";
-import { setCurrentSong, setPlaying, setSongLoaded } from "../redux/songSlice";
+import { setCurrentSong, setIsPlay, setSongLoaded } from "../redux/songSlice";
 import { FontAwesome } from "@expo/vector-icons";
 import musicService from "../services/musicService";
 import { getAudioUrl } from "../services/youtube";
@@ -60,17 +60,9 @@ const Search = () => {
     const onPressSong = useCallback(async (song: ISong) => {
         try {
             dispatch(setSongLoaded(false));
+            dispatch(setIsPlay(true));
             const url = await getAudioUrl(song.videoId);
             dispatch(setCurrentSong({ ...song, audioUrl: url }));
-            dispatch(
-                setPlaying({
-                    isPlaying: true,
-                    playFrom: {
-                        from: "search",
-                        name: `Nội dung: ${search}`,
-                    },
-                })
-            );
         } catch (error) {
             console.log(error);
         } finally {

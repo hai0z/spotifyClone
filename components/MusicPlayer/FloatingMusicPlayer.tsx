@@ -20,9 +20,12 @@ import { addToLikedList } from "../../services/firebaseService";
 import { useNavigation } from "@react-navigation/native";
 const { width: SCREEN_WIDTH } = Dimensions.get("screen");
 import useImageColors from "../../hooks/useImageColor";
+import SkeletonLoading from "../Animations/SkeletonLoading";
 const MusicPlayer: React.FC = () => {
     const navigation = useNavigation<navigation<"MusicPlayer">>();
-    const musicState = useSelector((state: RootState) => state.song.musicState);
+    const { musicState, isPlay } = useSelector(
+        (state: RootState) => state.song
+    );
 
     const { currentSong, songLoaded } = useSelector(
         (state: RootState) => state.song
@@ -96,11 +99,8 @@ const MusicPlayer: React.FC = () => {
             >
                 <View className="flex-row justify-between items-center">
                     {!songLoaded ? (
-                        <View className="bg-gray-600 w-10 h-10 rounded-[5px] ml-[7px] z-50 justify-center items-center">
-                            <ActivityIndicator
-                                size={"small"}
-                                animating={false}
-                            />
+                        <View className="ml-[7px] z-50">
+                            <SkeletonLoading width={40} height={40} />
                         </View>
                     ) : (
                         <View>
@@ -114,7 +114,7 @@ const MusicPlayer: React.FC = () => {
                     )}
                     <View style={{ marginLeft: 10, maxWidth: "60%" }}>
                         {!songLoaded ? (
-                            <View className="h-2 bg-gray-400 w-32"></View>
+                            <SkeletonLoading width={128} height={8} />
                         ) : (
                             <Animated.Text
                                 numberOfLines={1}
@@ -125,7 +125,9 @@ const MusicPlayer: React.FC = () => {
                             </Animated.Text>
                         )}
                         {!songLoaded ? (
-                            <View className="h-2 bg-gray-400 w-16 mt-3"></View>
+                            <View className="mt-3">
+                                <SkeletonLoading width={64} height={8} />
+                            </View>
                         ) : (
                             <Animated.Text
                                 style={{ transform: [{ translateX }], opacity }}
@@ -151,7 +153,7 @@ const MusicPlayer: React.FC = () => {
                             {songLoaded ? (
                                 <Entypo
                                     name={
-                                        !musicState.isPlaying
+                                        !isPlay
                                             ? "controller-play"
                                             : "controller-paus"
                                     }
